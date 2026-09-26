@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.6.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      Compiles the game-independent Core logic directly (rather than referencing the main mod
+      project), since the main project pulls in the SMAPI mod-build package that needs a local
+      Stardew Valley install to resolve. This keeps the test project buildable with just the
+      .NET SDK. See design.md - "Selection scope" decisions and the Core/ folder's own separation
+      from the GiftSelection/ (game-dependent) folder.
+    -->
+    <Compile Include="..\StardewAutoGifter\Core\**\*.cs" LinkBase="Core" />
+  </ItemGroup>
+
+</Project>

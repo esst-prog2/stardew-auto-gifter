@@ -1,0 +1,11 @@
+{
+  "Name": "Auto-Gifter",
+  "Author": "TamaraT0811",
+  "Version": "0.1.0",
+  "Description": "Automatically gives daily gifts to villagers from your farm's chests, based on a reviewable evening plan.",
+  "UniqueID": "TamaraT0811.AutoGifter",
+  "EntryDll": "StardewAutoGifter.dll",
+  "MinimumApiVersion": "4.0.0",
+  "Dependencies": [],
+  "UpdateKeys": []
+}
