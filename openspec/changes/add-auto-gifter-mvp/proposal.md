@@ -31,3 +31,13 @@ Giving daily gifts to villagers in Stardew Valley requires remembering every NPC
 - Config additions: the reserved sentinel color constant, the loved-only/loved+liked toggle (`IncludeLikedItems`, default `true`), and the two keybind defaults (menu-open, chest-marking).
 - No persistent custom save data beyond the blocklist and the sentinel-colored anchor chest itself; the daily plan lives in memory for the current day/evening cycle.
 - Item selection and removal now scan every chest on the farm rather than a single chest, so gift removal touches whichever farm chest happens to hold the selected item.
+
+## Future work (not in this change)
+
+- Seasonal preference for selection (prioritizing fruits/vegetables that are currently in season).
+- Automatic "rare item" detection (e.g. via AI trained on the player's own playthrough data), instead of a manually maintained blocklist.
+- Combining multiple weighting factors for selection, beyond quantity alone.
+- Multiplayer compatibility.
+- Long-term history/statistics of past gifts.
+- A configurable proximity threshold for automatic hand-off (currently fixed).
+- A more distinctive visual marker for the anchor chest beyond its current color, name, and periodic sparkle (e.g. a floating icon or a genuinely two-toned chest sprite), which would require custom world-rendering.
