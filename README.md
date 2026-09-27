@@ -1,4 +1,4 @@
-# AdvancedProgramming
+# Stardew-auto-gifter
 Programming course Survey MA
 
 # Stardew Valley Auto-Gifter
