@@ -43,6 +43,19 @@ namespace StardewAutoGifter
             helper.Events.Input.ButtonPressed += OnButtonPressed;
             helper.Events.GameLoop.OneSecondUpdateTicked += OnOneSecondUpdateTicked;
             helper.Events.Player.Warped += OnWarped;
+            helper.Events.Display.MenuChanged += OnMenuChanged; // hw4-spike diagnostic, kept on purpose - see OnMenuChanged
+        }
+
+        /// <summary>
+        /// Diagnostic kept on purpose after the hw4-spike (see spike/sentinel-color-evidence.md,
+        /// which cites this handler); remove in a later change if the log noise becomes a problem.
+        /// </summary>
+        private void OnMenuChanged(object? sender, MenuChangedEventArgs e)
+        {
+            if (e.NewMenu is ItemGrabMenu grabMenu && grabMenu.context is Chest chest)
+            {
+                Monitor.Log($"[hw4-spike] Chest menu opened at {chest.TileLocation}; color before: {chest.playerChoiceColor.Value}.", LogLevel.Debug);
+            }
         }
 
         private void OnSaveLoaded(object? sender, SaveLoadedEventArgs e)

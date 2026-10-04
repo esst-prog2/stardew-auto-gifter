@@ -1,0 +1,78 @@
+[13:01:05 INFO  SMAPI] SMAPI 4.5.2 with Stardew Valley 1.6.15 build 24356 on Windows 11 (10.0.26200.0)
+[13:01:05 INFO  SMAPI] Mods go here: D:\SteamLibrary\steamapps\common\Stardew Valley\Mods
+[13:01:05 TRACE SMAPI] Log started at 2026-10-04T11:01:05 UTC
+[13:01:09 DEBUG SMAPI] Waiting for game to launch...
+[13:01:10 TRACE game] Instance_Initialize() finished, elapsed = '00:00:00.3516246'
+[13:01:10 TRACE SMAPI] Scanning for malicious files...
+[13:01:10 DEBUG SMAPI] Loading mod metadata...
+[13:01:10 DEBUG SMAPI] Loading mods...
+[13:01:10 TRACE SMAPI]    Console Commands (from Mods\ConsoleCommands\ConsoleCommands.dll, ID: SMAPI.ConsoleCommands, assembly version: 4.5.2)...
+[13:01:10 TRACE SMAPI]    Save Backup (from Mods\SaveBackup\SaveBackup.dll, ID: SMAPI.SaveBackup, assembly version: 4.5.2)...
+[13:01:10 TRACE SMAPI]       Detected direct console access (System.Console type) in assembly SaveBackup.dll.
+[13:01:10 TRACE SMAPI]    Auto-Gifter (from Mods\StardewAutoGifter\StardewAutoGifter.dll, ID: TamaraT0811.AutoGifter, assembly version: 1.0.0)...
+[13:01:10 INFO  SMAPI] Loaded 3 mods:
+[13:01:10 INFO  SMAPI]    Auto-Gifter 0.1.0 by TamaraT0811 | Automatically gives daily gifts to villagers from your farm's chests, based on a reviewable evening plan.
+[13:01:10 INFO  SMAPI]    Console Commands 4.5.2 by SMAPI | Adds SMAPI console commands that let you manipulate the game.
+[13:01:10 INFO  SMAPI]    Save Backup 4.5.2 by SMAPI | Automatically backs up all your saves once per day into its folder.
+
+[13:01:10 TRACE SMAPI]    Direct console access
+[13:01:10 TRACE SMAPI]    --------------------------------------------------
+[13:01:10 TRACE SMAPI]       These mods access the SMAPI console window directly. This is more fragile, and their output may not
+[13:01:10 TRACE SMAPI]       be logged by SMAPI.
+
+[13:01:10 TRACE SMAPI]       - Save Backup
+
+[13:01:10 DEBUG SMAPI]    No update keys
+[13:01:10 DEBUG SMAPI]    --------------------------------------------------
+[13:01:10 DEBUG SMAPI]       These mods have no update keys in their manifest. SMAPI may not notify you about updates for these
+[13:01:10 DEBUG SMAPI]       mods. Consider notifying the mod authors about this problem.
+
+[13:01:10 DEBUG SMAPI]       - Auto-Gifter
+
+[13:01:10 DEBUG SMAPI] Launching mods...
+[13:01:10 TRACE Save Backup] Already backed up today.
+[13:01:10 DEBUG SMAPI] Mods loaded and ready!
+[13:01:10 TRACE SMAPI] Checking for known software conflicts...
+[13:01:10 TRACE SMAPI]    None found!
+[13:01:10 TRACE SMAPI] Checking for updates...
+[13:01:11 TRACE game] setGameMode( 'titleScreenGameMode (0)' )
+[13:01:11 TRACE SMAPI] Running on GPU: NVIDIA GeForce RTX 3070 Ti/PCIe/SSE2
+[13:01:11 TRACE game] Instance_LoadContent() finished, elapsed = '00:00:00.9712336'
+[13:01:11 TRACE game] Steam logged on: True
+[13:01:11 TRACE game] Initializing GalaxySDK
+[13:01:11 TRACE game] Requesting Steam app ticket
+[13:01:11 TRACE SMAPI]    SMAPI okay.
+[13:01:11 TRACE SMAPI]    Checking for updates to 1 mods...
+[13:01:11 TRACE SMAPI]    All mods up to date.
+[13:01:11 INFO  SMAPI] Type 'help' for help, or 'help <cmd>' for a command's usage
+[13:01:11 TRACE SMAPI]    Mod blacklist OK.
+[13:01:11 TRACE game] Signing into GalaxySDK
+[13:01:13 TRACE game] Galaxy auth success
+[13:01:13 TRACE game] Galaxy signed in
+[13:01:13 TRACE game] Galaxy logged on
+[13:01:13 TRACE game] Window_ClientSizeChanged(); Window.ClientBounds={X:320 Y:180 Width:1280 Height:720}
+[13:01:14 TRACE game] Successfully set GOG Galaxy profile name.
+[13:01:37 TRACE SMAPI] Synchronizing 'Find Save Games' task...
+[13:01:37 TRACE SMAPI]    task complete.
+[13:01:37 TRACE game] Window_ClientSizeChanged(); Window.ClientBounds={X:320 Y:180 Width:1280 Height:720}
+[13:01:37 TRACE game] Successfully loaded ContentHashes.json containing 3560 file(s);
+[13:01:37 TRACE game] EnsureManifestInitialized() finished, elapsed = '00:00:00.0050827'
+[13:01:48 TRACE game] gameMode was 'titleScreenGameMode (0)', set to 'loadingMode (6)'.
+[13:01:48 TRACE SMAPI] Game loader synchronizing...
+[13:01:48 TRACE game] getLoadEnumerator('gagsag_450112948')
+[13:01:48 TRACE SMAPI] Synchronizing 'Load_ReadSave' task...
+[13:01:50 TRACE SMAPI]    task complete.
+[13:01:50 TRACE SMAPI] Synchronizing 'Load_LoadForNewGame' task...
+[13:01:50 TRACE SMAPI]    task complete.
+[13:01:50 TRACE SMAPI] Synchronizing 'Load_Farmer' task...
+[13:01:50 TRACE SMAPI]    task complete.
+[13:01:50 TRACE SMAPI] Synchronizing 'Load_Locations' task...
+[13:01:50 TRACE SMAPI]    task complete.
+[13:01:50 TRACE game] gameMode was 'loadingMode (6)', set to 'playingGameMode (3)'.
+[13:01:50 TRACE game] getLoadEnumerator() exited, elapsed = '00:00:02.4085877'
+[13:01:51 TRACE game] setGameMode( 'playingGameMode (3)' )
+[13:01:51 TRACE SMAPI] Game loader done.
+[13:01:51 TRACE game] Window_ClientSizeChanged(); Window.ClientBounds={X:320 Y:180 Width:1280 Height:720}
+[13:01:51 TRACE SMAPI] Context: loaded save 'gagsag_450112948', starting spring 3 Y1, locale set to . Single-player.
+[13:01:57 TRACE game] Warping to Farm
+[13:02:01 DEBUG Auto-Gifter] [hw4-spike] Chest menu opened at {X:70 Y:11}; color before: {R:13 G:202 B:91 A:255}.
