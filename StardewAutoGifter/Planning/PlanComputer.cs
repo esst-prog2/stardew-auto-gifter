@@ -26,7 +26,7 @@ namespace StardewAutoGifter.Planning
 
             foreach (string npcName in configuredNpcNames)
             {
-                if (FriendshipGiftTracker.HasReachedWeeklyCap(npcName))
+                if (!FriendshipGiftTracker.CanPlanGiftForNextDay(npcName))
                 {
                     plan.Gifts.Add(new PlannedGift(npcName, GiftPlanStatus.WeeklyCapReached));
                     continue;

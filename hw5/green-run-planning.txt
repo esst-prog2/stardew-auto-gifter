@@ -1,0 +1,11 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  StardewAutoGifter.Tests -> C:\Users\horva\OneDrive\Desktop\stardew-auto-gifter\StardewAutoGifter.Tests\bin\Debug\net6.0\StardewAutoGifter.Tests.dll
+Test run for C:\Users\horva\OneDrive\Desktop\stardew-auto-gifter\StardewAutoGifter.Tests\bin\Debug\net6.0\StardewAutoGifter.Tests.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.3.3 (x64)
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    16, Skipped:     0, Total:    16, Duration: 19 ms - StardewAutoGifter.Tests.dll (net6.0)
