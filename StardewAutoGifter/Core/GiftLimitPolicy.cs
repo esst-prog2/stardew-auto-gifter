@@ -18,6 +18,6 @@ namespace StardewAutoGifter.Core
         /// PLANNING_LOG.md for the daily-limit gap this deliberately does not yet close.
         /// </summary>
         public static bool CanGiveGift(int giftsToday, int giftsThisWeek)
-            => giftsThisWeek < WeeklyFriendshipGiftCap;
+            => giftsToday < 1 && giftsThisWeek < WeeklyFriendshipGiftCap;
     }
 }
