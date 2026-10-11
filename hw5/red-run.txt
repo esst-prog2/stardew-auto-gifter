@@ -1,0 +1,19 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  StardewAutoGifter.Tests -> C:\Users\horva\OneDrive\Desktop\stardew-auto-gifter\StardewAutoGifter.Tests\bin\Debug\net6.0\StardewAutoGifter.Tests.dll
+Test run for C:\Users\horva\OneDrive\Desktop\stardew-auto-gifter\StardewAutoGifter.Tests\bin\Debug\net6.0\StardewAutoGifter.Tests.dll (.NETCoreApp,Version=v6.0)
+Microsoft (R) Test Execution Command Line Tool Version 17.3.3 (x64)
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.18]     StardewAutoGifter.Tests.GiftLimitPolicyTests.CannotGiveGift_WhenDailyLimitAlreadyUsed [FAIL]
+  Failed StardewAutoGifter.Tests.GiftLimitPolicyTests.CannotGiveGift_WhenDailyLimitAlreadyUsed [12 ms]
+  Error Message:
+   Assert.False() Failure
+Expected: False
+Actual:   True
+  Stack Trace:
+     at StardewAutoGifter.Tests.GiftLimitPolicyTests.CannotGiveGift_WhenDailyLimitAlreadyUsed() in C:\Users\horva\OneDrive\Desktop\stardew-auto-gifter\StardewAutoGifter.Tests\GiftLimitPolicyTests.cs:line 20
+
+Failed!  - Failed:     1, Passed:    13, Skipped:     0, Total:    14, Duration: 39 ms - StardewAutoGifter.Tests.dll (net6.0)
