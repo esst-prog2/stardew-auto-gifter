@@ -26,6 +26,6 @@ namespace StardewAutoGifter.Core
         /// <see cref="CanGiveGift"/>.
         /// </summary>
         public static bool CanPlanGiftForNextDay(int giftsToday, int giftsThisWeek)
-            => giftsToday < 1 && giftsThisWeek < WeeklyFriendshipGiftCap;
+            => giftsThisWeek < WeeklyFriendshipGiftCap;
     }
 }
