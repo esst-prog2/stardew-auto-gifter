@@ -35,5 +35,24 @@ namespace StardewAutoGifter.Tests
 
             Assert.True(canGive);
         }
+
+        // Planning-time expected values (hw5/expected-value-source.md, "Planning-time expected
+        // values"): the plan is made in the evening for the next day, which is a new day.
+
+        [Fact]
+        public void CanPlanForNextDay_WhenGiftedTodayButWeeklyLimitNotReached()
+        {
+            bool canPlan = GiftLimitPolicy.CanPlanGiftForNextDay(giftsToday: 1, giftsThisWeek: 1);
+
+            Assert.True(canPlan);
+        }
+
+        [Fact]
+        public void CannotPlanForNextDay_WhenWeeklyLimitAlreadyUsed()
+        {
+            bool canPlan = GiftLimitPolicy.CanPlanGiftForNextDay(giftsToday: 0, giftsThisWeek: 2);
+
+            Assert.False(canPlan);
+        }
     }
 }
