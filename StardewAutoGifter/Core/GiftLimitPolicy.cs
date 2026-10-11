@@ -19,5 +19,13 @@ namespace StardewAutoGifter.Core
         /// </summary>
         public static bool CanGiveGift(int giftsToday, int giftsThisWeek)
             => giftsToday < 1 && giftsThisWeek < WeeklyFriendshipGiftCap;
+
+        /// <summary>
+        /// Whether a villager can be put in the plan for the next day, given their gift counts as
+        /// read at evening planning time. Used by the planning path only; delivery uses
+        /// <see cref="CanGiveGift"/>.
+        /// </summary>
+        public static bool CanPlanGiftForNextDay(int giftsToday, int giftsThisWeek)
+            => giftsToday < 1 && giftsThisWeek < WeeklyFriendshipGiftCap;
     }
 }
