@@ -49,7 +49,7 @@ namespace StardewAutoGifter
             _configuredNpcStore = new ConfiguredNpcStore(Helper);
             _onboardingStore = new OnboardingStore(Helper);
             _settingsStore = new ModSettingsStore(Helper);
-            _tasteProvider = new NpcGiftTasteProvider();
+            _tasteProvider = new NpcGiftTasteProvider(Monitor);
             _planStore = new PlanStore(Helper);
 
             helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;

@@ -144,3 +144,15 @@ Checks:
 - `dotnet build --no-incremental`: 0 errors, 0 warnings.
 - `dotnet test`: 90/90 green (85 + 5).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 08d: C2)
+
+- `GiftSelection/NpcGiftTasteProvider.cs`: takes `IMonitor`. When `ItemRegistry.Create` cannot create an item from a farm chest, it still returns `Neutral`, so the item is never selected. It now also logs "Item <id> from a farm chest cannot be created by the game; it is treated as not giftable." at Trace, through `Monitor.LogOnce`, because planning asks this for every NPC and every pooled item.
+- `ModEntry.cs` passes `Monitor` to the provider.
+- No spec change: the selection result is unchanged, and only a Trace line is added. No unit test, because this is a log line in the game-dependent part. Reproducing it in-game would need an item from a mod that has been removed, so it is marked "not reproducible in game" without such a mod.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build --no-incremental`: 0 errors, 0 warnings.
+- `dotnet test`: 90/90 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
