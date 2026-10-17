@@ -37,7 +37,8 @@ namespace StardewAutoGifter.Menus
         private readonly BlocklistStore _blocklistStore;
         private readonly ConfiguredNpcStore _configuredNpcStore;
         private readonly ModSettingsStore _settingsStore;
-        private readonly List<NPC> _villagers;
+        /// <summary>The NPCs tab's rows, built once when the menu opens (so an unchecked "(not found)" row stays until it closes).</summary>
+        private readonly List<NpcTabRow> _npcRows;
         private readonly List<Item> _fullItemCatalog;
         private readonly int _markedChestCount;
         private readonly string _chestMarkKeyName;
@@ -53,7 +54,7 @@ namespace StardewAutoGifter.Menus
         private readonly HashSet<char> _blocklistLetters = new();
         private readonly HashSet<char> _npcsLetters = new();
         private List<Item> _filteredCatalog;
-        private List<NPC> _filteredVillagers;
+        private List<NpcTabRow> _filteredNpcRows;
         private int _blocklistScrollIndex;
         private int _npcsScrollIndex;
         private int _planScrollIndex;
@@ -85,8 +86,8 @@ namespace StardewAutoGifter.Menus
             _blocklistStore = blocklistStore;
             _configuredNpcStore = configuredNpcStore;
             _settingsStore = settingsStore;
-            _villagers = villagers;
-            _filteredVillagers = villagers;
+            _npcRows = NpcTabList.Build(configuredNpcStore.SelectedNames, villagers.Select(npc => (npc.Name, npc.displayName)).ToList());
+            _filteredNpcRows = _npcRows;
             _fullItemCatalog = fullItemCatalog;
             _filteredCatalog = fullItemCatalog;
             _markedChestCount = markedChestCount;
@@ -146,9 +147,9 @@ namespace StardewAutoGifter.Menus
 
         private void RefreshNpcsFilter()
         {
-            _filteredVillagers = _npcsLetters.Count == 0
-                ? _villagers
-                : _villagers.Where(npc => StartsWithAny(npc.displayName, _npcsLetters)).ToList();
+            _filteredNpcRows = _npcsLetters.Count == 0
+                ? _npcRows
+                : _npcRows.Where(row => StartsWithAny(row.Label, _npcsLetters)).ToList();
             _npcsScrollIndex = 0;
         }
 
@@ -234,11 +235,11 @@ namespace StardewAutoGifter.Menus
             int rowY = yPositionOnScreen + ListStartOffset;
             int visibleRows = VisibleRows;
 
-            foreach (NPC npc in _filteredVillagers.Skip(_npcsScrollIndex).Take(visibleRows))
+            foreach (NpcTabRow row in _filteredNpcRows.Skip(_npcsScrollIndex).Take(visibleRows))
             {
-                bool selected = _configuredNpcStore.Contains(npc.Name);
+                bool selected = _configuredNpcStore.Contains(row.Name);
                 string checkbox = selected ? "[x]" : "[ ]";
-                string line = TruncateToWidth(Game1.smallFont, $"{checkbox} {npc.displayName}", ContentWidth);
+                string line = TruncateToWidth(Game1.smallFont, $"{checkbox} {row.Label}", ContentWidth);
                 b.DrawString(Game1.smallFont, line, new Vector2(xPositionOnScreen + 32, rowY), Game1.textColor);
                 rowY += RowHeight;
             }
@@ -438,12 +439,12 @@ namespace StardewAutoGifter.Menus
             int rowY = yPositionOnScreen + ListStartOffset;
             int visibleRows = VisibleRows;
 
-            foreach (NPC npc in _filteredVillagers.Skip(_npcsScrollIndex).Take(visibleRows))
+            foreach (NpcTabRow row in _filteredNpcRows.Skip(_npcsScrollIndex).Take(visibleRows))
             {
                 var rowBounds = new Rectangle(xPositionOnScreen + 32, rowY, width - 64, RowHeight - 8);
                 if (rowBounds.Contains(x, y))
                 {
-                    _configuredNpcStore.Toggle(npc.Name);
+                    _configuredNpcStore.Toggle(row.Name);
                     Game1.playSound("drumkit6");
                     return;
                 }
@@ -508,7 +509,7 @@ namespace StardewAutoGifter.Menus
             if (_activeTab == Tab.Blocklist)
                 _blocklistScrollIndex = ListScroll.Scroll(_blocklistScrollIndex, rowsDown, _filteredCatalog.Count, VisibleRows);
             else if (_activeTab == Tab.Npcs)
-                _npcsScrollIndex = ListScroll.Scroll(_npcsScrollIndex, rowsDown, _filteredVillagers.Count, VisibleRows);
+                _npcsScrollIndex = ListScroll.Scroll(_npcsScrollIndex, rowsDown, _filteredNpcRows.Count, VisibleRows);
             else if (_activeTab == Tab.Plan && _plan.IsActive)
                 _planScrollIndex = ListScroll.Scroll(_planScrollIndex, rowsDown, _plan.Gifts.Count, VisibleRows);
             else if (_activeTab == Tab.Warnings)

@@ -192,3 +192,34 @@ E6 (the daily-limit log line):
 
 E1 (an item that cannot be handed over):
 9. **Not reproducible in game.** A planned item is always one that was in a farm chest, and that the villager loves or likes, when the plan was made. To fail, it would have to stop existing as a giftable object between the evening and the delivery. That only happens if a mod that adds the item is removed while a stored plan still names it, or if the save data is edited. The behavior is covered by the `DeliveryRuleTests` unit tests instead.
+
+## What we changed (step 05g: E3 follow-up, not-found NPCs can be unchecked)
+
+The user approved the 05c page-2 text ("Your inventory was full, so a chest has been dropped at your feet. …"), and decided to fix the follow-up noted under 05d.
+
+Spec, written before the code: `daily-plan-review`, "Configured NPCs selected from the mod menu".
+- Every selected NPC who is not found in the game is listed at the top of the NPCs tab as "<name> (not found)", checked, so it can be unchecked.
+- The letter filter applies to these rows too.
+- An unchecked not-found row stays until the menu closes.
+- Three scenarios.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/NpcTabListTests.cs`, 2 tests:
+- with "Sophia" selected but not found, the rows are "Sophia (not found)", Abigail, Haley, and the first row's name is "Sophia" and it is marked not found;
+- with Haley selected and found, Abigail and Haley each appear once, with no not-found row.
+
+The third scenario, a row staying until the menu closes, is UI behavior and goes on the in-game checklist.
+
+Code:
+- `Core/NpcTabList.cs` (new, pure): the record `NpcTabRow(Name, Label, NotFound)` and `Build(selectedNames, villagers)`.
+- `Menus/ModMainMenu.cs`: the NPCs tab draws and toggles these rows, toggling by `Name` and showing `Label`. They are built once in the constructor, so an unchecked "(not found)" row stays until the menu closes. The letter filter checks the label.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 80/80 green (78 + 2).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+To check in-game: this needs the same setup as E3 (step 4 of the checklist above), a villager from a mod that has been removed.
+1. Open F8 → NPCs. Expect "[x] <name> (not found)" at the top.
+2. Click it. Expect "[ ] <name> (not found)", still in the list.
+3. Close and reopen F8. Expect the row to be gone, and the Plan tab to no longer show "<name>: not found in the game".

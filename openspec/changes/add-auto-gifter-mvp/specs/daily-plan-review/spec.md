@@ -109,7 +109,7 @@ For each configured NPC who does not have a planned item for the next day — ei
 - **THEN** the preview shows the per-NPC rows, and no inactive message
 
 ### Requirement: Configured NPCs selected from the mod menu
-The mod menu SHALL include a tab listing every villager in the game, each with a checkbox reflecting whether the mod should consider gifting them. Checking or unchecking a villager SHALL take effect starting with the next plan computation. This selection SHALL be the sole source of which NPCs the mod considers (no separate configuration-file list). The NPCs tab SHALL offer the same starting-letter filter described for the blocklist editor below.
+The mod menu SHALL include a tab listing every villager in the game, each with a checkbox reflecting whether the mod should consider gifting them. Checking or unchecking a villager SHALL take effect starting with the next plan computation. This selection SHALL be the sole source of which NPCs the mod considers (no separate configuration-file list). The NPCs tab SHALL offer the same starting-letter filter described for the blocklist editor below. Every selected NPC who is not found in the game SHALL also be listed, at the top of the tab, labeled "<name> (not found)" and checked, so that the player can uncheck it; the starting-letter filter applies to these rows as to the others. A not-found row that the player unchecks stays in the list, unchecked, until the menu is closed.
 
 #### Scenario: Player selects a villager
 - **WHEN** the player checks a villager's checkbox in the NPCs tab
@@ -118,6 +118,18 @@ The mod menu SHALL include a tab listing every villager in the game, each with a
 #### Scenario: Player deselects a villager
 - **WHEN** the player unchecks a previously-selected villager's checkbox
 - **THEN** that villager no longer receives a planned gift starting with the next plan computation
+
+#### Scenario: Selected villager not found in the game
+- **WHEN** the NPCs tab is opened, "Sophia" is selected but not found in the game, and the game has the villagers Abigail and Haley
+- **THEN** the tab lists "Sophia (not found)", checked, at the top, followed by Abigail and Haley, so that Sophia can be unchecked
+
+#### Scenario: Selected villager found in the game
+- **WHEN** the NPCs tab is opened, Haley is selected and is found in the game, and the game has the villagers Abigail and Haley
+- **THEN** the tab lists Abigail and Haley once each, with no "(not found)" row
+
+#### Scenario: Unchecked not-found villager
+- **WHEN** the player unchecks "Sophia (not found)" and later opens the menu again
+- **THEN** the row stays in the list, unchecked, until the menu is closed, and it is gone the next time the menu is opened
 
 ### Requirement: Anchor-chest-only setting in the mod menu
 The mod menu SHALL include a way to enable or disable restricting selection to the anchor chest alone (disabling the farm-wide fallback described in specs/gift-selection - "Anchor chest prioritized before the wider farm pool"). This setting SHALL take effect starting with the next plan computation. The "include liked items" setting stays in the mod's configuration file and is not editable in the menu; the Settings tab SHALL say so in one sentence, below the anchor-chest-only setting: "Whether villagers get a liked item when no loved one is available is set in config.json (IncludeLikedItems), not in this menu."
