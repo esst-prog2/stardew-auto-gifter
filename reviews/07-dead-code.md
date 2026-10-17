@@ -67,3 +67,23 @@ Checks:
 - `dotnet build --no-incremental`: 0 errors, 0 warnings.
 - `dotnet test`: 80/80 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 07b: S1-S6)
+
+All in `openspec/changes/add-auto-gifter-mvp/`. No old text was deleted.
+- **S1.** `design.md`, "TextBox search field: explicit keyboard-dispatcher subscription": a note "Superseded by "Letter-filter checkboxes replace free-text search" (below)". It says the TextBox field was removed, and the blocklist editor and the NPCs tab filter with A-Z letter boxes.
+- **S2.** `design.md`, "Selection UI: build on the game's own menu option elements": a note "Superseded by what was built". It says the menu is a custom-drawn `IClickableMenu`:
+  - rows drawn with `drawTextureBox`/`DrawString` and hit-tested by hand;
+  - `Core/ListScroll` for scrolling and `Core/TextLayout` for wrapping;
+  - the A-Z letter filter instead of a search field;
+  - none of the game's option-row or text-input elements.
+- **S3.** `design.md`, the blocklist-editor risk: a "Superseded" sub-point says there is no search field and no option-row elements, and points to "Selection UI".
+- **S4.** `design.md`, "In-person "nothing to give" notice": the call is now given as it really is, `npc.CurrentDialogue.Push(new Dialogue(npc, null, message))` then `Game1.drawDialogue(npc)`, noting that there is no `Game1.drawDialogue(NPC, string)` overload in 1.6.
+- **S5.** `design.md`: `PlannedGift.Delivered` → `Resolved` in the same section, with "(called `Delivered` until HW6 review 04e)" at its first mention, and in the "Why reuse …" point and the target-day note. `tasks.md` 6.15: only "(since 04e: Resolved)" after `Delivered`. The rest of the task text is unchanged.
+- **S6.** `proposal.md`: one line at the top saying it is the frozen text of the original proposal and that the specs in `specs/` describe the current behavior. The proposal text itself is unchanged.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, 0 warnings.
+- `dotnet test`: 80/80 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
