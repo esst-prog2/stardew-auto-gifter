@@ -54,7 +54,7 @@ namespace StardewAutoGifter.GiftSelection
         }
 
         /// <summary>Every farm chest currently carrying the reserved sentinel color.</summary>
-        public static List<Chest> GetMarkedChests()
+        private static List<Chest> GetMarkedChests()
         {
             return GetFarmChests()
                 .Where(chest => SentinelColor.Matches(chest.playerChoiceColor.Value))
@@ -62,14 +62,14 @@ namespace StardewAutoGifter.GiftSelection
         }
 
         /// <summary>
-        /// The single valid anchor chest, or null if none or more than one farm chest is marked.
-        /// See specs/gift-selection - "Ambiguous marking treated as unresolved".
+        /// The current anchor marking, from a single scan: how many chests are marked, and the
+        /// anchor itself when exactly one is. See specs/gift-selection - "Ambiguous marking treated
+        /// as unresolved".
         /// </summary>
-        public static Chest? FindAnchorChest(out bool isAmbiguous)
+        public static AnchorState ReadAnchorState()
         {
             List<Chest> marked = GetMarkedChests();
-            isAmbiguous = marked.Count > 1;
-            return AnchorRule.IsActive(marked.Count) ? marked[0] : null;
+            return new AnchorState(marked.Count, AnchorRule.IsActive(marked.Count) ? marked[0] : null);
         }
 
         /// <summary>The farm-scope location that currently contains the given chest, or null if it isn't placed in one.</summary>

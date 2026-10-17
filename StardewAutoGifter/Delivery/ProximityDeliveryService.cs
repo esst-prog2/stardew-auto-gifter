@@ -25,8 +25,9 @@ namespace StardewAutoGifter.Delivery
             // once an NPC is in range (scanning the farm's chests every second would be wasted
             // work), and at most once per call. While inactive, nothing is resolved, so the gift
             // stays pending and can still be delivered later today once exactly one chest is marked.
-            bool? isActive = null;
-            bool ModIsActive() => isActive ??= AnchorRule.IsActive(FarmChestScanner.GetMarkedChests().Count);
+            // The same snapshot is handed to TryDeliver, so one call scans the chests at most once.
+            AnchorState? anchorState = null;
+            AnchorState AnchorStateNow() => anchorState ??= FarmChestScanner.ReadAnchorState();
 
             foreach (PlannedGift gift in plan.PendingDeliveries().ToList())
             {
@@ -38,10 +39,10 @@ namespace StardewAutoGifter.Delivery
                 if (distance > ProximityThresholdTiles)
                     continue;
 
-                if (!ModIsActive())
+                if (!AnchorStateNow().IsActive)
                     return;
 
-                TryDeliver(gift, npc, today, monitor);
+                TryDeliver(gift, npc, today, AnchorStateNow(), monitor);
             }
 
             // specs/proximity-delivery - "In-person notice when nothing is available for a configured NPC".
@@ -55,7 +56,7 @@ namespace StardewAutoGifter.Delivery
                 if (distance > ProximityThresholdTiles)
                     continue;
 
-                if (!ModIsActive())
+                if (!AnchorStateNow().IsActive)
                     return;
 
                 ShowNoGiftNotice(gift, npc);
@@ -79,7 +80,7 @@ namespace StardewAutoGifter.Delivery
             gift.Delivered = true; // resolved (notified), so we don't show this again today
         }
 
-        private static void TryDeliver(PlannedGift gift, NPC npc, int today, IMonitor monitor)
+        private static void TryDeliver(PlannedGift gift, NPC npc, int today, AnchorState anchorState, IMonitor monitor)
         {
             // Only ever called for Status == Planned gifts (see DailyPlan.PendingDeliveries), so
             // QualifiedItemId is guaranteed non-null here.
@@ -97,8 +98,8 @@ namespace StardewAutoGifter.Delivery
 
             // specs/proximity-delivery - "Delivery prefers the anchor chest": TryRemoveOneUnit takes
             // the first chest in this list that holds the item, so put the anchor chest first.
-            // (CheckAndDeliver already confirmed exactly one anchor exists.)
-            StardewValley.Objects.Chest? anchor = FarmChestScanner.FindAnchorChest(out _);
+            // (CheckAndDeliver already confirmed exactly one anchor exists, in this snapshot.)
+            StardewValley.Objects.Chest? anchor = anchorState.Anchor;
             if (anchor != null)
             {
                 farmChests.Remove(anchor);

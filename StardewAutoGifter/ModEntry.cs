@@ -111,7 +111,7 @@ namespace StardewAutoGifter
             // specs/daily-plan-review - "Next day's plan computed automatically at the end of the day".
             if (PlanTiming.ShouldComputeAtDayEnding(_nextPlan?.TargetDay, _nextPlan?.IsActive ?? false, Today))
             {
-                _nextPlan = ComputeNextPlan(out _, out _);
+                _nextPlan = ComputeNextPlan(out _);
                 Monitor.Log($"No active plan for tomorrow; computed one automatically as the day ended (target day {_nextPlan.TargetDay}).", LogLevel.Debug);
             }
 
@@ -119,13 +119,13 @@ namespace StardewAutoGifter
         }
 
         /// <summary>Computes the plan for tomorrow from the current pools, blocklist, and settings.</summary>
-        private DailyPlan ComputeNextPlan(out bool isAmbiguous, out int markedChestCount)
+        private DailyPlan ComputeNextPlan(out AnchorState anchorState)
         {
             int targetDay = PlanTiming.NextTargetDay(Today);
-            Chest? anchor = FarmChestScanner.FindAnchorChest(out isAmbiguous);
-            markedChestCount = FarmChestScanner.GetMarkedChests().Count;
+            anchorState = FarmChestScanner.ReadAnchorState();
+            Chest? anchor = anchorState.Anchor;
 
-            if (anchor == null || isAmbiguous)
+            if (!anchorState.IsActive || anchor == null)
             {
                 // No single valid anchor chest: mod is inactive (specs/gift-selection -
                 // "Marked chest acts as the mod's on/off anchor" and "Ambiguous marking treated as unresolved").
@@ -183,8 +183,8 @@ namespace StardewAutoGifter
             // specs/daily-plan-review - "Plan computed for the next day when the menu is opened":
             // only tomorrow's plan is recomputed (today's plan is left alone), and rows the player
             // toggled off stay off.
-            DailyPlan plan = ComputeNextPlan(out bool isAmbiguous, out int markedChestCount);
-            CheckMarkingConflict(isAmbiguous);
+            DailyPlan plan = ComputeNextPlan(out AnchorState anchorState);
+            CheckMarkingConflict(anchorState.IsConflict);
             if (_nextPlan != null)
                 PlanTiming.CarryExclusions(_nextPlan, plan);
 
@@ -192,7 +192,7 @@ namespace StardewAutoGifter
 
             var villagers = VillagerCatalog.BuildVillagerList();
             var catalog = ItemCatalog.BuildFullCatalog();
-            Game1.activeClickableMenu = new ModMainMenu(plan, _blocklistStore, _configuredNpcStore, _settingsStore, villagers, catalog, markedChestCount, _config.ChestMarkKey.ToString());
+            Game1.activeClickableMenu = new ModMainMenu(plan, _blocklistStore, _configuredNpcStore, _settingsStore, villagers, catalog, anchorState.MarkedChestCount, _config.ChestMarkKey.ToString());
         }
 
         private void TryToggleChestMark()
@@ -220,8 +220,7 @@ namespace StardewAutoGifter
 
             Monitor.Log($"Color after toggle: {chest.playerChoiceColor.Value}.", LogLevel.Debug);
 
-            FarmChestScanner.FindAnchorChest(out bool isAmbiguous);
-            CheckMarkingConflict(isAmbiguous);
+            CheckMarkingConflict(FarmChestScanner.ReadAnchorState().IsConflict);
         }
 
         /// <summary>
@@ -257,10 +256,10 @@ namespace StardewAutoGifter
             _secondsSinceLastSparkle = 0;
 
             // specs/gift-selection - "Anchor chest sparkles periodically for visibility": only while active (a single, unambiguous anchor).
-            Chest? anchor = FarmChestScanner.FindAnchorChest(out bool isAmbiguous);
-            CheckMarkingConflict(isAmbiguous);
-            if (anchor != null && !isAmbiguous)
-                AnchorChestSparkleService.SparkleIfInView(anchor);
+            AnchorState anchorState = FarmChestScanner.ReadAnchorState();
+            CheckMarkingConflict(anchorState.IsConflict);
+            if (anchorState.IsActive && anchorState.Anchor != null)
+                AnchorChestSparkleService.SparkleIfInView(anchorState.Anchor);
         }
     }
 }

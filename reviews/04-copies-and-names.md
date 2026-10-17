@@ -79,3 +79,21 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 67/67 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 04c: D3)
+
+- `GiftSelection/AnchorState.cs` (new): a snapshot with `MarkedChestCount`, `Anchor` (set only when exactly one chest is marked), `IsActive` (through `Core/AnchorRule.IsActive`) and `IsConflict` (more than one marked).
+- `GiftSelection/FarmChestScanner.cs`:
+  - `FindAnchorChest(out isAmbiguous)` is replaced by `ReadAnchorState()`, which builds the snapshot from a single scan;
+  - `GetMarkedChests` is now private, so nobody outside scans on their own.
+- `ModEntry.cs`:
+  - `ComputeNextPlan(out AnchorState)` scans once instead of twice;
+  - the menu, the chest-mark key, the conflict check and the sparkle all read the snapshot.
+- `Delivery/ProximityDeliveryService.cs`: `CheckAndDeliver` takes the snapshot lazily, only once an NPC is in range, and at most once per call. It hands the same snapshot to `TryDeliver`, which used to scan again to find the anchor.
+- No behavior change: the same rule and the same anchor choice. Only the number of scans goes down. Tests unchanged.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 67/67 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
