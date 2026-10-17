@@ -1,4 +1,4 @@
-namespace StardewAutoGifter.Planning
+namespace StardewAutoGifter.Core
 {
     /// <summary>One configured NPC's gift status for the day the plan describes. See specs/daily-plan-review.</summary>
     public class PlannedGift

@@ -66,3 +66,55 @@ Checks:
 - `openspec validate add-auto-gifter-mvp --strict`: valid.
 - `dotnet build` (StardewAutoGifter): 0 errors. The one warning, CS9057 (the ModBuildConfig analyzer's compiler version), also appears without these changes.
 - `dotnet test`: 16/16 green.
+
+## Decisions after step 01a
+
+- The user approved keeping the `CanGiveGift` doc comment the same length, so lines 21 and 29 of `GiftLimitPolicy.cs` stay valid.
+- A1 + A2: option 1 from the proposal, two plans with a target day, recomputed with toggled-off rows kept. If the player never opens the menu during a day, the mod computes the next day's plan automatically when the day ends.
+- A3, A4 and A7: implement as proposed.
+- Each fix is its own commit: 01b (A1+A2), 01c (A3), 01d (A4), 01e (A7).
+
+## What we changed (step 01b: A1 + A2, plans carry a target day)
+
+Spec, written before the code:
+- `daily-plan-review`, "Plan computed for the next day when the menu is opened":
+  - each plan records its target day, which is always the next day;
+  - recomputing tomorrow's plan never changes today's plan;
+  - reopening the menu recomputes tomorrow's plan but keeps toggled-off rows for NPCs that still have a planned item;
+  - four new scenarios.
+- `daily-plan-review`, "Edited plan carried into the next day":
+  - the plan is stored with the save when the day ends;
+  - at the start of a day it becomes that day's plan only if its target day matches;
+  - three new scenarios.
+- New requirement `daily-plan-review`, "Next day's plan computed automatically at the end of the day": if there is no plan for tomorrow, or only an inactive one, the mod computes one as the day ends. An active plan, with its edits, is kept. Three scenarios.
+- New requirement `proximity-delivery`, "Plan delivered only on its target day": only the plan whose target day is today delivers or shows notices, and each day starts with nothing delivered or notified. Three scenarios.
+- `design.md`, "Plan computation timing": a short note on the target-day design.
+
+Tests, written before the implementation, with expected values from the scenarios above. The new file is `StardewAutoGifter.Tests/PlanTimingTests.cs`, with 12 tests:
+- target day = today + 1;
+- whether a plan is for today: a plan for tomorrow, a plan for today, a plan for yesterday, no plan;
+- whether to compute at day end: no plan, an active plan, an inactive plan;
+- keeping toggled-off rows after recompute: a still-planned NPC, an NPC with no item;
+- the save round trip keeps the target day, rows and toggled-off rows;
+- the save round trip starts with nothing delivered.
+
+Code:
+- Moved `DailyPlan`, `PlannedGift` and `GiftPlanStatus` from `Planning/` to `Core/` (namespace `StardewAutoGifter.Core`), so the test project compiles them. No behavior change.
+- `Core/DailyPlan.cs`: new `TargetDay` property.
+- `Core/PlanTiming.cs` (new, pure): `NextTargetDay`, `IsPlanForToday`, `ShouldComputeAtDayEnding`, `CarryExclusions`.
+- `Core/StoredPlanData.cs` (new, pure): the save form of a plan. It does not store `Delivered`.
+- `Planning/PlanStore.cs` (new): reads and writes the next-day plan with SMAPI save data (key `next-plan`).
+- `Planning/PlanComputer.cs`: takes the target day.
+- `ModEntry.cs`:
+  - `_currentPlan` is replaced by `_todaysPlan` (the only plan delivered) and `_nextPlan` (shown and edited in the menu);
+  - F8 recomputes only `_nextPlan` and keeps toggled-off rows;
+  - `DayEnding` computes `_nextPlan` if needed, then stores it, and logs "No active plan for tomorrow; computed one automatically…" (Debug) when it computes one;
+  - `SaveLoaded` and `DayStarted` make the stored plan today's plan when its target day is today. This is safe to run more than once.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 28/28 green (16 + 12).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+To check in-game: see the checklist at the end of this file.

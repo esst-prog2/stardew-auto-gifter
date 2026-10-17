@@ -4,6 +4,21 @@ Executes the finalized daily plan during gameplay by detecting when the player i
 
 ## ADDED Requirements
 
+### Requirement: Plan delivered only on its target day
+The mod SHALL deliver gifts, and show the in-person notices below, only from the plan whose target day is the current in-game day. A plan computed today for tomorrow SHALL NOT cause any delivery or notice today. Each day starts with no NPC marked as already delivered or already notified.
+
+#### Scenario: Plan computed today is not delivered today
+- **WHEN** the player opens the menu on day 10, which computes the plan for day 11, and then walks near an NPC who is planned in it
+- **THEN** the mod does not hand over that plan's item on day 10
+
+#### Scenario: Plan delivered on its target day
+- **WHEN** it is day 11 and the plan's target day is day 11, and the player walks near an NPC who is planned in it
+- **THEN** the mod hands over the planned item normally
+
+#### Scenario: Yesterday's plan is not delivered again
+- **WHEN** it is day 12 and the only existing plan's target day is day 11
+- **THEN** the mod does not deliver anything from that plan
+
 ### Requirement: Throttled proximity detection
 The mod SHALL check the player's distance to each planned NPC on a throttled schedule (no more often than roughly once per second), rather than on every game tick, to avoid unnecessary performance cost.
 

@@ -12,11 +12,27 @@ The mod SHALL let the player open its menu at any time during gameplay by pressi
 - **THEN** the mod's menu opens, showing the daily plan preview and blocklist editor
 
 ### Requirement: Plan computed for the next day when the menu is opened
-The mod SHALL compute the gift plan for the next in-game day at the moment the player opens the menu, using the farm-wide item pool's contents and the blocklist as they are at that moment. This plan SHALL be what is shown in the preview. The Plan tab SHALL always display a persistent label identifying it as tomorrow's plan (not today's), so the player is not left to infer the timing from memory or from a message they may have already dismissed.
+The mod SHALL compute the gift plan for the next in-game day at the moment the player opens the menu, using the farm-wide item pool's contents and the blocklist as they are at that moment. This plan SHALL be what is shown in the preview. The Plan tab SHALL always display a persistent label identifying it as tomorrow's plan (not today's), so the player is not left to infer the timing from memory or from a message they may have already dismissed. Each plan SHALL record its target day (the in-game day it is for), which is always the day after the day it was computed on. Computing or recomputing the next day's plan SHALL NOT change or replace the plan being executed today. When the menu is opened again on the same day, the next day's plan SHALL be recomputed from the current contents, but every NPC whose row the player had toggled off SHALL stay toggled off, as long as that NPC still has a planned item in the recomputed plan.
 
 #### Scenario: Plan reflects current farm-wide contents when menu opens
 - **WHEN** the player opens the menu on a given evening
 - **THEN** the mod computes and displays the gift plan for the following day based on the farm-wide item pool's contents and the blocklist at that moment
+
+#### Scenario: Plan targets the day after it was computed
+- **WHEN** the player opens the menu on in-game day 10
+- **THEN** the computed plan's target day is day 11
+
+#### Scenario: Reopening the menu keeps toggled-off rows
+- **WHEN** the player toggles off an NPC's row, closes the menu, and opens it again on the same day, and that NPC still has a planned item
+- **THEN** that NPC's row is still toggled off in the recomputed plan, and every row the player did not toggle off is still on
+
+#### Scenario: Toggled-off NPC without a planned item after recomputing
+- **WHEN** the player toggled off an NPC's row, and after reopening the menu that NPC no longer has a planned item (for example because the item ran out)
+- **THEN** that NPC's row shows the reason it has no gift, and there is nothing left toggled off for that NPC
+
+#### Scenario: Opening the menu does not change today's plan
+- **WHEN** the player opens the menu during a day on which yesterday's plan is being delivered
+- **THEN** today's deliveries keep following yesterday's plan, and only the next day's plan is recomputed
 
 #### Scenario: Plan tab always labeled as the next day's plan
 - **WHEN** the player opens the Plan tab, at any time
@@ -100,11 +116,38 @@ The player SHALL be able to check or uncheck an item's checkbox in the blocklist
 - **THEN** that item is removed from the blocklist and becomes eligible for selection again starting with the next plan computation
 
 ### Requirement: Edited plan carried into the next day
-Once the player closes the menu (or ends the day), the plan as edited (including any rows toggled off) SHALL be the plan executed during the next day; the mod SHALL NOT recompute or discard the player's edits when the new day starts.
+Once the player closes the menu (or ends the day), the plan as edited (including any rows toggled off) SHALL be the plan executed during the next day; the mod SHALL NOT recompute or discard the player's edits when the new day starts. The next day's plan SHALL be stored with the save when the day ends, so that it is still the plan executed after the game is closed and the save is loaded again. When a new day starts, the stored plan SHALL become that day's plan only if its target day is the new day; otherwise the new day has no plan.
 
 #### Scenario: Toggled-off NPC stays excluded the next day
 - **WHEN** the player toggled off an NPC's row before ending the day
 - **THEN** that NPC is not given an automatic gift on the following day, regardless of the farm-wide pool's contents when the day starts
+
+#### Scenario: Plan survives saving and loading
+- **WHEN** the player ends day 10 with a plan for day 11, quits the game, and later loads the save on day 11
+- **THEN** the plan executed on day 11 is the plan from day 10, including the rows toggled off
+
+#### Scenario: Plan becomes today's plan on its target day
+- **WHEN** day 11 starts and the stored plan's target day is day 11
+- **THEN** that plan becomes day 11's plan
+
+#### Scenario: Plan for another day is not used
+- **WHEN** a day starts and there is no stored plan, or the stored plan's target day is not that day
+- **THEN** that day has no plan, and the mod delivers nothing that day
+
+### Requirement: Next day's plan computed automatically at the end of the day
+If, when the day ends, there is no plan for the next day, or the only one is inactive (it was computed while no single valid anchor chest was marked), the mod SHALL compute the next day's plan automatically at that moment, the same way as when the menu is opened, with no rows toggled off. If the player already has an active plan for the next day, the mod SHALL keep it unchanged, including the player's edits.
+
+#### Scenario: Menu not opened during the day
+- **WHEN** day 10 ends and the player never opened the menu on day 10
+- **THEN** the mod computes a plan for day 11 when day 10 ends, and that plan is executed on day 11
+
+#### Scenario: Plan already made during the day
+- **WHEN** day 10 ends and the player already has an active plan for day 11
+- **THEN** the mod does not recompute it, and the player's edits stay in place
+
+#### Scenario: Only an inactive plan exists
+- **WHEN** day 10 ends and the only plan for day 11 is inactive
+- **THEN** the mod computes the plan for day 11 again when day 10 ends
 
 ### Requirement: Warnings and info panel
 The mod menu SHALL include a dedicated warnings/info panel, opened from the main menu, that documents conditions the player should avoid because they could interfere with the mod's operation — including applying the reserved sentinel color to any chest other than through the mod's own chest-marking action, and marking more than one chest as the mod's anchor at the same time. When the mod detects that more than one chest currently carries the sentinel color, it SHALL additionally show an active warning, not just the static panel, until the conflict is resolved.

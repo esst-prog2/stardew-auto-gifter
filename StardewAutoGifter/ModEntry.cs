@@ -1,10 +1,12 @@
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Objects;
 using StardewAutoGifter.Blocklist;
+using StardewAutoGifter.Core;
 using StardewAutoGifter.Delivery;
 using StardewAutoGifter.GiftSelection;
 using StardewAutoGifter.Menus;
@@ -24,7 +26,13 @@ namespace StardewAutoGifter
         private OnboardingStore _onboardingStore = null!;
         private ModSettingsStore _settingsStore = null!;
         private NpcGiftTasteProvider _tasteProvider = null!;
-        private DailyPlan? _currentPlan;
+        private PlanStore _planStore = null!;
+
+        /// <summary>The plan being delivered today (its target day is today). See specs/proximity-delivery - "Plan delivered only on its target day".</summary>
+        private DailyPlan? _todaysPlan;
+
+        /// <summary>The plan for tomorrow, shown and edited in the menu. See specs/daily-plan-review - "Edited plan carried into the next day".</summary>
+        private DailyPlan? _nextPlan;
 
         /// <summary>Throttles the anchor-chest sparkle to roughly every 4 seconds (see AnchorChestSparkleService).</summary>
         private int _secondsSinceLastSparkle;
@@ -38,8 +46,11 @@ namespace StardewAutoGifter
             _onboardingStore = new OnboardingStore(Helper);
             _settingsStore = new ModSettingsStore(Helper);
             _tasteProvider = new NpcGiftTasteProvider();
+            _planStore = new PlanStore(Helper);
 
             helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
+            helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.DayEnding += OnDayEnding;
             helper.Events.Input.ButtonPressed += OnButtonPressed;
             helper.Events.GameLoop.OneSecondUpdateTicked += OnOneSecondUpdateTicked;
             helper.Events.Player.Warped += OnWarped;
@@ -64,7 +75,64 @@ namespace StardewAutoGifter
             _configuredNpcStore.Load();
             _onboardingStore.Load();
             _settingsStore.Load();
-            _currentPlan = null;
+            _todaysPlan = null;
+            _nextPlan = _planStore.Load(); // the plan stored as the previous day ended
+            PromotePlanForToday();
+        }
+
+        /// <summary>Today, as SMAPI's days-since-start count (the day numbering used by <see cref="PlanTiming"/>).</summary>
+        private static int Today => SDate.Now().DaysSinceStart;
+
+        private void OnDayStarted(object? sender, DayStartedEventArgs e) => PromotePlanForToday();
+
+        /// <summary>
+        /// specs/daily-plan-review - "Edited plan carried into the next day": the next-day plan
+        /// becomes today's plan only if it is for today, and a plan for any other day is dropped.
+        /// Safe to call more than once a day (it runs both after loading and when a day starts).
+        /// </summary>
+        private void PromotePlanForToday()
+        {
+            if (_nextPlan != null && PlanTiming.IsPlanForToday(_nextPlan.TargetDay, Today))
+            {
+                _todaysPlan = _nextPlan;
+                _nextPlan = null;
+            }
+
+            if (_todaysPlan != null && !PlanTiming.IsPlanForToday(_todaysPlan.TargetDay, Today))
+                _todaysPlan = null;
+        }
+
+        private void OnDayEnding(object? sender, DayEndingEventArgs e)
+        {
+            // specs/daily-plan-review - "Next day's plan computed automatically at the end of the day".
+            if (PlanTiming.ShouldComputeAtDayEnding(_nextPlan?.TargetDay, _nextPlan?.IsActive ?? false, Today))
+            {
+                _nextPlan = ComputeNextPlan(out _);
+                Monitor.Log($"No active plan for tomorrow; computed one automatically as the day ended (target day {_nextPlan.TargetDay}).", LogLevel.Debug);
+            }
+
+            _planStore.Save(_nextPlan);
+        }
+
+        /// <summary>Computes the plan for tomorrow from the current pools, blocklist, and settings.</summary>
+        private DailyPlan ComputeNextPlan(out bool isAmbiguous)
+        {
+            int targetDay = PlanTiming.NextTargetDay(Today);
+            Chest? anchor = FarmChestScanner.FindAnchorChest(out isAmbiguous);
+
+            if (anchor == null || isAmbiguous)
+            {
+                // No single valid anchor chest: mod is inactive (specs/gift-selection -
+                // "Marked chest acts as the mod's on/off anchor" and "Ambiguous marking treated as unresolved").
+                return new DailyPlan { IsActive = false, TargetDay = targetDay };
+            }
+
+            var farmChests = System.Linq.Enumerable.ToList(FarmChestScanner.GetFarmChests());
+            var anchorOnlyPool = FarmItemPool.BuildPool(new[] { anchor });
+            var farmWidePool = FarmItemPool.BuildPool(farmChests);
+            var blocklist = new System.Collections.Generic.HashSet<string>(_blocklistStore.BlockedItemIds);
+            var configuredNpcNames = new System.Collections.Generic.HashSet<string>(_configuredNpcStore.SelectedNames);
+            return PlanComputer.Compute(configuredNpcNames, anchorOnlyPool, farmWidePool, blocklist, _config.IncludeLikedItems, _settingsStore.AnchorChestOnly, _tasteProvider, targetDay);
         }
 
         private void OnWarped(object? sender, WarpedEventArgs e)
@@ -116,27 +184,14 @@ namespace StardewAutoGifter
             if (Game1.activeClickableMenu != null)
                 return;
 
-            Chest? anchor = FarmChestScanner.FindAnchorChest(out bool isAmbiguous);
-            bool isActive = anchor != null && !isAmbiguous;
+            // specs/daily-plan-review - "Plan computed for the next day when the menu is opened":
+            // only tomorrow's plan is recomputed (today's plan is left alone), and rows the player
+            // toggled off stay off.
+            DailyPlan plan = ComputeNextPlan(out bool isAmbiguous);
+            if (_nextPlan != null)
+                PlanTiming.CarryExclusions(_nextPlan, plan);
 
-            DailyPlan plan;
-            if (isActive)
-            {
-                var farmChests = System.Linq.Enumerable.ToList(FarmChestScanner.GetFarmChests());
-                var anchorOnlyPool = FarmItemPool.BuildPool(new[] { anchor! });
-                var farmWidePool = FarmItemPool.BuildPool(farmChests);
-                var blocklist = new System.Collections.Generic.HashSet<string>(_blocklistStore.BlockedItemIds);
-                var configuredNpcNames = new System.Collections.Generic.HashSet<string>(_configuredNpcStore.SelectedNames);
-                plan = PlanComputer.Compute(configuredNpcNames, anchorOnlyPool, farmWidePool, blocklist, _config.IncludeLikedItems, _settingsStore.AnchorChestOnly, _tasteProvider);
-            }
-            else
-            {
-                // No single valid anchor chest: mod is inactive (specs/gift-selection -
-                // "Marked chest acts as the mod's on/off anchor" and "Ambiguous marking treated as unresolved").
-                plan = new DailyPlan { IsActive = false };
-            }
-
-            _currentPlan = plan;
+            _nextPlan = plan;
 
             var villagers = VillagerCatalog.BuildVillagerList();
             var catalog = ItemCatalog.BuildFullCatalog();
@@ -174,8 +229,9 @@ namespace StardewAutoGifter
             if (!Context.IsWorldReady)
                 return;
 
-            if (_currentPlan != null)
-                ProximityDeliveryService.CheckAndDeliver(_currentPlan, Monitor);
+            // specs/proximity-delivery - "Plan delivered only on its target day".
+            if (_todaysPlan != null && PlanTiming.IsPlanForToday(_todaysPlan.TargetDay, Today))
+                ProximityDeliveryService.CheckAndDeliver(_todaysPlan, Monitor);
 
             TrySparkleAnchorChest();
         }

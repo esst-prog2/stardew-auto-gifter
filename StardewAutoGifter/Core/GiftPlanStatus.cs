@@ -1,4 +1,4 @@
-namespace StardewAutoGifter.Planning
+namespace StardewAutoGifter.Core
 {
     /// <summary>
     /// Why a configured NPC does or doesn't have a planned gift. See specs/daily-plan-review -

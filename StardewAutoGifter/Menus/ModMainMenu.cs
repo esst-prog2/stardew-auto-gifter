@@ -7,7 +7,7 @@ using StardewValley;
 using StardewValley.Menus;
 using StardewAutoGifter.Blocklist;
 using StardewAutoGifter.Npcs;
-using StardewAutoGifter.Planning;
+using StardewAutoGifter.Core;
 using StardewAutoGifter.Settings;
 
 namespace StardewAutoGifter.Menus

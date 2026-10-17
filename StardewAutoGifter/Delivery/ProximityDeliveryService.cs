@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewAutoGifter.GiftSelection;
-using StardewAutoGifter.Planning;
+using StardewAutoGifter.Core;
 using SObject = StardewValley.Object;
 
 namespace StardewAutoGifter.Delivery

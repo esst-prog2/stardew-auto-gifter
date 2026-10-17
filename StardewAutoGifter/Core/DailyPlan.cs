@@ -1,16 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StardewAutoGifter.Planning
+namespace StardewAutoGifter.Core
 {
     /// <summary>
-    /// The gift plan for a single in-game day: computed in the evening for the following day, held
-    /// in memory, editable via the preview menu, and executed unchanged when that day starts. See
-    /// design.md - "Plan computation timing".
+    /// The gift plan for a single in-game day: computed for the following day (when the menu is
+    /// opened, or automatically when the day ends), editable via the preview menu, stored with the
+    /// save, and executed unchanged on its target day. See design.md - "Plan computation timing"
+    /// and <see cref="PlanTiming"/>.
     /// </summary>
     public class DailyPlan
     {
         public List<PlannedGift> Gifts { get; } = new();
+
+        /// <summary>The in-game day this plan is for (SMAPI's days-since-start count); always the day after it was computed.</summary>
+        public int TargetDay { get; init; }
 
         /// <summary>False when no single valid anchor chest was marked at computation time (specs/gift-selection - "Marked chest acts as the mod's on/off anchor").</summary>
         public bool IsActive { get; init; } = true;

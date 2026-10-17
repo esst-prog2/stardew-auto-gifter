@@ -6,7 +6,8 @@ namespace StardewAutoGifter.Planning
 {
     /// <summary>
     /// Computes a <see cref="DailyPlan"/> from the current anchor-only and farm-wide pools, the
-    /// blocklist, and settings. Called when the player opens the mod menu. See
+    /// blocklist, and settings. Called when the player opens the mod menu, or as the day ends if no
+    /// next-day plan exists yet. See
     /// specs/daily-plan-review - "Plan computed for the next day when the menu is opened" and
     /// "Reason shown for configured NPCs with no gift"; specs/gift-selection - "Anchor chest
     /// prioritized before the wider farm pool".
@@ -20,9 +21,10 @@ namespace StardewAutoGifter.Planning
             ISet<string> blocklist,
             bool includeLikedItems,
             bool anchorChestOnly,
-            IGiftTasteProvider tasteProvider)
+            IGiftTasteProvider tasteProvider,
+            int targetDay)
         {
-            var plan = new DailyPlan { IsActive = true };
+            var plan = new DailyPlan { IsActive = true, TargetDay = targetDay };
 
             foreach (string npcName in configuredNpcNames)
             {
