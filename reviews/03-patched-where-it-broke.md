@@ -176,3 +176,5 @@ R3 (Warnings and Settings tabs, worst case):
 12. Mark two chests, so the red active-warning line is shown, and open F8 → Warnings. Expect no line outside the menu border. If the text is longer than the menu, the mouse wheel scrolls it one line at a time and stops at both ends. The red line is at the end.
 13. Open the Settings tab. Click the setting's text. Expect `[x]`/`[ ]` to toggle. Click the gray explanation text. Expect nothing to change.
 14. If the Settings or Warnings text does not need scrolling, expect the wheel to do nothing there.
+
+**In-game status (2026-10-17):** not run, in-game verification pending: C4, R1 (Saturday-evening plan for Sunday), R3 (Warnings and Settings tabs) and the R4 welcome-page variants. The homework does not require running it.

@@ -99,3 +99,5 @@ Checks:
 - `dotnet build`: 0 errors, 0 warnings, with SDK 8.0.426.
 - `dotnet test`: 80/80 green, with SDK 8.0.426.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+**In-game status (2026-10-17):** not run, in-game verification pending: the 06a load check (MinimumGameVersion). The homework does not require running it.

@@ -274,3 +274,5 @@ How to check later:
 1. On a day with a known date, sleep without opening F8 that day.
 2. Compare the target day in the log line `No active plan for tomorrow; computed one automatically as the day ended (target day N).` with the date. SMAPI's days-since-start count is `(year - 1) * 112 + season index * 28 + day of month`, with spring = 0, summer = 1, fall = 2, winter = 3, and the target day is that count plus one.
 3. Example: sleeping on spring 10 of year 1 should log `target day 11`. Sleeping on summer 3 of year 1 should log `target day 32`.
+
+**In-game status (2026-10-17):** not run, in-game verification pending: A5 (greenhouse, checklist steps 17-18) and the step-7 target-day check (01g). The homework does not require running it.

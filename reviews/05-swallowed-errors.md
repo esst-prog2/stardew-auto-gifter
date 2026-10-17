@@ -223,3 +223,5 @@ To check in-game: this needs the same setup as E3 (step 4 of the checklist above
 1. Open F8 → NPCs. Expect "[x] <name> (not found)" at the top.
 2. Click it. Expect "[ ] <name> (not found)", still in the list.
 3. Close and reopen F8. Expect the row to be gone, and the Plan tab to no longer show "<name>: not found in the game".
+
+**In-game status (2026-10-17):** not run, in-game verification pending: E2 (full backpack), E3 and 05g (villager not found; needs a removed villager mod), E5 (villager not met yet; its decision waits for this) and E6 (daily-limit log line); E1 is marked not reproducible in game. The homework does not require running it.

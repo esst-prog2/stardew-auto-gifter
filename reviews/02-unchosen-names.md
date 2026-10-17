@@ -153,3 +153,5 @@ To check in-game:
 4. Mark two chests with K. Expect the HUD message "… Unmark all but one with K." and the Plan tab saying "… press K to unmark it …".
 5. Welcome text: it shows only once per save, so start a new save with the remapped keys. Expect "press K" and "Press F9" on the pages.
 6. Afterwards, set both keys back to `"G"` and `"F8"`.
+
+**In-game status (2026-10-17):** not run, in-game verification pending: the 02c load check (MinimumApiVersion) and C4 (remapped keys in texts, 02d). The homework does not require running it.

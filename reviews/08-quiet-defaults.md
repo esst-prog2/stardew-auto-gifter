@@ -156,3 +156,5 @@ Checks:
 - `dotnet build --no-incremental`: 0 errors, 0 warnings.
 - `dotnet test`: 90/90 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+**In-game status (2026-10-17):** not run, in-game verification pending: A3, A4 and A5 (key checks at startup). The homework does not require running it.
