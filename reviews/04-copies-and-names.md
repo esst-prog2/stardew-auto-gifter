@@ -109,3 +109,21 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning, and no new nullable warnings.
 - `dotnet test`: 67/67 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 04e: D8-D12, renames)
+
+- **D8.** `PlannedGift.Delivered` → `Resolved`, with a doc listing what "resolved" covers: delivered, skipped (gift limit or stock), or answered with the in-person notice. It is updated in `DailyPlan`, `StoredPlanData` (its doc) and `ProximityDeliveryService`. Resolved flags were never saved, so save data is not affected.
+- **D9.** `GiftSelector`'s parameter `farmWidePool` → `pool`, with a doc that describes the anchor priority: the anchor's own contents first, then all farm chests summed, only if that finds nothing and "anchor chest only" is off. The `farmWidePool` names in `PlanComputer` and `ModEntry` really are farm-wide, so they stay.
+- **D10.** `ItemCatalog.BuildFullCatalog` → `BuildGiftableCatalog`. The spec requirement title is now "Blocklist editor lists the giftable item catalog", and so is the reference in `ItemCatalog`'s doc. `proposal.md` still says "full item catalog" in its prose. That is the original proposal text and was left as it is.
+- **D11.** `Core/MarkingConflict` → `Core/AnchorStatusText`. The file is renamed with `git mv`, and the doc says it covers the anchor status, not only conflicts. The test file and class are renamed as well, to `AnchorStatusTextTests`.
+- **D12.** `ModMainMenu` drops `_hasMarkingConflict`. The Warnings tab checks `_markedChestCount > 1`.
+
+Tests changed only because of the renames, with expected values word for word:
+- `AnchorStatusTextTests` (renamed from `MarkingConflictTests`): only `MarkingConflict.` became `AnchorStatusText.` in the 11 asserts.
+- `PlanTimingTests.StoredPlan_RoundTrip_StartsWithNothingDelivered`: `Delivered` became `Resolved` in the setup and the assert. The test name is unchanged.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 67/67 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.

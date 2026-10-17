@@ -23,7 +23,7 @@ namespace StardewAutoGifter.Core
 
         /// <summary>Gifts still eligible for automatic delivery today: planned, not toggled off, not yet delivered.</summary>
         public IEnumerable<PlannedGift> PendingDeliveries() =>
-            Gifts.Where(g => g.Status == GiftPlanStatus.Planned && !g.Excluded && !g.Delivered);
+            Gifts.Where(g => g.Status == GiftPlanStatus.Planned && !g.Excluded && !g.Resolved);
 
         /// <summary>
         /// Configured NPCs with no planned gift (no eligible item, or the weekly cap is reached)
@@ -31,6 +31,6 @@ namespace StardewAutoGifter.Core
         /// specs/proximity-delivery - "In-person notice when nothing is available for a configured NPC".
         /// </summary>
         public IEnumerable<PlannedGift> PendingNoGiftNotifications() =>
-            Gifts.Where(g => g.Status != GiftPlanStatus.Planned && !g.Delivered);
+            Gifts.Where(g => g.Status != GiftPlanStatus.Planned && !g.Resolved);
     }
 }

@@ -14,29 +14,34 @@ namespace StardewAutoGifter.Core
         /// Picks the best item to gift an NPC, or null if none is eligible.
         /// </summary>
         /// <param name="npcName">The NPC being considered.</param>
-        /// <param name="farmWidePool">Qualified item id -> total quantity summed across all farm chests.</param>
+        /// <param name="pool">
+        /// Qualified item id -> total quantity in the pool being considered. Planning calls this
+        /// twice: first with the anchor chest's own contents, then - only if that finds nothing and
+        /// the "anchor chest only" setting is off - with every farm chest summed (specs/gift-selection
+        /// - "Anchor chest prioritized before the wider farm pool").
+        /// </param>
         /// <param name="blocklist">Qualified item ids the player never wants given away.</param>
         /// <param name="includeLikedItems">Whether to fall back to "liked" items when no loved item is eligible.</param>
         /// <param name="tasteProvider">Resolves an NPC's taste for a given item.</param>
         public static string? SelectItem(
             string npcName,
-            IReadOnlyDictionary<string, int> farmWidePool,
+            IReadOnlyDictionary<string, int> pool,
             ISet<string> blocklist,
             bool includeLikedItems,
             IGiftTasteProvider tasteProvider)
         {
-            string? loved = BestByTaste(npcName, farmWidePool, blocklist, tasteProvider, GiftTaste.Love);
+            string? loved = BestByTaste(npcName, pool, blocklist, tasteProvider, GiftTaste.Love);
             if (loved != null)
                 return loved;
 
             return includeLikedItems
-                ? BestByTaste(npcName, farmWidePool, blocklist, tasteProvider, GiftTaste.Like)
+                ? BestByTaste(npcName, pool, blocklist, tasteProvider, GiftTaste.Like)
                 : null;
         }
 
         private static string? BestByTaste(
             string npcName,
-            IReadOnlyDictionary<string, int> farmWidePool,
+            IReadOnlyDictionary<string, int> pool,
             ISet<string> blocklist,
             IGiftTasteProvider tasteProvider,
             GiftTaste taste)
@@ -44,7 +49,7 @@ namespace StardewAutoGifter.Core
             string? best = null;
             int bestQuantity = 0;
 
-            foreach (KeyValuePair<string, int> entry in farmWidePool)
+            foreach (KeyValuePair<string, int> entry in pool)
             {
                 string itemId = entry.Key;
                 int quantity = entry.Value;

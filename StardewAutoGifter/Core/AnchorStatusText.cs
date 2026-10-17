@@ -1,12 +1,13 @@
 namespace StardewAutoGifter.Core
 {
     /// <summary>
-    /// Pure rules and texts for telling the player why the mod is inactive. Key names are passed in
+    /// Pure rules and texts for telling the player the anchor status: why the mod is inactive (no
+    /// chest marked, or a marking conflict) and when to show the conflict HUD message. Key names are passed in
     /// from the configuration, never written into the text. See
     /// specs/daily-plan-review - "Reason shown for configured NPCs with no gift" and "Warnings and
     /// info panel".
     /// </summary>
-    public static class MarkingConflict
+    public static class AnchorStatusText
     {
         /// <summary>The active warning shown once when a marking conflict starts, naming the configured chest-marking key.</summary>
         public static string HudMessage(string chestMarkKey)

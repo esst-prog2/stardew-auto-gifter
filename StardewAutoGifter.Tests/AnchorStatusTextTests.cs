@@ -9,83 +9,83 @@ namespace StardewAutoGifter.Tests
     /// reviews/02-unchosen-names.md): specs/daily-plan-review - "Reason shown for configured NPCs
     /// with no gift" and "Warnings and info panel".
     /// </summary>
-    public class MarkingConflictTests
+    public class AnchorStatusTextTests
     {
         // "HUD message when a conflict starts".
         [Fact]
         public void ConflictStarts_ShowsHudMessage()
         {
-            Assert.True(MarkingConflict.ShouldNotify(wasConflict: false, isConflict: true));
+            Assert.True(AnchorStatusText.ShouldNotify(wasConflict: false, isConflict: true));
         }
 
         // "No repeated HUD message while the conflict lasts".
         [Fact]
         public void ConflictLasts_DoesNotRepeatHudMessage()
         {
-            Assert.False(MarkingConflict.ShouldNotify(wasConflict: true, isConflict: true));
+            Assert.False(AnchorStatusText.ShouldNotify(wasConflict: true, isConflict: true));
         }
 
         // "No HUD message without a conflict": the conflict was just resolved.
         [Fact]
         public void ConflictResolved_ShowsNoHudMessage()
         {
-            Assert.False(MarkingConflict.ShouldNotify(wasConflict: true, isConflict: false));
+            Assert.False(AnchorStatusText.ShouldNotify(wasConflict: true, isConflict: false));
         }
 
         // "No HUD message without a conflict": there was none before either.
         [Fact]
         public void NoConflict_ShowsNoHudMessage()
         {
-            Assert.False(MarkingConflict.ShouldNotify(wasConflict: false, isConflict: false));
+            Assert.False(AnchorStatusText.ShouldNotify(wasConflict: false, isConflict: false));
         }
 
         // "Warnings and info panel": the exact HUD text, with the default chest-marking key G.
         [Fact]
         public void HudMessage_HasTheSpecifiedText()
         {
-            Assert.Equal("Auto-Gifter paused: more than one chest is marked. Unmark all but one with G.", MarkingConflict.HudMessage(chestMarkKey: "G"));
+            Assert.Equal("Auto-Gifter paused: more than one chest is marked. Unmark all but one with G.", AnchorStatusText.HudMessage(chestMarkKey: "G"));
         }
 
         // "HUD message when a conflict starts": the configured key's name in place of G (set to K).
         [Fact]
         public void HudMessage_NamesRemappedKey()
         {
-            Assert.Equal("Auto-Gifter paused: more than one chest is marked. Unmark all but one with K.", MarkingConflict.HudMessage(chestMarkKey: "K"));
+            Assert.Equal("Auto-Gifter paused: more than one chest is marked. Unmark all but one with K.", AnchorStatusText.HudMessage(chestMarkKey: "K"));
         }
 
         // "Mod inactive because no chest is marked".
         [Fact]
         public void NoMarkedChest_PlanMessageTellsHowToMark()
         {
-            Assert.Equal("Mod inactive: open a chest on your farm and press G to mark it.", MarkingConflict.InactivePlanMessage(markedChestCount: 0, chestMarkKey: "G"));
+            Assert.Equal("Mod inactive: open a chest on your farm and press G to mark it.", AnchorStatusText.InactivePlanMessage(markedChestCount: 0, chestMarkKey: "G"));
         }
 
         // "Inactive message with a remapped chest-marking key".
         [Fact]
         public void NoMarkedChest_PlanMessageNamesRemappedKey()
         {
-            Assert.Equal("Mod inactive: open a chest on your farm and press K to mark it.", MarkingConflict.InactivePlanMessage(markedChestCount: 0, chestMarkKey: "K"));
+            Assert.Equal("Mod inactive: open a chest on your farm and press K to mark it.", AnchorStatusText.InactivePlanMessage(markedChestCount: 0, chestMarkKey: "K"));
         }
 
         // "Mod paused because more than one chest is marked".
         [Fact]
         public void TwoMarkedChests_PlanMessageTellsHowToUnmark()
         {
-            Assert.Equal("Mod paused: more than one chest is marked. Open each extra chest and press G to unmark it until only one remains.", MarkingConflict.InactivePlanMessage(markedChestCount: 2, chestMarkKey: "G"));
+            Assert.Equal("Mod paused: more than one chest is marked. Open each extra chest and press G to unmark it until only one remains.", AnchorStatusText.InactivePlanMessage(markedChestCount: 2, chestMarkKey: "G"));
         }
 
         // "Paused message with a remapped chest-marking key".
         [Fact]
         public void TwoMarkedChests_PlanMessageNamesRemappedKey()
         {
-            Assert.Equal("Mod paused: more than one chest is marked. Open each extra chest and press K to unmark it until only one remains.", MarkingConflict.InactivePlanMessage(markedChestCount: 2, chestMarkKey: "K"));
+            Assert.Equal("Mod paused: more than one chest is marked. Open each extra chest and press K to unmark it until only one remains.", AnchorStatusText.InactivePlanMessage(markedChestCount: 2, chestMarkKey: "K"));
         }
 
         // "Exactly one chest is marked": no inactive message.
         [Fact]
         public void OneMarkedChest_NoInactivePlanMessage()
         {
-            Assert.Null(MarkingConflict.InactivePlanMessage(markedChestCount: 1, chestMarkKey: "G"));
+            Assert.Null(AnchorStatusText.InactivePlanMessage(markedChestCount: 1, chestMarkKey: "G"));
         }
     }
 }

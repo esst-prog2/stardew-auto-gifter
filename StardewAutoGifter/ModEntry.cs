@@ -191,7 +191,7 @@ namespace StardewAutoGifter
             _nextPlan = plan;
 
             var villagers = VillagerCatalog.BuildVillagerList();
-            var catalog = ItemCatalog.BuildFullCatalog();
+            var catalog = ItemCatalog.BuildGiftableCatalog();
             Game1.activeClickableMenu = new ModMainMenu(plan, _blocklistStore, _configuredNpcStore, _settingsStore, villagers, catalog, anchorState.MarkedChestCount, _config.ChestMarkKey.ToString());
         }
 
@@ -230,8 +230,8 @@ namespace StardewAutoGifter
         /// </summary>
         private void CheckMarkingConflict(bool isConflict)
         {
-            if (MarkingConflict.ShouldNotify(_wasMarkingConflict, isConflict))
-                Game1.addHUDMessage(new HUDMessage(MarkingConflict.HudMessage(_config.ChestMarkKey.ToString()), HUDMessage.error_type));
+            if (AnchorStatusText.ShouldNotify(_wasMarkingConflict, isConflict))
+                Game1.addHUDMessage(new HUDMessage(AnchorStatusText.HudMessage(_config.ChestMarkKey.ToString()), HUDMessage.error_type));
 
             _wasMarkingConflict = isConflict;
         }

@@ -39,7 +39,6 @@ namespace StardewAutoGifter.Menus
         private readonly ModSettingsStore _settingsStore;
         private readonly List<NPC> _villagers;
         private readonly List<Item> _fullItemCatalog;
-        private readonly bool _hasMarkingConflict;
         private readonly int _markedChestCount;
         private readonly string _chestMarkKeyName;
 
@@ -92,7 +91,6 @@ namespace StardewAutoGifter.Menus
             _filteredCatalog = fullItemCatalog;
             _markedChestCount = markedChestCount;
             _chestMarkKeyName = chestMarkKeyName;
-            _hasMarkingConflict = markedChestCount > 1;
 
             int tabY = yPositionOnScreen + 16;
             _npcsTabBounds = new Rectangle(xPositionOnScreen + 16, tabY, TabWidth, TabHeight);
@@ -259,7 +257,7 @@ namespace StardewAutoGifter.Menus
             {
                 // specs/daily-plan-review - "Reason shown for configured NPCs with no gift": the
                 // message names the fix for the actual cause (nothing marked vs. a conflict).
-                string inactiveMessage = MarkingConflict.InactivePlanMessage(_markedChestCount, _chestMarkKeyName) ?? MarkingConflict.InactivePlanMessage(0, _chestMarkKeyName)!;
+                string inactiveMessage = AnchorStatusText.InactivePlanMessage(_markedChestCount, _chestMarkKeyName) ?? AnchorStatusText.InactivePlanMessage(0, _chestMarkKeyName)!;
                 DrawWrappedText(b, Game1.smallFont, inactiveMessage, xPositionOnScreen + 32, rowY, ContentWidth, Game1.textColor);
                 return;
             }
@@ -360,7 +358,7 @@ namespace StardewAutoGifter.Menus
             foreach (string line in TextLayout.Paragraphs(paragraphs, s => Game1.smallFont.MeasureString(s).X, ContentWidth))
                 lines.Add((line, Game1.textColor));
 
-            if (_hasMarkingConflict)
+            if (_markedChestCount > 1) // a marking conflict
             {
                 lines.Add(("", Game1.textColor));
                 foreach (string line in WrapText(Game1.smallFont, "Active warning: more than one chest currently carries the reserved color.", ContentWidth))

@@ -80,7 +80,7 @@ namespace StardewAutoGifter.Delivery
             npc.CurrentDialogue.Push(new Dialogue(npc, null, message));
             Game1.drawDialogue(npc);
 
-            gift.Delivered = true; // resolved (notified), so we don't show this again today
+            gift.Resolved = true; // resolved (notified), so we don't show this again today
         }
 
         private static void TryDeliver(PlannedGift gift, NPC npc, int today, AnchorState anchorState, IMonitor monitor)
@@ -93,7 +93,7 @@ namespace StardewAutoGifter.Delivery
             // Same rule as planning, asked for today: both the daily and the weekly limit apply.
             if (!FriendshipGiftTracker.CanGiveGiftOn(gift.NpcName, targetDay: today, today: today))
             {
-                gift.Delivered = true; // resolved (skipped), so we stop re-checking it for the rest of the day
+                gift.Resolved = true; // resolved (skipped), so we stop re-checking it for the rest of the day
                 return;
             }
 
@@ -114,7 +114,7 @@ namespace StardewAutoGifter.Delivery
             // refuses if fewer than 2 units remain, so either case lands here.
             if (!FarmItemPool.TryRemoveOneUnit(farmChests, qualifiedItemId))
             {
-                gift.Delivered = true;
+                gift.Resolved = true;
                 monitor.Log($"Skipped delivery to {gift.NpcName}: fewer than {StockRule.MinimumUnitsForGift} units of {qualifiedItemId} remain in the farm's chests.", LogLevel.Trace);
                 return;
             }
@@ -127,7 +127,7 @@ namespace StardewAutoGifter.Delivery
                 npc.receiveGift(deliveredObject, Game1.player, updateGiftLimitInfo: true);
             }
 
-            gift.Delivered = true;
+            gift.Resolved = true;
 
             string itemName = deliveredItem?.DisplayName ?? qualifiedItemId;
             Game1.addHUDMessage(new HUDMessage($"Gave {itemName} to {npc.displayName}."));

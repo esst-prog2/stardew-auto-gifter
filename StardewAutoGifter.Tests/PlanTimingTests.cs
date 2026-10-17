@@ -123,11 +123,11 @@ namespace StardewAutoGifter.Tests
         public void StoredPlan_RoundTrip_StartsWithNothingDelivered()
         {
             var plan = new DailyPlan { TargetDay = 11 };
-            plan.Gifts.Add(new PlannedGift("Haley", "(O)88") { Delivered = true });
+            plan.Gifts.Add(new PlannedGift("Haley", "(O)88") { Resolved = true });
 
             DailyPlan loaded = StoredPlanData.FromPlan(plan).ToPlan();
 
-            Assert.False(loaded.FindFor("Haley")!.Delivered);
+            Assert.False(loaded.FindFor("Haley")!.Resolved);
         }
     }
 }

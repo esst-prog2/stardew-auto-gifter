@@ -6,11 +6,11 @@ namespace StardewAutoGifter.GiftSelection
 {
     /// <summary>
     /// Builds the full list of giftable item types for the blocklist editor. See
-    /// specs/daily-plan-review - "Blocklist editor lists the full item catalog".
+    /// specs/daily-plan-review - "Blocklist editor lists the giftable item catalog".
     /// </summary>
     public static class ItemCatalog
     {
-        public static List<Item> BuildFullCatalog()
+        public static List<Item> BuildGiftableCatalog()
         {
             var items = new List<Item>();
 

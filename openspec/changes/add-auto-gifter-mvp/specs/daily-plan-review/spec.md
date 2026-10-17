@@ -145,7 +145,7 @@ The Warnings and Settings tabs SHALL wrap their text to the menu's width, breaki
 - **WHEN** a tab's text is 20 lines, 16 lines fit, line 4 is at the top (so the last line, line 19, is visible), and the player scrolls down one step
 - **THEN** line 4 stays at the top
 
-### Requirement: Blocklist editor lists the full item catalog
+### Requirement: Blocklist editor lists the giftable item catalog
 The same menu SHALL open a blocklist editor that lists the game's full catalog of giftable items - the game's object items, which are the items that can be given to villagers (not just items currently in the chest) - each shown with a checkbox reflecting whether it is currently on the blocklist.
 
 #### Scenario: Full catalog shown

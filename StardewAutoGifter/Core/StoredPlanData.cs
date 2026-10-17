@@ -4,7 +4,7 @@ namespace StardewAutoGifter.Core
 {
     /// <summary>
     /// The save-data form of a <see cref="DailyPlan"/>. Deliberately does not store
-    /// <see cref="PlannedGift.Delivered"/>, so each day starts with nothing delivered or notified.
+    /// <see cref="PlannedGift.Resolved"/>, so each day starts with nothing delivered or notified.
     /// See specs/daily-plan-review - "Edited plan carried into the next day".
     /// </summary>
     public class StoredPlanData
