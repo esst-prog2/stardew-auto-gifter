@@ -106,3 +106,17 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 45/45 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 02c: C7, MinimumApiVersion)
+
+- `StardewAutoGifter/manifest.json`: `MinimumApiVersion` changed from `4.0.0` to `4.5.0`, to match the logged target of SMAPI 4.5.x. The installed SMAPI is 4.5.2, so the mod still loads.
+- Unchanged, and recorded in the log: Name `Auto-Gifter`, Version `0.1.0`, the Description text, and UniqueID `TamaraT0811.AutoGifter`. UniqueID was not touched, because changing it would lose the mod's saved data.
+- The build copied the new manifest into the game's Mods folder; this was checked.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 45/45 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+To check in-game: start the game with SMAPI. In the SMAPI console, "Auto-Gifter 0.1.0" should still be listed among the loaded mods, with no "requires a newer version of SMAPI" error.
