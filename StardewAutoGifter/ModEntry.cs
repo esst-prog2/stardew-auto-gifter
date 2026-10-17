@@ -154,17 +154,8 @@ namespace StardewAutoGifter
             // A single long drawObjectDialogue(string) call overflows the dialogue box (confirmed
             // in-game), so this uses the paged overload instead - one short message per page, with
             // the game's own next-page arrow, like a normal conversation.
-            Game1.drawObjectDialogue(new System.Collections.Generic.List<string>
-            {
-                "Welcome to Auto-Gifter!",
-                "A chest has been added to your inventory. Place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar.",
-                "Open the chest and press G to mark it as your gift chest - it will be renamed and sparkle occasionally so you can spot it.",
-                "That chest is checked FIRST for gifts. If it doesn't have what's needed, the mod falls back to every other chest on your farm.",
-                "You can turn that fallback off in the mod menu's Settings tab, to only ever use the marked chest.",
-                "Press F8 anytime to open the mod menu: choose which villagers to gift, preview and edit tomorrow's plan, manage your blocklist, and adjust settings.",
-                "IMPORTANT: automatic gifting always starts the NEXT day, never the same day.",
-                "Selecting a villager or editing the plan today has no effect on today - check the \"Tomorrow's Plan\" label in the Plan tab to see what's actually queued up.",
-            });
+            // Key names come from config.json, so a remapped key is named correctly (HW6 review 02d).
+            Game1.drawObjectDialogue(WelcomeText.Pages(_config.MenuKey.ToString(), _config.ChestMarkKey.ToString()));
 
             _onboardingStore.MarkWelcomeShown();
         }
@@ -201,7 +192,7 @@ namespace StardewAutoGifter
 
             var villagers = VillagerCatalog.BuildVillagerList();
             var catalog = ItemCatalog.BuildFullCatalog();
-            Game1.activeClickableMenu = new ModMainMenu(plan, _blocklistStore, _configuredNpcStore, _settingsStore, villagers, catalog, markedChestCount);
+            Game1.activeClickableMenu = new ModMainMenu(plan, _blocklistStore, _configuredNpcStore, _settingsStore, villagers, catalog, markedChestCount, _config.ChestMarkKey.ToString());
         }
 
         private void TryToggleChestMark()
@@ -241,7 +232,7 @@ namespace StardewAutoGifter
         private void CheckMarkingConflict(bool isConflict)
         {
             if (MarkingConflict.ShouldNotify(_wasMarkingConflict, isConflict))
-                Game1.addHUDMessage(new HUDMessage(MarkingConflict.HudMessage, HUDMessage.error_type));
+                Game1.addHUDMessage(new HUDMessage(MarkingConflict.HudMessage(_config.ChestMarkKey.ToString()), HUDMessage.error_type));
 
             _wasMarkingConflict = isConflict;
         }

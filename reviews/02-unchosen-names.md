@@ -120,3 +120,36 @@ Checks:
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
 
 To check in-game: start the game with SMAPI. In the SMAPI console, "Auto-Gifter 0.1.0" should still be listed among the loaded mods, with no "requires a newer version of SMAPI" error.
+
+## What we changed (step 02d: C4, configured key names in texts)
+
+Spec, written before the code:
+- `daily-plan-review`: the inactive and paused Plan-tab messages, and the conflict HUD message, use `<chest-marking key>`. This is the name of the key currently set in the configuration file (G by default), never a fixed key name. The same rule applies to every player-facing text that names `<chest-marking key>` or `<menu key>`. New scenarios cover a chest-marking key set to K.
+- `gift-selection`, "Starter chest and welcome message on first farm exit": wherever the welcome message names a key, it uses the configured keys (G and F8 by default). Two new scenarios: the exact default texts, and remapped keys K and F9 with no page naming G or F8.
+
+Tests, written before the implementation:
+- `StardewAutoGifter.Tests/MarkingConflictTests.cs`: the existing text tests now pass the key name `"G"` to the new functions. Their expected texts did not change. Three new tests check the same texts with the key set to `"K"`.
+- `StardewAutoGifter.Tests/WelcomeTextTests.cs` (new), 2 tests:
+  - the default keys give the exact marking and menu pages;
+  - K and F9 give "press K" and "Press F9", and no page has "press G" or "F8".
+
+Code:
+- `Core/MarkingConflict.cs`: `HudMessage` is now `HudMessage(chestMarkKey)`, and `InactivePlanMessage` also takes `chestMarkKey`.
+- `Core/WelcomeText.cs` (new, pure): `Pages(menuKey, chestMarkKey)`. These are the 8 welcome pages, moved out of `ModEntry` and otherwise unchanged.
+- `ModEntry.cs` passes `_config.MenuKey.ToString()` and `_config.ChestMarkKey.ToString()` to the welcome text, the HUD message and the menu.
+- `Menus/ModMainMenu.cs` takes the chest-marking key name for the Plan-tab message.
+- No player-facing string in the code names G or F8 any more. A search for "press G", "with G" and "F8" in string literals finds nothing.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 50/50 green (45 + 5).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+To check in-game:
+1. With the game closed, edit `D:\SteamLibrary\steamapps\common\Stardew Valley\Mods\StardewAutoGifter\config.json` and set `"ChestMarkKey": "K"` and `"MenuKey": "F9"`.
+2. Start the game. Expect F9 to open the menu and F8 to do nothing.
+3. Unmark every chest and open F9 → Plan tab. Expect "… press K to mark it.".
+4. Mark two chests with K. Expect the HUD message "… Unmark all but one with K." and the Plan tab saying "… press K to unmark it …".
+5. Welcome text: it shows only once per save, so start a new save with the remapped keys. Expect "press K" and "Press F9" on the pages.
+6. Afterwards, set both keys back to `"G"` and `"F8"`.

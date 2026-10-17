@@ -143,11 +143,19 @@ When an NPC has no loved or liked item in the farm-wide pool that is not blockli
 - **THEN** the NPC is not assigned any item for that day
 
 ### Requirement: Starter chest and welcome message on first farm exit
-The first time the player exits the farmhouse onto the farm in a save, the mod SHALL add one unplaced chest to the player's inventory and show a one-time welcome message, in English, explaining how to place and mark a chest and how to open the mod menu. This message SHALL clearly call out, as important information (not buried in passing), that selecting an NPC or editing the plan does not affect the current day - automatic gifting only begins the following day. The mod SHALL NOT repeat this for that save once shown.
+The first time the player exits the farmhouse onto the farm in a save, the mod SHALL add one unplaced chest to the player's inventory and show a one-time welcome message, in English, explaining how to place and mark a chest and how to open the mod menu. Wherever the message names a key, it SHALL use the names of the keys currently set in the mod's configuration file (the chest-marking key, G by default, and the menu key, F8 by default), never a fixed key name. This message SHALL clearly call out, as important information (not buried in passing), that selecting an NPC or editing the plan does not affect the current day - automatic gifting only begins the following day. The mod SHALL NOT repeat this for that save once shown.
 
 #### Scenario: First exit from the farmhouse
 - **WHEN** the player warps from the farmhouse onto the farm for the first time in a save
 - **THEN** the mod adds a chest item to the player's inventory and displays a one-time English welcome message that clearly explains gifting only starts the next day
+
+#### Scenario: Welcome message names the default keys
+- **WHEN** the welcome message is shown, and the configuration uses the default keys
+- **THEN** the page about marking says "Open the chest and press G to mark it as your gift chest - it will be renamed and sparkle occasionally so you can spot it.", and the page about the menu says "Press F8 anytime to open the mod menu: choose which villagers to gift, preview and edit tomorrow's plan, manage your blocklist, and adjust settings."
+
+#### Scenario: Welcome message names remapped keys
+- **WHEN** the welcome message is shown, and the configuration sets the chest-marking key to K and the menu key to F9
+- **THEN** the page about marking says "press K" instead of "press G", the page about the menu says "Press F9" instead of "Press F8", and no page names G or F8
 
 #### Scenario: Welcome message and chest given only once per save
 - **WHEN** the player exits the farmhouse onto the farm again later in the same save

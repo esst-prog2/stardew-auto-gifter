@@ -41,6 +41,7 @@ namespace StardewAutoGifter.Menus
         private readonly List<Item> _fullItemCatalog;
         private readonly bool _hasMarkingConflict;
         private readonly int _markedChestCount;
+        private readonly string _chestMarkKeyName;
 
         private Tab _activeTab = Tab.Npcs;
 
@@ -69,7 +70,8 @@ namespace StardewAutoGifter.Menus
             ModSettingsStore settingsStore,
             List<NPC> villagers,
             List<Item> fullItemCatalog,
-            int markedChestCount)
+            int markedChestCount,
+            string chestMarkKeyName)
             : base(Game1.uiViewport.Width / 2 - 400, Game1.uiViewport.Height / 2 - 300, 800, 600, showUpperRightCloseButton: true)
         {
             _plan = plan;
@@ -81,6 +83,7 @@ namespace StardewAutoGifter.Menus
             _fullItemCatalog = fullItemCatalog;
             _filteredCatalog = fullItemCatalog;
             _markedChestCount = markedChestCount;
+            _chestMarkKeyName = chestMarkKeyName;
             _hasMarkingConflict = markedChestCount > 1;
 
             int tabY = yPositionOnScreen + 16;
@@ -271,7 +274,7 @@ namespace StardewAutoGifter.Menus
             {
                 // specs/daily-plan-review - "Reason shown for configured NPCs with no gift": the
                 // message names the fix for the actual cause (nothing marked vs. a conflict).
-                string inactiveMessage = MarkingConflict.InactivePlanMessage(_markedChestCount) ?? MarkingConflict.InactivePlanMessage(0)!;
+                string inactiveMessage = MarkingConflict.InactivePlanMessage(_markedChestCount, _chestMarkKeyName) ?? MarkingConflict.InactivePlanMessage(0, _chestMarkKeyName)!;
                 DrawWrappedText(b, Game1.smallFont, inactiveMessage, xPositionOnScreen + 32, rowY, ContentWidth, Game1.textColor);
                 return;
             }
