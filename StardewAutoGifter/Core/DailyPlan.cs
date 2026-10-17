@@ -19,8 +19,6 @@ namespace StardewAutoGifter.Core
         /// <summary>False when no single valid anchor chest was marked at computation time (specs/gift-selection - "Marked chest acts as the mod's on/off anchor").</summary>
         public bool IsActive { get; init; } = true;
 
-        public PlannedGift? FindFor(string npcName) => Gifts.FirstOrDefault(g => g.NpcName == npcName);
-
         /// <summary>Gifts still eligible for automatic delivery today: planned, not toggled off, not yet delivered.</summary>
         public IEnumerable<PlannedGift> PendingDeliveries() =>
             Gifts.Where(g => g.Status == GiftPlanStatus.Planned && !g.Excluded && !g.Resolved);

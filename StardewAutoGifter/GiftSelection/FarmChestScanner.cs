@@ -87,7 +87,7 @@ namespace StardewAutoGifter.GiftSelection
         }
 
         /// <summary>The distinctive display name applied to the anchor chest. See specs/gift-selection - "Anchor chest is renamed for visibility".</summary>
-        public const string AnchorChestName = "Auto-Gifter Chest";
+        private const string AnchorChestName = "Auto-Gifter Chest";
 
         /// <summary>The game's plain default chest name, restored when a chest is unmarked.</summary>
         private const string DefaultChestName = "Chest";
