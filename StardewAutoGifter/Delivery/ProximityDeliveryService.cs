@@ -89,14 +89,6 @@ namespace StardewAutoGifter.Delivery
             // QualifiedItemId is guaranteed non-null here.
             string qualifiedItemId = gift.QualifiedItemId!;
 
-            // specs/proximity-delivery - "Gift-limit re-checked at delivery time".
-            // Same rule as planning, asked for today: both the daily and the weekly limit apply.
-            if (!FriendshipGiftTracker.CanGiveGiftOn(gift.NpcName, targetDay: today, today: today))
-            {
-                gift.Resolved = true; // resolved (skipped), so we stop re-checking it for the rest of the day
-                return;
-            }
-
             List<StardewValley.Objects.Chest> farmChests = FarmChestScanner.GetFarmChests().ToList();
 
             // specs/proximity-delivery - "Delivery prefers the anchor chest": TryRemoveOneUnit takes
@@ -109,28 +101,51 @@ namespace StardewAutoGifter.Delivery
                 farmChests.Insert(0, anchor);
             }
 
-            // specs/proximity-delivery - "Delivery skipped if the planned item is no longer available"
-            // and "Delivery never drops an item's farm-wide total below one": TryRemoveOneUnit
-            // refuses if fewer than 2 units remain, so either case lands here.
-            if (!FarmItemPool.TryRemoveOneUnit(farmChests, qualifiedItemId))
+            // specs/proximity-delivery - "Delivery never removes an item it cannot hand over": every
+            // check runs before anything leaves a chest - the gift limit ("Gift-limit re-checked at
+            // delivery time", the same rule as planning, asked for today), then whether the gift
+            // object can be created, then the stock ("Delivery never drops an item's farm-wide total
+            // below one").
+            SObject? giftObject = ItemRegistry.Create(qualifiedItemId, allowNull: true) as SObject;
+            DeliveryStep step = DeliveryRule.Decide(
+                withinGiftLimit: FriendshipGiftTracker.CanGiveGiftOn(gift.NpcName, targetDay: today, today: today),
+                itemCanBeHandedOver: giftObject != null,
+                unitsOnFarm: FarmItemPool.GetTotalQuantity(farmChests, qualifiedItemId));
+
+            switch (step)
             {
-                gift.Resolved = true;
-                monitor.Log($"Skipped delivery to {gift.NpcName}: fewer than {StockRule.MinimumUnitsForGift} units of {qualifiedItemId} remain in the farm's chests.", LogLevel.Trace);
-                return;
+                case DeliveryStep.SkipGiftLimit:
+                    break;
+
+                case DeliveryStep.SkipNotGiftable:
+                    // Not resolved, so a later attempt can still deliver it; LogOnce keeps the
+                    // once-per-second retries from flooding the log with the same line.
+                    monitor.LogOnce($"Could not deliver to {gift.NpcName}: the planned item {qualifiedItemId} cannot be created as a giftable object. Nothing was removed from the farm's chests.", LogLevel.Warn);
+                    break;
+
+                case DeliveryStep.SkipLowStock:
+                    monitor.Log($"Skipped delivery to {gift.NpcName}: fewer than {StockRule.MinimumUnitsForGift} units of {qualifiedItemId} remain in the farm's chests.", LogLevel.Trace);
+                    break;
+
+                case DeliveryStep.Deliver:
+                    if (!FarmItemPool.TryRemoveOneUnit(farmChests, qualifiedItemId))
+                    {
+                        // Cannot happen after the stock check above (same chests, same moment), but
+                        // never give an item that was not actually removed.
+                        monitor.Log($"Skipped delivery to {gift.NpcName}: {qualifiedItemId} could not be removed from the farm's chests.", LogLevel.Warn);
+                        step = DeliveryStep.SkipLowStock;
+                        break;
+                    }
+
+                    // receiveGift applies friendship-point changes and updates the game's own
+                    // GiftsToday/GiftsThisWeek tracking, so the mod never duplicates that state.
+                    npc.receiveGift(giftObject!, Game1.player, updateGiftLimitInfo: true);
+                    Game1.addHUDMessage(new HUDMessage($"Gave {giftObject!.DisplayName} to {npc.displayName}."));
+                    break;
             }
 
-            Item? deliveredItem = ItemRegistry.Create(qualifiedItemId, allowNull: true);
-            if (deliveredItem is SObject deliveredObject)
-            {
-                // receiveGift applies friendship-point changes and updates the game's own
-                // GiftsToday/GiftsThisWeek tracking, so the mod never duplicates that state.
-                npc.receiveGift(deliveredObject, Game1.player, updateGiftLimitInfo: true);
-            }
-
-            gift.Resolved = true;
-
-            string itemName = deliveredItem?.DisplayName ?? qualifiedItemId;
-            Game1.addHUDMessage(new HUDMessage($"Gave {itemName} to {npc.displayName}."));
+            if (DeliveryRule.ResolvesGift(step))
+                gift.Resolved = true; // settled for the day, so it is not checked again
         }
     }
 }

@@ -66,6 +66,25 @@ Immediately before removing a unit of the planned item from a farm chest, the mo
 - **WHEN** the player comes within the proximity threshold of a planned NPC, and two or more units of the planned item remain across the farm's chests at that moment
 - **THEN** the mod removes one unit and delivers it normally, leaving at least one unit behind
 
+### Requirement: Delivery never removes an item it cannot hand over
+Before removing anything from a chest, the mod SHALL first create the gift object for the planned item and check that it can be handed to the NPC as a gift. If it cannot (for example because the item no longer exists in the game, or it is not an object item), the mod SHALL NOT remove anything from any chest, SHALL NOT show a confirmation message, SHALL leave that NPC's planned gift pending (not resolved) so that it can be tried again later, and SHALL write a warning to the log naming the NPC and the item. The checks SHALL happen in this order: the gift limit first, then whether the item can be handed over, then the stock (at least two units). Only when all three pass is one unit removed and given.
+
+#### Scenario: Planned item cannot be created as a gift
+- **WHEN** the player comes within the proximity threshold of a planned NPC, the gift limit allows a gift, the farm holds 10 units, but the planned item cannot be created as a giftable object
+- **THEN** nothing is removed from any chest, no confirmation message is shown, the planned gift stays pending, and a warning naming the NPC and the item is written to the log
+
+#### Scenario: Gift limit reached
+- **WHEN** the gift limit does not allow a gift, the item can be handed over, and the farm holds 10 units
+- **THEN** the delivery is skipped for the limit and the planned gift is resolved for the day
+
+#### Scenario: Not enough stock
+- **WHEN** the gift limit allows a gift, the item can be handed over, and only 1 unit remains across the farm's chests
+- **THEN** the delivery is skipped for low stock and the planned gift is resolved for the day
+
+#### Scenario: Everything allows the hand-off
+- **WHEN** the gift limit allows a gift, the item can be handed over, and 5 units remain across the farm's chests
+- **THEN** one unit is removed and given
+
 ### Requirement: Confirmation message on hand-off
 After an automatic hand-off, the mod SHALL show the player a message confirming which item was given to which NPC.
 

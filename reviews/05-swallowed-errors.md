@@ -51,3 +51,34 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 68/68 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 05b: E1)
+
+Spec, written before the code: new requirement `proximity-delivery`, "Delivery never removes an item it cannot hand over".
+- The mod creates and checks the gift object before removing anything.
+- If it cannot be handed over: nothing is removed, there is no confirmation, the gift stays pending, and a warning naming the NPC and the item is logged.
+- The checks run in this order: gift limit, then whether the item can be handed over, then stock.
+- Four scenarios.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/DeliveryRuleTests.cs`, 5 tests, with the scenarios' values:
+- not giftable with 10 units → `SkipNotGiftable`, and that step does not resolve the gift;
+- limit reached → `SkipGiftLimit`, which resolves;
+- 1 unit → `SkipLowStock`, which resolves;
+- 5 units → `Deliver`.
+
+Code:
+- `Core/DeliveryRule.cs` (new, pure): the `DeliveryStep` enum, `Decide(withinGiftLimit, itemCanBeHandedOver, unitsOnFarm)` and `ResolvesGift(step)`.
+- `Delivery/ProximityDeliveryService.cs`, `TryDeliver`:
+  - it creates the gift object (`ItemRegistry.Create(…, allowNull: true) as SObject`) and counts the stock before anything is removed, then follows `DeliveryRule.Decide`;
+  - only `Deliver` removes one unit, calls `receiveGift`, and shows "Gave … to …". The HUD message now names the created object's `DisplayName`, never a raw id;
+  - `SkipNotGiftable` writes a Warn line through `Monitor.LogOnce`, because the gift stays pending and is retried every second while the NPC is in range, and leaves the gift unresolved;
+  - the other skips resolve the gift as before.
+- What stays the same: a skip for the limit or for low stock resolves the gift and shows nothing, as before.
+- What changes on purpose: an item that cannot be handed over is no longer removed and no longer gives a false "Gave …" message.
+- A side effect: the farm's chests are now scanned once even when the gift limit already says no. This only costs time, and it happens only when an NPC is in range.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 73/73 green (68 + 5).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
