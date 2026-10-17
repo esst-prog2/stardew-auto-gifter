@@ -82,3 +82,25 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 73/73 green (68 + 5).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 05c: E2)
+
+Spec, written before the code: `gift-selection`, "Starter chest and welcome message on first farm exit".
+- The chest goes into the inventory, or, if the inventory is full, it is dropped on the ground at the player's feet.
+- New scenario "Inventory full at the first farm exit", with the exact page-2 text: "Your inventory was full, so a chest has been dropped at your feet. Pick it up and place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar." The other pages stay unchanged. The wording is the assistant's and still needs the user's approval.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/WelcomeTextTests.cs`, 1 new test, which checks page 2 with the chest dropped and the other 7 pages unchanged. The existing welcome tests are unchanged, because the new parameter defaults to `false`.
+
+Code:
+- `Core/WelcomeText.cs`: `Pages(…, bool chestDroppedAtFeet = false)` chooses page 2.
+- `ModEntry.cs`, `OnWarped`:
+  - it adds the chest with `Game1.player.addItemToInventoryBool`, whose result is now checked;
+  - if that returns false, it drops the chest with `Game1.createItemDebris(chest, player.getStandingPosition(), player.FacingDirection)` and writes a Debug log line;
+  - it passes the result to the welcome text.
+  - The build confirms that both game methods exist with these signatures.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 74/74 green (73 + 1).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.

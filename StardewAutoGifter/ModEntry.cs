@@ -149,13 +149,21 @@ namespace StardewAutoGifter
             if (e.OldLocation is not FarmHouse || e.NewLocation is not Farm)
                 return;
 
-            Game1.player.addItemToInventory(ItemRegistry.Create("(BC)130")); // a placeable Chest
+            // specs/gift-selection - "Starter chest and welcome message on first farm exit": a full
+            // inventory must not lose the chest, so it drops at the player's feet instead.
+            Item starterChest = ItemRegistry.Create("(BC)130"); // a placeable Chest
+            bool chestDroppedAtFeet = !Game1.player.addItemToInventoryBool(starterChest);
+            if (chestDroppedAtFeet)
+            {
+                Game1.createItemDebris(starterChest, Game1.player.getStandingPosition(), Game1.player.FacingDirection);
+                Monitor.Log("Inventory full at the first farm exit: dropped the starter chest at the player's feet.", LogLevel.Debug);
+            }
 
             // A single long drawObjectDialogue(string) call overflows the dialogue box (confirmed
             // in-game), so this uses the paged overload instead - one short message per page, with
             // the game's own next-page arrow, like a normal conversation.
             // Key names come from config.json, so a remapped key is named correctly (HW6 review 02d).
-            Game1.drawObjectDialogue(WelcomeText.Pages(_config.MenuKey.ToString(), _config.ChestMarkKey.ToString(), _settingsStore.AnchorChestOnly));
+            Game1.drawObjectDialogue(WelcomeText.Pages(_config.MenuKey.ToString(), _config.ChestMarkKey.ToString(), _settingsStore.AnchorChestOnly, chestDroppedAtFeet));
 
             _onboardingStore.MarkWelcomeShown();
         }

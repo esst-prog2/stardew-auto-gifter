@@ -50,6 +50,18 @@ namespace StardewAutoGifter.Tests
                 Assert.Equal(off[i], on[i]);
         }
 
+        // "Inventory full at the first farm exit": page 2 (index 1) says where the chest is, the rest stay.
+        [Fact]
+        public void ChestDroppedAtFeet_Page2SaysSo_OtherPagesUnchanged()
+        {
+            var dropped = WelcomeText.Pages(menuKey: "F8", chestMarkKey: "G", anchorChestOnly: false, chestDroppedAtFeet: true);
+            var added = WelcomeText.Pages(menuKey: "F8", chestMarkKey: "G", anchorChestOnly: false);
+
+            Assert.Equal("Your inventory was full, so a chest has been dropped at your feet. Pick it up and place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar.", dropped[1]);
+            foreach (int i in new[] { 0, 2, 3, 4, 5, 6, 7 })
+                Assert.Equal(added[i], dropped[i]);
+        }
+
         // "Welcome message names the default keys".
         [Fact]
         public void DefaultKeys_PagesNameGAndF8()

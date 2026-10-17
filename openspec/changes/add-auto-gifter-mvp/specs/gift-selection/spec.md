@@ -143,7 +143,7 @@ When an NPC has no loved or liked item in the farm-wide pool that is not blockli
 - **THEN** the NPC is not assigned any item for that day
 
 ### Requirement: Starter chest and welcome message on first farm exit
-The first time the player exits the farmhouse onto the farm in a save, the mod SHALL add one unplaced chest to the player's inventory and show a one-time welcome message, in English, explaining how to place and mark a chest and how to open the mod menu. Wherever the message names a key, it SHALL use the names of the keys currently set in the mod's configuration file (the chest-marking key, G by default, and the menu key, F8 by default), never a fixed key name. Every other part of the message that depends on a setting SHALL follow that setting's current value: the pages about the fallback to other farm chests SHALL match the save's current "anchor chest only" setting. This message SHALL clearly call out, as important information (not buried in passing), that selecting an NPC or editing the plan does not affect the current day - automatic gifting only begins the following day. The mod SHALL NOT repeat this for that save once shown.
+The first time the player exits the farmhouse onto the farm in a save, the mod SHALL add one unplaced chest to the player's inventory (or, if the inventory is full, drop it on the ground at the player's feet) and show a one-time welcome message, in English, explaining how to place and mark a chest and how to open the mod menu. Wherever the message names a key, it SHALL use the names of the keys currently set in the mod's configuration file (the chest-marking key, G by default, and the menu key, F8 by default), never a fixed key name. Every other part of the message that depends on a setting SHALL follow that setting's current value: the pages about the fallback to other farm chests SHALL match the save's current "anchor chest only" setting. This message SHALL clearly call out, as important information (not buried in passing), that selecting an NPC or editing the plan does not affect the current day - automatic gifting only begins the following day. The mod SHALL NOT repeat this for that save once shown.
 
 #### Scenario: First exit from the farmhouse
 - **WHEN** the player warps from the farmhouse onto the farm for the first time in a save
@@ -156,6 +156,10 @@ The first time the player exits the farmhouse onto the farm in a save, the mod S
 #### Scenario: Welcome pages when "anchor chest only" is already on
 - **WHEN** the welcome message is shown while the save's "anchor chest only" setting is already on (for example because the player turned it on from the mod menu before first leaving the farmhouse)
 - **THEN** page 4 is "That chest is your ONLY source of gifts: the fallback to every other chest on your farm is turned off.", page 5 is "You can turn that fallback back on in the mod menu's Settings tab, to also use every other chest on your farm.", and the other pages are unchanged
+
+#### Scenario: Inventory full at the first farm exit
+- **WHEN** the player warps from the farmhouse onto the farm for the first time in a save with a full inventory
+- **THEN** the chest is dropped on the ground at the player's feet instead, and page 2 of the welcome message is "Your inventory was full, so a chest has been dropped at your feet. Pick it up and place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar." while the other pages are unchanged
 
 #### Scenario: Welcome message names the default keys
 - **WHEN** the welcome message is shown, and the configuration uses the default keys

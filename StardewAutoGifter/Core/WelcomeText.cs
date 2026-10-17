@@ -4,16 +4,19 @@ namespace StardewAutoGifter.Core
 {
     /// <summary>
     /// The one-time welcome message, one short string per dialogue page. Every value that comes
-    /// from a setting is passed in (the configured keys and the save's "anchor chest only"
-    /// setting), never written into the text. See specs/gift-selection - "Starter chest and welcome
-    /// message on first farm exit".
+    /// from a setting or from what happened is passed in (the configured keys, the save's "anchor
+    /// chest only" setting, and whether the starter chest fit in the inventory), never written into
+    /// the text. See specs/gift-selection - "Starter chest and welcome message on first farm exit".
     /// </summary>
     public static class WelcomeText
     {
-        public static List<string> Pages(string menuKey, string chestMarkKey, bool anchorChestOnly) => new()
+        /// <param name="chestDroppedAtFeet">True when the starter chest did not fit in the inventory and was dropped at the player's feet instead.</param>
+        public static List<string> Pages(string menuKey, string chestMarkKey, bool anchorChestOnly, bool chestDroppedAtFeet = false) => new()
         {
             "Welcome to Auto-Gifter!",
-            "A chest has been added to your inventory. Place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar.",
+            chestDroppedAtFeet
+                ? "Your inventory was full, so a chest has been dropped at your feet. Pick it up and place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar."
+                : "A chest has been added to your inventory. Place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar.",
             $"Open the chest and press {chestMarkKey} to mark it as your gift chest - it will be renamed and sparkle occasionally so you can spot it.",
             anchorChestOnly
                 ? "That chest is your ONLY source of gifts: the fallback to every other chest on your farm is turned off."
