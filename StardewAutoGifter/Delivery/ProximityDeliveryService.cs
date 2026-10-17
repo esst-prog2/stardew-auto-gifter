@@ -19,7 +19,7 @@ namespace StardewAutoGifter.Delivery
         /// <summary>"Close enough" to trigger an automatic hand-off, in tiles. Fixed, not configurable - see design.md.</summary>
         private const float ProximityThresholdTiles = 1.5f;
 
-        public static void CheckAndDeliver(DailyPlan plan, IMonitor monitor)
+        public static void CheckAndDeliver(DailyPlan plan, int today, IMonitor monitor)
         {
             // specs/proximity-delivery - "Delivery paused while the mod is inactive": checked only
             // once an NPC is in range (scanning the farm's chests every second would be wasted
@@ -41,7 +41,7 @@ namespace StardewAutoGifter.Delivery
                 if (!ModIsActive())
                     return;
 
-                TryDeliver(gift, npc, monitor);
+                TryDeliver(gift, npc, today, monitor);
             }
 
             // specs/proximity-delivery - "In-person notice when nothing is available for a configured NPC".
@@ -79,14 +79,15 @@ namespace StardewAutoGifter.Delivery
             gift.Delivered = true; // resolved (notified), so we don't show this again today
         }
 
-        private static void TryDeliver(PlannedGift gift, NPC npc, IMonitor monitor)
+        private static void TryDeliver(PlannedGift gift, NPC npc, int today, IMonitor monitor)
         {
             // Only ever called for Status == Planned gifts (see DailyPlan.PendingDeliveries), so
             // QualifiedItemId is guaranteed non-null here.
             string qualifiedItemId = gift.QualifiedItemId!;
 
             // specs/proximity-delivery - "Gift-limit re-checked at delivery time".
-            if (FriendshipGiftTracker.HasReachedWeeklyCap(gift.NpcName))
+            // Same rule as planning, asked for today: both the daily and the weekly limit apply.
+            if (!FriendshipGiftTracker.CanGiveGiftOn(gift.NpcName, targetDay: today, today: today))
             {
                 gift.Delivered = true; // resolved (skipped), so we stop re-checking it for the rest of the day
                 return;

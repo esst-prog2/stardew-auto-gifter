@@ -13,9 +13,9 @@ namespace StardewAutoGifter.Core
         /// <summary>
         /// Whether a gift can be given to an NPC right now, given their gift counts. Enforces both
         /// the daily limit (one gift per day: <paramref name="giftsToday"/> must be 0) and the
-        /// weekly cap (<see cref="WeeklyFriendshipGiftCap"/>). Delivery checks it directly; planning
-        /// reaches it through <see cref="TargetDayGiftLimit.CanGiveGiftOn"/>, which first adjusts the
-        /// counts for the plan's target day. See hw5/expected-value-source.md.
+        /// weekly cap (<see cref="WeeklyFriendshipGiftCap"/>). Delivery (for today) and planning (for
+        /// the target day) both reach it through <see cref="TargetDayGiftLimit.CanGiveGiftOn"/>, which
+        /// first adjusts the counts for the day asked about. See hw5/expected-value-source.md.
         /// </summary>
         public static bool CanGiveGift(int giftsToday, int giftsThisWeek)
             => giftsToday < 1 && giftsThisWeek < WeeklyFriendshipGiftCap;

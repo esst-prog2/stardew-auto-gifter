@@ -244,7 +244,7 @@ namespace StardewAutoGifter
 
             // specs/proximity-delivery - "Plan delivered only on its target day".
             if (_todaysPlan != null && PlanTiming.IsPlanForToday(_todaysPlan.TargetDay, Today))
-                ProximityDeliveryService.CheckAndDeliver(_todaysPlan, Monitor);
+                ProximityDeliveryService.CheckAndDeliver(_todaysPlan, Today, Monitor);
 
             TrySparkleAnchorChest();
         }

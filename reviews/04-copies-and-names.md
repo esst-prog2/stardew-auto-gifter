@@ -60,3 +60,22 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 67/67 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 04b: D2 + D7)
+
+- `GiftSelection/FriendshipGiftTracker.cs`: `HasReachedWeeklyCap`, whose name was misleading, is deleted. `CanGiveGiftOn(npcName, targetDay, today)` is the only check left, and its doc now says that planning asks it for tomorrow and delivery for today.
+- `Delivery/ProximityDeliveryService.cs`:
+  - `CheckAndDeliver` and `TryDeliver` take `today`;
+  - the delivery-time limit check is `!CanGiveGiftOn(npc, targetDay: today, today: today)`.
+- `ModEntry.cs` passes `Today`.
+- No behavior change:
+  - With `targetDay == today`, `TargetDayGiftLimit` keeps both counts as they are, since it is the same day and the same week, and calls the same `CanGiveGift`.
+  - With no friendship data, the old code (`HasReachedWeeklyCap` returned false) and the new code (`CanGiveGiftOn` returns true) both allow the delivery.
+- `Core/GiftLimitPolicy.cs`, comment only, same number of lines: lines 16-18 now say that delivery and planning both reach `CanGiveGift` through `CanGiveGiftOn`. The 04a wording, "delivery checks it directly", became stale with this step. Lines 21 and 29 and their numbers are unchanged.
+- Tests unchanged.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 67/67 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
