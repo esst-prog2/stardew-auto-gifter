@@ -70,11 +70,15 @@ The menu SHALL show one row per configured NPC that has an item selected for the
 - **THEN** the click acts on no row
 
 ### Requirement: Reason shown for configured NPCs with no gift
-For each configured NPC who does not have a planned item for the next day — either because no eligible loved or liked item is available in the farm-wide pool, or because they have already reached the weekly friendship-point-counting gift limit — the preview SHALL show a row explaining why, instead of silently omitting them. If the mod is inactive (no single valid anchor chest currently marked), the preview SHALL show one explanatory message instead of per-NPC rows, and that message SHALL tell the player how to fix the specific cause: when no chest is marked, "Mod inactive: open a chest on your farm and press <chest-marking key> to mark it."; when more than one chest is marked, "Mod paused: more than one chest is marked. Open each extra chest and press <chest-marking key> to unmark it until only one remains." Here and in every other player-facing text, <chest-marking key> and <menu key> SHALL be the names of the keys currently set in the mod's configuration file (G and F8 by default), never a fixed key name.
+For each configured NPC who does not have a planned item for the next day — either because no eligible loved or liked item is available in the farm-wide pool, or because they have already reached the weekly friendship-point-counting gift limit, or because the NPC is not found in the game at all (for example a villager added by a mod that is no longer installed) — the preview SHALL show a row explaining why, instead of silently omitting them. An NPC who is not found SHALL get the row "<name>: not found in the game", never the "nothing to give" reason, and the mod SHALL write a warning naming that NPC to the log. If the mod is inactive (no single valid anchor chest currently marked), the preview SHALL show one explanatory message instead of per-NPC rows, and that message SHALL tell the player how to fix the specific cause: when no chest is marked, "Mod inactive: open a chest on your farm and press <chest-marking key> to mark it."; when more than one chest is marked, "Mod paused: more than one chest is marked. Open each extra chest and press <chest-marking key> to unmark it until only one remains." Here and in every other player-facing text, <chest-marking key> and <menu key> SHALL be the names of the keys currently set in the mod's configuration file (G and F8 by default), never a fixed key name.
 
 #### Scenario: Configured NPC has no eligible item
 - **WHEN** a configured NPC has no eligible loved or liked item anywhere in the farm-wide pool
 - **THEN** the preview shows a row for that NPC stating no item is available, instead of omitting them from the preview
+
+#### Scenario: Configured NPC not found in the game
+- **WHEN** a configured NPC named "Sophia" is not found in the game when the plan is computed
+- **THEN** the preview shows the row "Sophia: not found in the game" instead of a "nothing to give" row, and a warning naming Sophia is written to the log
 
 #### Scenario: Configured NPC already reached the weekly cap
 - **WHEN** a configured NPC has already reached the weekly friendship-point-counting gift limit

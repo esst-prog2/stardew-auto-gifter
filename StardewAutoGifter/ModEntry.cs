@@ -137,7 +137,7 @@ namespace StardewAutoGifter
             var farmWidePool = FarmItemPool.BuildPool(farmChests);
             var blocklist = new System.Collections.Generic.HashSet<string>(_blocklistStore.BlockedItemIds);
             var configuredNpcNames = new System.Collections.Generic.HashSet<string>(_configuredNpcStore.SelectedNames);
-            return PlanComputer.Compute(configuredNpcNames, anchorOnlyPool, farmWidePool, blocklist, _config.IncludeLikedItems, _settingsStore.AnchorChestOnly, _tasteProvider, targetDay, Today);
+            return PlanComputer.Compute(configuredNpcNames, anchorOnlyPool, farmWidePool, blocklist, _config.IncludeLikedItems, _settingsStore.AnchorChestOnly, _tasteProvider, targetDay, Today, Monitor);
         }
 
         private void OnWarped(object? sender, WarpedEventArgs e)

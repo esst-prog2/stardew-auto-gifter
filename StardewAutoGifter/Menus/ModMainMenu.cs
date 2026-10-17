@@ -291,17 +291,10 @@ namespace StardewAutoGifter.Menus
                         line = $"{checkbox} {npcName} -> {itemName}";
                         color = gift.Excluded ? Color.Gray : Game1.textColor;
                         break;
-                    case GiftPlanStatus.NoEligibleItem:
-                        line = $"{npcName}: nothing to give (no loved/liked item available)";
-                        color = Color.Gray;
-                        break;
-                    case GiftPlanStatus.WeeklyCapReached:
-                        line = $"{npcName}: already reached this week's gift limit";
-                        color = Color.Gray;
-                        break;
                     default:
-                        line = npcName;
-                        color = Game1.textColor;
+                        // NoEligibleItem, WeeklyCapReached, NpcNotFound (Core/PlanRowText).
+                        line = PlanRowText.ReasonLine(gift.Status, npcName);
+                        color = Color.Gray;
                         break;
                 }
 

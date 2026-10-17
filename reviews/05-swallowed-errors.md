@@ -104,3 +104,30 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 74/74 green (73 + 1).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 05d: E3)
+
+Spec, written before the code: `daily-plan-review`, "Reason shown for configured NPCs with no gift".
+- There is a third reason, "not found in the game".
+- The row is "<name>: not found in the game", never "nothing to give", and a warning naming the NPC is logged.
+- New scenario with "Sophia".
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/PlanRowTextTests.cs`, 2 tests:
+- the exact row text "Sophia: not found in the game";
+- the row does not contain "nothing to give".
+
+Code:
+- `Core/GiftPlanStatus.cs`: new `NpcNotFound`.
+- `Core/PlanRowText.cs` (new, pure): `ReasonLine(status, npcName)` for all three reasons. The two existing texts moved there word for word.
+- `Planning/PlanComputer.cs`: takes `IMonitor`. A configured name that `Game1.getCharacterFromName` cannot find gets `NpcNotFound` and a Warn line through `Monitor.LogOnce`, because the plan is recomputed on every F8 open and the line would repeat. This check comes before the gift-limit and selection steps.
+- `Menus/ModMainMenu.cs`: every non-planned row uses `PlanRowText.ReasonLine`, in gray.
+- `ModEntry.cs` passes `Monitor`.
+- No notice is ever shown for a not-found NPC: there is no NPC to stand next to, and `IsInRange` is false.
+
+Noticed, not changed: the NPCs tab lists only villagers the game currently has. A configured NPC who is not found therefore cannot be deselected from the menu, and the "not found" row stays until the NPC exists again. This is a possible follow-up.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 76/76 green (74 + 2).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.

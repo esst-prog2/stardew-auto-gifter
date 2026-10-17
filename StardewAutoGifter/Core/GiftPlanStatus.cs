@@ -14,5 +14,8 @@ namespace StardewAutoGifter.Core
 
         /// <summary>The NPC already reached the weekly friendship-point-counting gift limit.</summary>
         WeeklyCapReached,
+
+        /// <summary>The configured NPC was not found in the game (for example a villager from a mod that is no longer installed).</summary>
+        NpcNotFound,
     }
 }

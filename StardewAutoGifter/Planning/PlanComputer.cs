@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using StardewModdingAPI;
+using StardewValley;
 using StardewAutoGifter.Core;
 using StardewAutoGifter.GiftSelection;
 
@@ -23,12 +25,22 @@ namespace StardewAutoGifter.Planning
             bool anchorChestOnly,
             IGiftTasteProvider tasteProvider,
             int targetDay,
-            int today)
+            int today,
+            IMonitor monitor)
         {
             var plan = new DailyPlan { IsActive = true, TargetDay = targetDay };
 
             foreach (string npcName in configuredNpcNames)
             {
+                // specs/daily-plan-review - "Reason shown for configured NPCs with no gift": an NPC
+                // the game does not know gets its own reason, not a false "nothing to give".
+                if (Game1.getCharacterFromName(npcName) == null)
+                {
+                    monitor.LogOnce($"Configured villager '{npcName}' was not found in the game; the plan shows them as 'not found in the game'.", LogLevel.Warn);
+                    plan.Gifts.Add(new PlannedGift(npcName, GiftPlanStatus.NpcNotFound));
+                    continue;
+                }
+
                 // specs/gift-selection - "Gift-limit state respected during selection": judged for
                 // the target day, so Saturday evening's weekly count does not block Sunday.
                 if (!FriendshipGiftTracker.CanGiveGiftOn(npcName, targetDay, today))
