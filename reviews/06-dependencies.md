@@ -75,3 +75,27 @@ Checks:
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
 
 To check in-game: start the game. SMAPI should still load "Auto-Gifter 0.1.0", with no version error.
+
+
+## What we changed (step 06b: F2, and the F1 check)
+
+- `global.json` (new, repository root): `"sdk": { "version": "6.0.100", "rollForward": "latestMajor" }`. This asks for at least the 6.0 SDK and uses the newest installed one.
+- `StardewAutoGifter/StardewAutoGifter.csproj`: `<LangVersion>latest</LangVersion>` → `<LangVersion>10</LangVersion>`. The C# language level no longer moves when the SDK changes. The test project sets no `LangVersion`, so it uses the default for `net6.0`, which is also C# 10.
+- `README.md`, section 6: `global.json` and the fixed C# 10. The build package's analyzer needs the .NET 8 SDK or newer; with only the 6.0 SDK the build shows CS9057 and the analyzer's checks are skipped. The unit tests are fine with the 6.0 SDK.
+
+F1 check, with the .NET 8 SDK installed:
+- `dotnet --list-sdks`: `6.0.428`, `8.0.426`.
+- `dotnet --version` in the project folder: `8.0.426`. With `global.json` and `rollForward: latestMajor`, the newest SDK is picked.
+- `dotnet build StardewAutoGifter/StardewAutoGifter.csproj --no-incremental`, a full rebuild: **0 errors, 0 warnings. CS9057 is gone.**
+- The analyzer really runs. A rebuild with `-p:ReportAnalyzer=true -v:d` shows:
+  - the compiler `C:\Program Files\dotnet\sdk\8.0.426\Roslyn\bincore\csc.dll` with `/langversion:10`;
+  - `/analyzer:…\pathoschild.stardew.modbuildconfig\4.3.2\analyzers\dotnet\cs\SMAPI.ModBuildConfig.Analyzer.dll`;
+  - the analyzer report lists `StardewModdingAPI.ModBuildConfig.Analyzer.NetFieldAnalyzer (AvoidNetField)` and `StardewModdingAPI.ModBuildConfig.Analyzer.ObsoleteFieldAnalyzer (AvoidObsoleteField)`, both executed, with a total analyzer time of 0.043 s.
+  - So "0 warnings" means the analyzer ran and found nothing, not that it was skipped.
+- No new warnings appeared, so there is nothing to list or decide.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, 0 warnings, with SDK 8.0.426.
+- `dotnet test`: 80/80 green, with SDK 8.0.426.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
