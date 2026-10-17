@@ -93,7 +93,7 @@ After an automatic hand-off, the mod SHALL show the player a message confirming 
 - **THEN** the mod displays a message naming the item and the NPC it was given to
 
 ### Requirement: Gift-limit re-checked at delivery time
-Immediately before handing over a planned item, the mod SHALL re-check the game's own per-NPC gift tracking. If the NPC has, by that point, already received a gift today (the daily limit of one gift per day), or has already reached the weekly limit of friendship-point-counting gifts (for example because the player gave them a gift by hand earlier that day), the mod SHALL cancel that delivery instead of handing over the item. A delivery cancelled this way SHALL NOT show a confirmation message. This is the only point where the daily limit is checked; plan computation intentionally does not check it (see specs/gift-selection - "Gift-limit state respected during selection").
+Immediately before handing over a planned item, the mod SHALL re-check the game's own per-NPC gift tracking. If the NPC has, by that point, already received a gift today (the daily limit of one gift per day), or has already reached the weekly limit of friendship-point-counting gifts (for example because the player gave them a gift by hand earlier that day), the mod SHALL cancel that delivery instead of handing over the item. A delivery cancelled this way SHALL NOT show a confirmation message, but SHALL write a Debug line to the log naming the NPC and saying the gift limit was already reached. This is the only point where the daily limit is checked; plan computation intentionally does not check it (see specs/gift-selection - "Gift-limit state respected during selection").
 
 #### Scenario: Weekly cap reached before delivery happens
 - **WHEN** the player walks near a planned NPC, but that NPC has already reached the weekly friendship-point-counting gift limit by the time the player gets close
@@ -101,7 +101,7 @@ Immediately before handing over a planned item, the mod SHALL re-check the game'
 
 #### Scenario: NPC already received a gift today before delivery happens
 - **WHEN** the player walks near a planned NPC who has not reached the weekly limit, but who has already received a gift today (for example one given by hand)
-- **THEN** the mod does not hand over the planned item to that NPC, and shows no confirmation message for that NPC
+- **THEN** the mod does not hand over the planned item to that NPC, shows no confirmation message for that NPC, and writes a Debug log line naming that NPC
 
 ### Requirement: In-person notice when nothing is available for a configured NPC
 When the player comes within the proximity threshold of a configured NPC who currently has no planned gift — because no eligible loved or liked item is available, or because the weekly friendship-point-counting gift limit is already reached — the mod SHALL show a one-time dialogue box, styled like a normal NPC conversation (the game's own NPC dialogue box, with that NPC as the speaker), explaining that nothing is being given to them right now. This SHALL happen at most once per configured NPC per day, and SHALL NOT happen for an NPC who does have a pending planned item.

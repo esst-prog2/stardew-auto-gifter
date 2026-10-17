@@ -115,6 +115,8 @@ namespace StardewAutoGifter.Delivery
             switch (step)
             {
                 case DeliveryStep.SkipGiftLimit:
+                    // Silent for the player (no confirmation), but visible in the log (HW6 review 05f).
+                    monitor.Log($"Skipped delivery to {gift.NpcName}: the gift limit (one per day, two per week) is already reached.", LogLevel.Debug);
                     break;
 
                 case DeliveryStep.SkipNotGiftable:

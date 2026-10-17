@@ -153,3 +153,42 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 78/78 green (76 + 2).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 05f: E6)
+
+- Spec, written before the code: `proximity-delivery`, "Gift-limit re-checked at delivery time". A delivery cancelled for the limit still shows no confirmation, but now writes a Debug log line naming the NPC. The scenario "NPC already received a gift today before delivery happens" says so.
+- `Delivery/ProximityDeliveryService.cs`: the `SkipGiftLimit` case logs "Skipped delivery to <NPC>: the gift limit (one per day, two per week) is already reached." at Debug. That skip resolves the gift, so the line appears at most once per gift per day.
+- No unit test, because this is only a log line from the game-dependent part. It is on the in-game checklist below.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 78/78 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## In-game checklist additions (E1, E2, E3, E5, E6)
+
+These come on top of the joint checklist in `reviews/03-patched-where-it-broke.md` (C4, R1, R3) and `reviews/04-copies-and-names.md` (D4, D5). Not run yet: the user runs it in-game.
+
+E2 (starter chest with a full backpack):
+1. Start a new save. Before leaving the farmhouse for the first time, fill every backpack slot. The new player starts with only a few items, so use SMAPI's bundled console command `player_add <item id>` with different items (for example `player_add (O)388`, `player_add (O)390`, `player_add (O)330`, …) until no slot is empty.
+2. Leave the farmhouse. Expect a chest lying on the ground at your feet, and page 2 of the welcome saying "Your inventory was full, so a chest has been dropped at your feet. Pick it up …". In the SMAPI log, expect `Inventory full at the first farm exit: dropped the starter chest at the player's feet.`
+3. Pick the chest up. It should be an ordinary placeable chest.
+
+E3 (villager not found in the game):
+4. This is reproducible only with a villager-adding mod. Select one of that mod's villagers on the NPCs tab, save, quit, remove the mod, and load the save. Open F8 → Plan. Expect "<name>: not found in the game" in gray, and in the SMAPI log a Warn line: `Configured villager '<name>' was not found in the game …`.
+5. Without such a mod, mark this as "not reproducible in game". The NPCs tab only lists villagers the game has, so a missing one cannot be selected in vanilla.
+
+E5 (a villager you have not met yet, to decide the open question):
+6. On a save with a villager you have never talked to, select that villager on the NPCs tab. The next day, walk past them with a planned item.
+7. Note:
+   - whether "Gave … to …" appears;
+   - whether the item count drops;
+   - what the Social tab shows for that villager (listed or not, hearts, gift boxes);
+   - any SMAPI error lines.
+
+E6 (the daily-limit log line):
+8. On a day when a villager is planned, give them a gift by hand first, then walk past them. Expect no gift and no message in the game, and in `SMAPI-latest.txt` a Debug line: `Skipped delivery to <name>: the gift limit (one per day, two per week) is already reached.` It appears once, not every second.
+
+E1 (an item that cannot be handed over):
+9. **Not reproducible in game.** A planned item is always one that was in a farm chest, and that the villager loves or likes, when the plan was made. To fail, it would have to stop existing as a giftable object between the evening and the delivery. That only happens if a mod that adds the item is removed while a stored plan still names it, or if the save data is edited. The behavior is covered by the `DeliveryRuleTests` unit tests instead.
