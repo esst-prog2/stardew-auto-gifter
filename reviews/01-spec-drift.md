@@ -138,3 +138,31 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 31/31 green (28 + 3).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 01d: A4, active warning and correct Plan-tab text)
+
+Spec, written before the code:
+- `daily-plan-review`, "Reason shown for configured NPCs with no gift": the inactive message names the fix for the cause. With no chest marked: "Mod inactive: open a chest on your farm and press G to mark it." With more than one marked: "Mod paused: more than one chest is marked. Open each extra chest and press G to unmark it until only one remains." Three new scenarios.
+- `daily-plan-review`, "Warnings and info panel":
+  - the active warning is the HUD message "Auto-Gifter paused: more than one chest is marked. Unmark all but one with G.";
+  - it is shown once when a conflict starts (detected by the marking key, the menu opening, or the periodic check), not repeated while the conflict lasts, and shown again if the conflict starts again;
+  - three new scenarios.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/MarkingConflictTests.cs`, 8 tests. The expected values, including the exact texts, come from the spec:
+- `ShouldNotify` for all four combinations of before and now;
+- the HUD text;
+- the Plan-tab message for 0, 1 and 2 marked chests.
+
+Code:
+- `Core/MarkingConflict.cs` (new, pure): `HudMessage`, `ShouldNotify(wasConflict, isConflict)`, `InactivePlanMessage(markedChestCount)`.
+- `ModEntry.cs`:
+  - new `_wasMarkingConflict` field, reset on save load;
+  - new `CheckMarkingConflict`, which shows the HUD message (error style) only when a conflict starts;
+  - it is called after the chest-marking key, when F8 opens, and on the 4-second sparkle check.
+- `Menus/ModMainMenu.cs`: takes the marked-chest count instead of a bool, and the Plan tab shows `InactivePlanMessage`. The red line on the Warnings tab is unchanged.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 39/39 green (31 + 8).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.

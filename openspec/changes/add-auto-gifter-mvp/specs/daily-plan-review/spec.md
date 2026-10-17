@@ -46,7 +46,7 @@ The menu SHALL show one row per configured NPC that has an item selected for the
 - **THEN** that NPC receives no automatic gift the next day, even though the mod had selected an eligible item for them
 
 ### Requirement: Reason shown for configured NPCs with no gift
-For each configured NPC who does not have a planned item for the next day — either because no eligible loved or liked item is available in the farm-wide pool, or because they have already reached the weekly friendship-point-counting gift limit — the preview SHALL show a row explaining why, instead of silently omitting them. If the mod is inactive (no single valid anchor chest currently marked), the preview SHALL show one explanatory message instead of per-NPC rows.
+For each configured NPC who does not have a planned item for the next day — either because no eligible loved or liked item is available in the farm-wide pool, or because they have already reached the weekly friendship-point-counting gift limit — the preview SHALL show a row explaining why, instead of silently omitting them. If the mod is inactive (no single valid anchor chest currently marked), the preview SHALL show one explanatory message instead of per-NPC rows, and that message SHALL tell the player how to fix the specific cause: when no chest is marked, "Mod inactive: open a chest on your farm and press G to mark it."; when more than one chest is marked, "Mod paused: more than one chest is marked. Open each extra chest and press G to unmark it until only one remains."
 
 #### Scenario: Configured NPC has no eligible item
 - **WHEN** a configured NPC has no eligible loved or liked item anywhere in the farm-wide pool
@@ -59,6 +59,18 @@ For each configured NPC who does not have a planned item for the next day — ei
 #### Scenario: Mod inactive
 - **WHEN** no chest is currently marked as the anchor, or more than one is
 - **THEN** the preview shows a single message explaining the mod is inactive, instead of per-NPC rows
+
+#### Scenario: Mod inactive because no chest is marked
+- **WHEN** no chest is currently marked as the anchor
+- **THEN** the preview's message is "Mod inactive: open a chest on your farm and press G to mark it."
+
+#### Scenario: Mod paused because more than one chest is marked
+- **WHEN** more than one chest currently carries the sentinel color
+- **THEN** the preview's message is "Mod paused: more than one chest is marked. Open each extra chest and press G to unmark it until only one remains."
+
+#### Scenario: Exactly one chest is marked
+- **WHEN** exactly one chest currently carries the sentinel color
+- **THEN** the preview shows the per-NPC rows, and no inactive message
 
 ### Requirement: Configured NPCs selected from the mod menu
 The mod menu SHALL include a tab listing every villager in the game, each with a checkbox reflecting whether the mod should consider gifting them. Checking or unchecking a villager SHALL take effect starting with the next plan computation. This selection SHALL be the sole source of which NPCs the mod considers (no separate configuration-file list). The NPCs tab SHALL offer the same starting-letter filter described for the blocklist editor below.
@@ -150,7 +162,7 @@ If, when the day ends, there is no plan for the next day, or the only one is ina
 - **THEN** the mod computes the plan for day 11 again when day 10 ends
 
 ### Requirement: Warnings and info panel
-The mod menu SHALL include a dedicated warnings/info panel, opened from the main menu, that documents conditions the player should avoid because they could interfere with the mod's operation — including applying the reserved sentinel color to any chest other than through the mod's own chest-marking action, and marking more than one chest as the mod's anchor at the same time. When the mod detects that more than one chest currently carries the sentinel color, it SHALL additionally show an active warning, not just the static panel, until the conflict is resolved.
+The mod menu SHALL include a dedicated warnings/info panel, opened from the main menu, that documents conditions the player should avoid because they could interfere with the mod's operation — including applying the reserved sentinel color to any chest other than through the mod's own chest-marking action, and marking more than one chest as the mod's anchor at the same time. When the mod detects that more than one chest currently carries the sentinel color, it SHALL additionally show an active warning, not just the static panel, until the conflict is resolved. The active warning SHALL be a HUD message, "Auto-Gifter paused: more than one chest is marked. Unmark all but one with G.", shown once at the moment the mod detects that a conflict has started (when the chest-marking key creates it, when the menu is opened, or at a periodic check every few seconds), and SHALL NOT be repeated while the same conflict lasts. If the conflict is resolved and later starts again, the HUD message SHALL be shown again. While the conflict lasts, the warnings panel SHALL also show a line stating it.
 
 #### Scenario: Player opens the warnings panel
 - **WHEN** the player opens the warnings/info panel from the mod menu
@@ -159,3 +171,15 @@ The mod menu SHALL include a dedicated warnings/info panel, opened from the main
 #### Scenario: Active warning shown for a marking conflict
 - **WHEN** the mod detects more than one chest currently carrying the reserved sentinel color
 - **THEN** the mod shows the player an active warning about the conflict, in addition to the static info in the warnings panel
+
+#### Scenario: HUD message when a conflict starts
+- **WHEN** at the previous check at most one chest was marked, and now more than one is
+- **THEN** the mod shows the HUD message "Auto-Gifter paused: more than one chest is marked. Unmark all but one with G."
+
+#### Scenario: No repeated HUD message while the conflict lasts
+- **WHEN** at the previous check more than one chest was marked, and more than one still is
+- **THEN** the mod does not show the HUD message again
+
+#### Scenario: No HUD message without a conflict
+- **WHEN** at most one chest is marked now, whether or not more than one was marked at the previous check
+- **THEN** the mod does not show the HUD message
