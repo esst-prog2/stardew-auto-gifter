@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -32,11 +33,7 @@ namespace StardewAutoGifter.Delivery
             foreach (PlannedGift gift in plan.PendingDeliveries().ToList())
             {
                 NPC? npc = Game1.getCharacterFromName(gift.NpcName);
-                if (npc == null || npc.currentLocation != Game1.player.currentLocation)
-                    continue;
-
-                float distance = Vector2.Distance(Game1.player.Tile, npc.Tile);
-                if (distance > ProximityThresholdTiles)
+                if (!IsInRange(npc))
                     continue;
 
                 if (!AnchorStateNow().IsActive)
@@ -49,11 +46,7 @@ namespace StardewAutoGifter.Delivery
             foreach (PlannedGift gift in plan.PendingNoGiftNotifications().ToList())
             {
                 NPC? npc = Game1.getCharacterFromName(gift.NpcName);
-                if (npc == null || npc.currentLocation != Game1.player.currentLocation)
-                    continue;
-
-                float distance = Vector2.Distance(Game1.player.Tile, npc.Tile);
-                if (distance > ProximityThresholdTiles)
+                if (!IsInRange(npc))
                     continue;
 
                 if (!AnchorStateNow().IsActive)
@@ -62,6 +55,16 @@ namespace StardewAutoGifter.Delivery
                 ShowNoGiftNotice(gift, npc);
             }
         }
+
+        /// <summary>
+        /// Whether the NPC is close enough for a hand-off or notice: in the player's location and
+        /// within <see cref="ProximityThresholdTiles"/> (player tile to NPC tile). See
+        /// specs/proximity-delivery - "Automatic hand-off within a short distance".
+        /// </summary>
+        private static bool IsInRange([NotNullWhen(true)] NPC? npc)
+            => npc != null
+               && npc.currentLocation == Game1.player.currentLocation
+               && Vector2.Distance(Game1.player.Tile, npc.Tile) <= ProximityThresholdTiles;
 
         private static void ShowNoGiftNotice(PlannedGift gift, NPC npc)
         {

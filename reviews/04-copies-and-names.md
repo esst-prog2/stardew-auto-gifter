@@ -97,3 +97,15 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 67/67 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 04d: D6)
+
+- `Delivery/ProximityDeliveryService.cs`: new private `IsInRange(NPC? npc)`, marked `[NotNullWhen(true)]` so the compiler still knows `npc` is not null afterwards. It is true when the NPC exists, is in the player's location, and is within `ProximityThresholdTiles` (1.5), measured player tile to NPC tile.
+- Both loops, the hand-off one and the notice one, call it instead of repeating the three checks.
+- No behavior change: the old code skipped when `distance > 1.5`, and the helper accepts `distance <= 1.5`, the same boundary. Tests unchanged.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning, and no new nullable warnings.
+- `dotnet test`: 67/67 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
