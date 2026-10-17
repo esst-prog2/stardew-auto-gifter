@@ -263,3 +263,14 @@ Run by the user on the build from commit `003b59d`. NPC2 was Emily, with Amethys
 Note on step 7: "target day 6" uses SMAPI's days-since-start count (spring 1 of year 1 is day 1). The line was logged as the checklist's day 3 ended, so it is consistent if that day was the 5th in-game day (spring 5), meaning checklist day 1 was spring 3. If checklist day 3 was spring 3 instead, the expected value would be 4, and this would be a deviation. The user's note says this was the 3rd play day. The exact in-game date was not recorded, so this is left open for the user to confirm. Nothing was changed.
 
 Result: 16 of 18 steps run, all 16 OK, no deviation found. A5 (greenhouse, steps 17-18) was not tested and stays open. Nothing was changed in the code or the spec.
+
+## Step 7 target-day question (step 01g)
+
+The user did not note which in-game date was checklist day 3, so the question stays open:
+- The log line appeared, and the feature works: a plan was computed automatically at the end of a day on which F8 was never opened, and it was delivered the next day (step 13).
+- What "target day 6" means is still open.
+
+How to check later:
+1. On a day with a known date, sleep without opening F8 that day.
+2. Compare the target day in the log line `No active plan for tomorrow; computed one automatically as the day ended (target day N).` with the date. SMAPI's days-since-start count is `(year - 1) * 112 + season index * 28 + day of month`, with spring = 0, summer = 1, fall = 2, winter = 3, and the target day is that count plus one.
+3. Example: sleeping on spring 10 of year 1 should log `target day 11`. Sleeping on summer 3 of year 1 should log `target day 32`.
