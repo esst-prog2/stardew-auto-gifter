@@ -126,6 +126,25 @@ The mod menu SHALL include a way to enable or disable restricting selection to t
 - **WHEN** the player disables the anchor-chest-only setting
 - **THEN** subsequent plan computations fall back to the farm-wide pool as usual when the anchor chest alone has nothing eligible
 
+### Requirement: Warnings and Settings text fits the menu
+The Warnings and Settings tabs SHALL wrap their text to the menu's width, breaking lines only between words; a single word wider than a whole line SHALL be put on a line of its own rather than split. Paragraphs SHALL be separated by one empty line. When the wrapped text is taller than the space available in the menu, the tab SHALL be scrollable with the mouse wheel, one line per step, with the same limits as the Plan tab: it SHALL NOT scroll above the first line, or further down than the point where the last line is visible, and SHALL NOT scroll at all when every line fits. No text SHALL be drawn outside the menu. On the Settings tab, clicking any visible line of the setting's own text SHALL toggle that setting, at the current scroll position; clicking its explanation text SHALL NOT.
+
+#### Scenario: Words that do not fit move to the next line
+- **WHEN** a line has room for 7 characters and the text is "aaa bbb ccc"
+- **THEN** the text is shown as the lines "aaa bbb" and "ccc"
+
+#### Scenario: A word wider than a whole line
+- **WHEN** a line has room for 3 characters and the text is "abcdef gh"
+- **THEN** the text is shown as the lines "abcdef" and "gh", without splitting "abcdef"
+
+#### Scenario: Paragraphs separated by one empty line
+- **WHEN** the paragraphs "aa" and "bb" both fit on one line
+- **THEN** they are shown as the lines "aa", an empty line, and "bb"
+
+#### Scenario: Cannot scroll past the last line
+- **WHEN** a tab's text is 20 lines, 16 lines fit, line 4 is at the top (so the last line, line 19, is visible), and the player scrolls down one step
+- **THEN** line 4 stays at the top
+
 ### Requirement: Blocklist editor lists the full item catalog
 The same menu SHALL open a blocklist editor that lists the game's full catalog of giftable items - the game's object items, which are the items that can be given to villagers (not just items currently in the chest) - each shown with a checkbox reflecting whether it is currently on the blocklist.
 

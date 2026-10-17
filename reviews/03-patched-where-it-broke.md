@@ -92,3 +92,35 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 53/53 green (50 + 3).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged, and the file itself is unchanged.
+
+## What we changed (step 03d: R3, Warnings and Settings text fits the menu)
+
+Spec, written before the code: new requirement `daily-plan-review`, "Warnings and Settings text fits the menu".
+- Text wraps only between words, and a word wider than a line gets a line of its own.
+- Paragraphs are separated by one empty line.
+- When the text is taller than the menu, the tab scrolls one line per wheel step, with the Plan tab's limits.
+- No text is drawn outside the menu.
+- On the Settings tab, only the setting's own lines toggle it, at the current scroll position.
+- Four scenarios with concrete values.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/TextLayoutTests.cs`, 4 tests, with the values from the scenarios. Each character is measured as 1 unit wide.
+- "aaa bbb ccc" with room for 7 → "aaa bbb", "ccc";
+- "abcdef gh" with room for 3 → "abcdef", "gh";
+- the paragraphs "aa" and "bb" → "aa", "", "bb";
+- 20 lines, 16 fit, top line 4, scroll down → stays at 4.
+
+Code:
+- `Core/TextLayout.cs` (new, pure): `Wrap(text, measure, maxWidth)` and `Paragraphs(paragraphs, measure, maxWidth)`. The menu's own `WrapText` now delegates to it, so there is one wrapping rule.
+- `Menus/ModMainMenu.cs`:
+  - The Warnings and Settings tabs are built as line lists (`BuildWarningsLines`, `BuildSettingsLines`). Only the lines that fit are drawn (`DrawPanelLines`, 16 lines from y+96, line height 28).
+  - Both tabs scroll with the mouse wheel through `ListScroll.Scroll`.
+  - The Settings click is a hit test on the scrolled line, true only for the setting's own lines. It replaces the fixed `_anchorChestOnlyRowBounds`.
+- Two small visual changes come from the spec's "one empty line" between paragraphs:
+  - the gap between Warnings paragraphs grows from 12 px to one line (28 px), and before the red line from 20 px to 28 px;
+  - the Settings explanation starts at y+152 instead of y+160.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 57/57 green (53 + 4).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.

@@ -50,7 +50,6 @@ namespace StardewAutoGifter.Menus
         private readonly Rectangle _blocklistTabBounds;
         private readonly Rectangle _settingsTabBounds;
         private readonly Rectangle _warningsTabBounds;
-        private readonly Rectangle _anchorChestOnlyRowBounds;
 
         private readonly HashSet<char> _blocklistLetters = new();
         private readonly HashSet<char> _npcsLetters = new();
@@ -59,6 +58,15 @@ namespace StardewAutoGifter.Menus
         private int _blocklistScrollIndex;
         private int _npcsScrollIndex;
         private int _planScrollIndex;
+        private int _warningsScrollIndex;
+        private int _settingsScrollIndex;
+
+        /// <summary>Top of the Warnings/Settings text, and its line height. See specs/daily-plan-review - "Warnings and Settings text fits the menu".</summary>
+        private const int PanelTextOffset = 96;
+        private const int PanelLineHeight = 28;
+
+        /// <summary>How many text lines fit on the Warnings/Settings tabs, with the same bottom margin as the row lists.</summary>
+        private int VisiblePanelLines => Math.Max(1, (height - PanelTextOffset - 40) / PanelLineHeight);
 
         /// <summary>How many list rows fit below the tab bar / letter bar; the same on every tab.</summary>
         private int VisibleRows => Math.Max(1, (height - ListStartOffset - 40) / RowHeight);
@@ -92,7 +100,6 @@ namespace StardewAutoGifter.Menus
             _blocklistTabBounds = new Rectangle(xPositionOnScreen + 16 + (TabWidth + 8) * 2, tabY, TabWidth, TabHeight);
             _settingsTabBounds = new Rectangle(xPositionOnScreen + 16 + (TabWidth + 8) * 3, tabY, TabWidth, TabHeight);
             _warningsTabBounds = new Rectangle(xPositionOnScreen + 16 + (TabWidth + 8) * 4, tabY, TabWidth, TabHeight);
-            _anchorChestOnlyRowBounds = new Rectangle(xPositionOnScreen + 32, yPositionOnScreen + 96, width - 64, RowHeight - 8);
         }
 
         private Rectangle GetLetterBoxBounds(int rowY, int letterIndex)
@@ -169,29 +176,7 @@ namespace StardewAutoGifter.Menus
 
         /// <summary>Splits text into lines that each fit within the given width, breaking on word boundaries.</summary>
         private static List<string> WrapText(SpriteFont font, string text, int maxWidth)
-        {
-            var lines = new List<string>();
-            var current = "";
-
-            foreach (string word in text.Split(' '))
-            {
-                string candidate = current.Length == 0 ? word : current + " " + word;
-                if (font.MeasureString(candidate).X > maxWidth && current.Length > 0)
-                {
-                    lines.Add(current);
-                    current = word;
-                }
-                else
-                {
-                    current = candidate;
-                }
-            }
-
-            if (current.Length > 0)
-                lines.Add(current);
-
-            return lines;
-        }
+            => TextLayout.Wrap(text, s => font.MeasureString(s).X, maxWidth);
 
         /// <summary>Draws word-wrapped text starting at (x, y), returning the y position just below the last line.</summary>
         private static int DrawWrappedText(SpriteBatch b, SpriteFont font, string text, int x, int y, int maxWidth, Color color, int lineHeight = 28)
@@ -344,25 +329,25 @@ namespace StardewAutoGifter.Menus
             }
         }
 
-        private void DrawSettingsTab(SpriteBatch b)
+        /// <summary>The Settings tab as wrapped lines: the setting's own lines first (clickable), then an empty line and its explanation.</summary>
+        private List<(string Text, Color Color)> BuildSettingsLines(out int settingLineCount)
         {
             string checkbox = _settingsStore.AnchorChestOnly ? "[x]" : "[ ]";
-            DrawWrappedText(
-                b, Game1.smallFont,
-                $"{checkbox} Only use the marked chest (ignore other farm chests)",
-                _anchorChestOnlyRowBounds.X, _anchorChestOnlyRowBounds.Y, ContentWidth, Game1.textColor);
+            List<string> settingLines = WrapText(Game1.smallFont, $"{checkbox} Only use the marked chest (ignore other farm chests)", ContentWidth);
+            settingLineCount = settingLines.Count;
 
-            DrawWrappedText(
-                b, Game1.smallFont,
-                "When unchecked (default), the mod tries the marked chest first and falls back to every chest on your farm if it doesn't have what's needed.",
-                xPositionOnScreen + 32, yPositionOnScreen + 160, ContentWidth, Color.Gray);
+            var lines = new List<(string Text, Color Color)>();
+            foreach (string line in settingLines)
+                lines.Add((line, Game1.textColor));
+            lines.Add(("", Game1.textColor));
+            foreach (string line in WrapText(Game1.smallFont, "When unchecked (default), the mod tries the marked chest first and falls back to every chest on your farm if it doesn't have what's needed.", ContentWidth))
+                lines.Add((line, Color.Gray));
+            return lines;
         }
 
-        private void DrawWarningsTab(SpriteBatch b)
+        /// <summary>The Warnings tab as wrapped lines: the paragraphs, then the red active-warning line while a marking conflict lasts.</summary>
+        private List<(string Text, Color Color)> BuildWarningsLines()
         {
-            int rowY = yPositionOnScreen + 96;
-            int x = xPositionOnScreen + 32;
-
             string[] paragraphs =
             {
                 "This mod marks a chest as its on/off anchor using a reserved color that the game's normal chest color picker cannot produce.",
@@ -371,21 +356,39 @@ namespace StardewAutoGifter.Menus
                 "Picking up the marked chest and placing it again resets its color (and name), which un-marks it - if that happens, just mark it again with the keybind.",
             };
 
-            foreach (string paragraph in paragraphs)
-            {
-                rowY = DrawWrappedText(b, Game1.smallFont, paragraph, x, rowY, ContentWidth, Game1.textColor);
-                rowY += 12;
-            }
+            var lines = new List<(string Text, Color Color)>();
+            foreach (string line in TextLayout.Paragraphs(paragraphs, s => Game1.smallFont.MeasureString(s).X, ContentWidth))
+                lines.Add((line, Game1.textColor));
 
             if (_hasMarkingConflict)
             {
-                rowY += 8;
-                DrawWrappedText(
-                    b, Game1.smallFont,
-                    "Active warning: more than one chest currently carries the reserved color.",
-                    x, rowY, ContentWidth, Color.Red);
+                lines.Add(("", Game1.textColor));
+                foreach (string line in WrapText(Game1.smallFont, "Active warning: more than one chest currently carries the reserved color.", ContentWidth))
+                    lines.Add((line, Color.Red));
+            }
+            return lines;
+        }
+
+        /// <summary>Draws only the lines that fit, from the given scroll position, so no text spills outside the menu.</summary>
+        private void DrawPanelLines(SpriteBatch b, List<(string Text, Color Color)> lines, int topLine)
+        {
+            int y = yPositionOnScreen + PanelTextOffset;
+            for (int row = 0; row < VisiblePanelLines; row++)
+            {
+                int index = ListScroll.ItemIndexAtRow(topLine, row, lines.Count);
+                if (index < 0)
+                    break;
+
+                b.DrawString(Game1.smallFont, lines[index].Text, new Vector2(xPositionOnScreen + 32, y), lines[index].Color);
+                y += PanelLineHeight;
             }
         }
+
+        private void DrawSettingsTab(SpriteBatch b)
+            => DrawPanelLines(b, BuildSettingsLines(out _), _settingsScrollIndex);
+
+        private void DrawWarningsTab(SpriteBatch b)
+            => DrawPanelLines(b, BuildWarningsLines(), _warningsScrollIndex);
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
         {
@@ -409,7 +412,18 @@ namespace StardewAutoGifter.Menus
 
         private void HandleSettingsClick(int x, int y)
         {
-            if (!_anchorChestOnlyRowBounds.Contains(x, y))
+            // Only the setting's own lines toggle it, at the current scroll position.
+            int top = yPositionOnScreen + PanelTextOffset;
+            if (x < xPositionOnScreen + 32 || x > xPositionOnScreen + width - 32 || y < top)
+                return;
+
+            int row = (y - top) / PanelLineHeight;
+            if (row >= VisiblePanelLines)
+                return;
+
+            List<(string Text, Color Color)> lines = BuildSettingsLines(out int settingLineCount);
+            int index = ListScroll.ItemIndexAtRow(_settingsScrollIndex, row, lines.Count);
+            if (index < 0 || index >= settingLineCount)
                 return;
 
             _settingsStore.ToggleAnchorChestOnly();
@@ -500,6 +514,10 @@ namespace StardewAutoGifter.Menus
                 _npcsScrollIndex = ListScroll.Scroll(_npcsScrollIndex, rowsDown, _filteredVillagers.Count, VisibleRows);
             else if (_activeTab == Tab.Plan && _plan.IsActive)
                 _planScrollIndex = ListScroll.Scroll(_planScrollIndex, rowsDown, _plan.Gifts.Count, VisibleRows);
+            else if (_activeTab == Tab.Warnings)
+                _warningsScrollIndex = ListScroll.Scroll(_warningsScrollIndex, rowsDown, BuildWarningsLines().Count, VisiblePanelLines);
+            else if (_activeTab == Tab.Settings)
+                _settingsScrollIndex = ListScroll.Scroll(_settingsScrollIndex, rowsDown, BuildSettingsLines(out _).Count, VisiblePanelLines);
         }
     }
 }
