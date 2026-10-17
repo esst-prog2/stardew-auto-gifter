@@ -56,3 +56,10 @@ in between   at the start of each day, picks for each NPC the item they
 - C#/SMAPI is new for me, learning the modding API (fetching NPC gift preferences, tracking player position, handling item quantities) will take some time, so it's best started early.
 - Open question: whether the SMAPI API offers an efficient way to check player-NPC distance on a tick event without a meaningful performance cost, worth testing with an early prototype.
 - No personal or sensitive data is involved, everything comes from the player's own save file (in this case, mine).
+
+## 6. Building and running the mod
+
+- **Requirements to play:** Stardew Valley 1.6.14 or newer and SMAPI 4.5 or newer. Both minimums are also declared in `StardewAutoGifter/manifest.json` (`MinimumGameVersion`, `MinimumApiVersion`), so SMAPI refuses to load the mod on older versions.
+- **The mod project builds only on a machine with the game and SMAPI installed.** The build package (`Pathoschild.Stardew.ModBuildConfig`) finds the local Stardew Valley install and references the game and SMAPI DLLs from there.
+- **Every build copies the mod into the game's `Mods` folder.** Do not build while the game is running: the game keeps the mod's DLL locked, and the build fails.
+- **The unit tests (`StardewAutoGifter.Tests`) do not need the game.** They compile only the game-independent `StardewAutoGifter/Core/` code, so `dotnet test StardewAutoGifter.Tests` runs with just the .NET SDK.

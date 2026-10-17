@@ -6,6 +6,7 @@
   "UniqueID": "TamaraT0811.AutoGifter",
   "EntryDll": "StardewAutoGifter.dll",
   "MinimumApiVersion": "4.5.0",
+  "MinimumGameVersion": "1.6.14",
   "Dependencies": [],
   "UpdateKeys": []
 }
