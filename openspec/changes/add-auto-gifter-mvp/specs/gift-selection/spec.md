@@ -162,7 +162,15 @@ The first time the player exits the farmhouse onto the farm in a save, the mod S
 - **THEN** the mod does not show the welcome message or add another chest
 
 ### Requirement: Gift-limit state respected during selection
-The mod SHALL exclude an NPC from receiving a selection for a given day if the game's own per-NPC gift tracking shows that NPC has already reached the weekly limit of friendship-point-counting gifts, even if an otherwise-eligible item exists in the pool. Because the plan is computed for the next day, which is a new day for the daily limit, plan computation SHALL NOT exclude an NPC just because they already received a gift today; the daily limit is checked only at delivery time (see specs/proximity-delivery - "Gift-limit re-checked at delivery time").
+The mod SHALL exclude an NPC from receiving a selection for a given day if the game's own per-NPC gift tracking shows that NPC has already reached the weekly limit of friendship-point-counting gifts, even if an otherwise-eligible item exists in the pool. Because the plan is computed for the next day, which is a new day for the daily limit, plan computation SHALL NOT exclude an NPC just because they already received a gift today; the daily limit is checked only at delivery time (see specs/proximity-delivery - "Gift-limit re-checked at delivery time"). The weekly limit SHALL be judged for the plan's target day, not for today: the week begins on Sunday, so when the target day starts a new week compared with today (planning on Saturday evening for Sunday), the mod SHALL treat the NPC's weekly count as 0. This rule SHALL apply both when the plan is computed from the menu and when it is computed automatically at the end of the day. See `reviews/03-week-rollover-source.md` for the source and the day-of-week formula.
+
+#### Scenario: Saturday evening planning for Sunday
+- **WHEN** the plan is computed on Saturday evening for Sunday, and the game's own tracking shows the NPC already reached the weekly limit this week (two gifts) but received none today
+- **THEN** the mod can still select an item for that NPC for Sunday, because Sunday starts a new week
+
+#### Scenario: Weekday planning for the next day in the same week
+- **WHEN** the plan is computed on a weekday evening for the next day in the same week, and the NPC already reached the weekly limit this week (two gifts) but received none today
+- **THEN** the mod does not select any item for that NPC
 
 #### Scenario: NPC already reached the weekly friendship-gift cap
 - **WHEN** the game's own tracking shows the NPC has already received the maximum number of friendship-point-counting gifts for the current week

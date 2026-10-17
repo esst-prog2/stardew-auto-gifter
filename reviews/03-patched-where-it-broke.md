@@ -55,3 +55,40 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 50/50 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 03b: R1 expected-value source)
+
+- `reviews/03-week-rollover-source.md` (new), committed before any R1 test:
+  - the Stardew Valley Wiki Friendship quote "the week begins on Sunday";
+  - the weekday and week formula on SMAPI's day count;
+  - the three expected values;
+  - what is not covered.
+
+## What we changed (step 03c: R1 tests and implementation)
+
+Spec, written before the code: `gift-selection`, "Gift-limit state respected during selection".
+- The weekly limit is judged for the plan's target day. Weeks begin on Sunday, so planning on Saturday evening for Sunday treats the weekly count as 0.
+- This applies to planning from the menu and to the day-end automatic plan.
+- Two new scenarios: Saturday evening for Sunday, and a weekday for the next day.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/TargetDayGiftLimitTests.cs`, 3 tests, using exactly the three expected values from `reviews/03-week-rollover-source.md`:
+- day 6 → 7 with week count 2: true;
+- day 2 → 3 with week count 2: false;
+- day 3 → 3 with today count 1: false.
+
+Code:
+- `Core/TargetDayGiftLimit.cs` (new, pure): `CanGiveGiftOn(targetDay, today, giftsToday, giftsThisWeek)`.
+  - The daily count becomes 0 unless the target day is today.
+  - The weekly count becomes 0 when `StartsNewWeek(targetDay, today)`, that is, when `WeekOf(day) = day / 7` differs.
+  - It then calls the unchanged `GiftLimitPolicy.CanGiveGift`.
+- `GiftSelection/FriendshipGiftTracker.cs`: new `CanGiveGiftOn(npcName, targetDay, today)`, reading the game's counts.
+- `Planning/PlanComputer.cs`: takes `today` as well, and uses `CanGiveGiftOn` instead of `CanPlanGiftForNextDay`.
+- `ModEntry.cs`: `ComputeNextPlan` passes `Today`. The menu and the day-end automatic plan both go through it.
+- `GiftLimitPolicy.cs` is not touched. Lines 21 (`CanGiveGift`) and 29 (`CanPlanGiftForNextDay`) are unchanged, so the HW5 red-green checks still rely on them. `CanPlanGiftForNextDay` is now used only by its HW5 tests and by `FriendshipGiftTracker.CanPlanGiftForNextDay`, which nothing calls any more. This is noted for review 04.
+- Delivery is unchanged: it still checks today's counts through `CanGiveGift`.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 53/53 green (50 + 3).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged, and the file itself is unchanged.

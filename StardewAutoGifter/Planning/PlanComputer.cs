@@ -22,13 +22,16 @@ namespace StardewAutoGifter.Planning
             bool includeLikedItems,
             bool anchorChestOnly,
             IGiftTasteProvider tasteProvider,
-            int targetDay)
+            int targetDay,
+            int today)
         {
             var plan = new DailyPlan { IsActive = true, TargetDay = targetDay };
 
             foreach (string npcName in configuredNpcNames)
             {
-                if (!FriendshipGiftTracker.CanPlanGiftForNextDay(npcName))
+                // specs/gift-selection - "Gift-limit state respected during selection": judged for
+                // the target day, so Saturday evening's weekly count does not block Sunday.
+                if (!FriendshipGiftTracker.CanGiveGiftOn(npcName, targetDay, today))
                 {
                     plan.Gifts.Add(new PlannedGift(npcName, GiftPlanStatus.WeeklyCapReached));
                     continue;

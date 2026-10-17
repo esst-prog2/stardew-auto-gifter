@@ -19,7 +19,19 @@ namespace StardewAutoGifter.GiftSelection
             return !GiftLimitPolicy.CanGiveGift(friendship.GiftsToday, friendship.GiftsThisWeek);
         }
 
-        /// <summary>Planning-time check (evening, for the next day); see <see cref="GiftLimitPolicy.CanPlanGiftForNextDay"/>.</summary>
+        /// <summary>
+        /// Planning-time check for a plan's target day, used by plan computation (menu and day end).
+        /// See <see cref="TargetDayGiftLimit.CanGiveGiftOn"/> (HW6 review 03, R1).
+        /// </summary>
+        public static bool CanGiveGiftOn(string npcName, int targetDay, int today)
+        {
+            if (!Game1.player.friendshipData.TryGetValue(npcName, out Friendship? friendship) || friendship == null)
+                return true;
+
+            return TargetDayGiftLimit.CanGiveGiftOn(targetDay, today, friendship.GiftsToday, friendship.GiftsThisWeek);
+        }
+
+        /// <summary>Planning-time check (evening, for the next day); see <see cref="GiftLimitPolicy.CanPlanGiftForNextDay"/>. No longer used by plan computation since HW6 review 03c.</summary>
         public static bool CanPlanGiftForNextDay(string npcName)
         {
             if (!Game1.player.friendshipData.TryGetValue(npcName, out Friendship? friendship) || friendship == null)
