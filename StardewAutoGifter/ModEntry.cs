@@ -155,7 +155,7 @@ namespace StardewAutoGifter
             // in-game), so this uses the paged overload instead - one short message per page, with
             // the game's own next-page arrow, like a normal conversation.
             // Key names come from config.json, so a remapped key is named correctly (HW6 review 02d).
-            Game1.drawObjectDialogue(WelcomeText.Pages(_config.MenuKey.ToString(), _config.ChestMarkKey.ToString()));
+            Game1.drawObjectDialogue(WelcomeText.Pages(_config.MenuKey.ToString(), _config.ChestMarkKey.ToString(), _settingsStore.AnchorChestOnly));
 
             _onboardingStore.MarkWelcomeShown();
         }

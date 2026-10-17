@@ -143,11 +143,19 @@ When an NPC has no loved or liked item in the farm-wide pool that is not blockli
 - **THEN** the NPC is not assigned any item for that day
 
 ### Requirement: Starter chest and welcome message on first farm exit
-The first time the player exits the farmhouse onto the farm in a save, the mod SHALL add one unplaced chest to the player's inventory and show a one-time welcome message, in English, explaining how to place and mark a chest and how to open the mod menu. Wherever the message names a key, it SHALL use the names of the keys currently set in the mod's configuration file (the chest-marking key, G by default, and the menu key, F8 by default), never a fixed key name. This message SHALL clearly call out, as important information (not buried in passing), that selecting an NPC or editing the plan does not affect the current day - automatic gifting only begins the following day. The mod SHALL NOT repeat this for that save once shown.
+The first time the player exits the farmhouse onto the farm in a save, the mod SHALL add one unplaced chest to the player's inventory and show a one-time welcome message, in English, explaining how to place and mark a chest and how to open the mod menu. Wherever the message names a key, it SHALL use the names of the keys currently set in the mod's configuration file (the chest-marking key, G by default, and the menu key, F8 by default), never a fixed key name. Every other part of the message that depends on a setting SHALL follow that setting's current value: the pages about the fallback to other farm chests SHALL match the save's current "anchor chest only" setting. This message SHALL clearly call out, as important information (not buried in passing), that selecting an NPC or editing the plan does not affect the current day - automatic gifting only begins the following day. The mod SHALL NOT repeat this for that save once shown.
 
 #### Scenario: First exit from the farmhouse
 - **WHEN** the player warps from the farmhouse onto the farm for the first time in a save
 - **THEN** the mod adds a chest item to the player's inventory and displays a one-time English welcome message that clearly explains gifting only starts the next day
+
+#### Scenario: Welcome pages with the default settings
+- **WHEN** the welcome message is shown with the menu key F8, the chest-marking key G, and the "anchor chest only" setting off
+- **THEN** it shows exactly these 8 pages, in this order: (1) "Welcome to Auto-Gifter!"; (2) "A chest has been added to your inventory. Place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar."; (3) "Open the chest and press G to mark it as your gift chest - it will be renamed and sparkle occasionally so you can spot it."; (4) "That chest is checked FIRST for gifts. If it doesn't have what's needed, the mod falls back to every other chest on your farm."; (5) "You can turn that fallback off in the mod menu's Settings tab, to only ever use the marked chest."; (6) "Press F8 anytime to open the mod menu: choose which villagers to gift, preview and edit tomorrow's plan, manage your blocklist, and adjust settings."; (7) "IMPORTANT: automatic gifting always starts the NEXT day, never the same day."; (8) "Selecting a villager or editing the plan today has no effect on today - check the "Tomorrow's Plan" label in the Plan tab to see what's actually queued up."
+
+#### Scenario: Welcome pages when "anchor chest only" is already on
+- **WHEN** the welcome message is shown while the save's "anchor chest only" setting is already on (for example because the player turned it on from the mod menu before first leaving the farmhouse)
+- **THEN** page 4 is "That chest is your ONLY source of gifts: the fallback to every other chest on your farm is turned off.", page 5 is "You can turn that fallback back on in the mod menu's Settings tab, to also use every other chest on your farm.", and the other pages are unchanged
 
 #### Scenario: Welcome message names the default keys
 - **WHEN** the welcome message is shown, and the configuration uses the default keys

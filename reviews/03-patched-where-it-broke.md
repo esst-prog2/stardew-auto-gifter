@@ -124,3 +124,55 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 57/57 green (53 + 4).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 03e: R4, setting-derived values in the welcome text)
+
+Which welcome-text values come from a setting:
+- the two keys (`MenuKey` and `ChestMarkKey` in `config.json`), already parameters since 02d;
+- the save's "anchor chest only" setting, which pages 4 and 5 (the fallback pages) assumed was off.
+
+That setting is stored per save and can already be on at the first farm exit, if the player turns it on from F8 inside the farmhouse. `IncludeLikedItems` is not mentioned in the welcome text, so it needs no parameter.
+
+Spec, written before the code: `gift-selection`, "Starter chest and welcome message on first farm exit".
+- Every setting-dependent part follows the setting's current value.
+- New scenario "Welcome pages with the default settings": it lists all 8 pages exactly, in order.
+- New scenario "Welcome pages when "anchor chest only" is already on": it gives new texts for pages 4 and 5. Their wording is the assistant's and still needs the user's approval.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/WelcomeTextTests.cs`.
+- A `[Theory]` with one case per page (8 tests) against the default-settings scenario.
+- 2 tests for the "anchor chest only" variant: page 4, then page 5 plus the other pages unchanged.
+- The two 02d key-name tests now pass `anchorChestOnly: false`, with unchanged expected values.
+
+Code:
+- `Core/WelcomeText.cs`: `Pages(menuKey, chestMarkKey, anchorChestOnly)`. Pages 4 and 5 depend on `anchorChestOnly`.
+- `ModEntry.cs` passes `_settingsStore.AnchorChestOnly`.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 67/67 green (57 + 10).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## In-game checklist (C4, R1, R3)
+
+Not run yet: the user runs it in-game.
+
+C4 (remapped keys):
+1. With the game closed, set `"ChestMarkKey": "K"` and `"MenuKey": "F9"` in `D:\SteamLibrary\steamapps\common\Stardew Valley\Mods\StardewAutoGifter\config.json`.
+2. Start the game and load a save. Expect F9 to open the menu and F8 to do nothing. K marks a chest and G does nothing.
+3. Unmark all chests, then open F9 → Plan tab. Expect "Mod inactive: open a chest on your farm and press K to mark it.".
+4. Mark two chests with K. Expect the HUD message "… Unmark all but one with K." and the Plan tab saying "… press K to unmark it until only one remains.". Afterwards, unmark one of them.
+5. Start a new save, which also checks R4. At the first farm exit, expect "press K" on page 3 and "Press F9" on page 6. Before leaving the farmhouse in a second new save, turn on "Only use the marked chest" in F9 → Settings. Expect pages 4 and 5 to show the "ONLY source" and "turn that fallback back on" texts.
+6. Set both keys back to "G" and "F8".
+
+R1 (Saturday evening plan for Sunday):
+7. Pick a villager (for example Haley). By Saturday, she must have received 2 gifts this week: both Social-tab boxes are checked.
+8. Saturday evening: open F8 → Plan tab. Expect `[x] Haley -> …`, not "already reached this week's gift limit", because the plan is for Sunday, a new week.
+9. As a check of the other direction, do the same on a weekday evening with 2 gifts already this week. Expect "already reached this week's gift limit".
+10. Sleep on Saturday. On Sunday, walk past Haley. Expect "Gave … to Haley.". On the Social tab, one box is checked again for the new week.
+11. Optional, the day-end plan: on another Saturday with 2 gifts, do not open F8 that day. Sleep, and on Sunday walk past her. Expect "Gave … to Haley.".
+
+R3 (Warnings and Settings tabs, worst case):
+12. Mark two chests, so the red active-warning line is shown, and open F8 → Warnings. Expect no line outside the menu border. If the text is longer than the menu, the mouse wheel scrolls it one line at a time and stops at both ends. The red line is at the end.
+13. Open the Settings tab. Click the setting's text. Expect `[x]`/`[ ]` to toggle. Click the gray explanation text. Expect nothing to change.
+14. If the Settings or Warnings text does not need scrolling, expect the wheel to do nothing there.
