@@ -67,11 +67,11 @@ The mod menu SHALL include a way to enable or disable restricting selection to t
 - **THEN** subsequent plan computations fall back to the farm-wide pool as usual when the anchor chest alone has nothing eligible
 
 ### Requirement: Blocklist editor lists the full item catalog
-The same menu SHALL open a blocklist editor that lists the game's full catalog of item types (not just items currently in the chest), each shown with a checkbox reflecting whether it is currently on the blocklist.
+The same menu SHALL open a blocklist editor that lists the game's full catalog of giftable items - the game's object items, which are the items that can be given to villagers (not just items currently in the chest) - each shown with a checkbox reflecting whether it is currently on the blocklist.
 
 #### Scenario: Full catalog shown
 - **WHEN** the player opens the blocklist editor
-- **THEN** every enterable item type in the game's catalog is listed with its current blocklist checkbox state
+- **THEN** every giftable object item in the game's catalog is listed with its current blocklist checkbox state
 
 ### Requirement: Blocklist filter by starting letter
 The blocklist editor SHALL let the player filter the displayed item list by checking one or more starting-letter boxes (A-Z). When one or more letters are checked, only items whose name starts with one of the checked letters remain shown. When none are checked, all items are shown.

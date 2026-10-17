@@ -154,8 +154,12 @@ The first time the player exits the farmhouse onto the farm in a save, the mod S
 - **THEN** the mod does not show the welcome message or add another chest
 
 ### Requirement: Gift-limit state respected during selection
-The mod SHALL exclude an NPC from receiving a selection for a given day if the game's own per-NPC gift tracking shows that NPC has already reached the weekly limit of friendship-point-counting gifts, even if an otherwise-eligible item exists in the pool.
+The mod SHALL exclude an NPC from receiving a selection for a given day if the game's own per-NPC gift tracking shows that NPC has already reached the weekly limit of friendship-point-counting gifts, even if an otherwise-eligible item exists in the pool. Because the plan is computed for the next day, which is a new day for the daily limit, plan computation SHALL NOT exclude an NPC just because they already received a gift today; the daily limit is checked only at delivery time (see specs/proximity-delivery - "Gift-limit re-checked at delivery time").
 
 #### Scenario: NPC already reached the weekly friendship-gift cap
 - **WHEN** the game's own tracking shows the NPC has already received the maximum number of friendship-point-counting gifts for the current week
 - **THEN** the mod does not select any item for that NPC for that day, even if an eligible loved or liked item is present in the pool
+
+#### Scenario: NPC gifted today but under the weekly cap
+- **WHEN** the plan is computed for the next day, and the game's own tracking shows the NPC already received a gift today but has not reached the weekly limit
+- **THEN** the mod still selects an item for that NPC for the next day, subject to the other selection rules
