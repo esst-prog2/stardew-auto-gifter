@@ -1,4 +1,5 @@
 using StardewModdingAPI;
+using StardewAutoGifter.Core;
 
 namespace StardewAutoGifter.Blocklist
 {
@@ -18,9 +19,15 @@ namespace StardewAutoGifter.Blocklist
 
         public System.Collections.Generic.IReadOnlyCollection<string> BlockedItemIds => _data.BlockedItemIds;
 
-        public void Load()
+        /// <summary>Loads the saved data; a list stored as null is reset to empty with a Warn line (HW6 review 08c).</summary>
+        public void Load(IMonitor monitor)
         {
             _data = _store.Read() ?? new BlocklistData();
+
+            var warnings = new System.Collections.Generic.List<string>();
+            _data.BlockedItemIds = SaveDataRepair.SetOrEmpty(_data.BlockedItemIds, "BlockedItemIds", warnings);
+            foreach (string warning in warnings)
+                monitor.Log(warning, LogLevel.Warn);
         }
 
         private void Save() => _store.Write(_data);

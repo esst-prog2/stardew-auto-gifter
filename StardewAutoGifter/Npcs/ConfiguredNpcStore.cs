@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using StardewModdingAPI;
+using StardewAutoGifter.Core;
 
 namespace StardewAutoGifter.Npcs
 {
@@ -20,9 +21,15 @@ namespace StardewAutoGifter.Npcs
 
         public IReadOnlyCollection<string> SelectedNames => _data.SelectedNpcNames;
 
-        public void Load()
+        /// <summary>Loads the saved data; a list stored as null is reset to empty with a Warn line (HW6 review 08c).</summary>
+        public void Load(IMonitor monitor)
         {
             _data = _store.Read() ?? new ConfiguredNpcData();
+
+            var warnings = new System.Collections.Generic.List<string>();
+            _data.SelectedNpcNames = SaveDataRepair.SetOrEmpty(_data.SelectedNpcNames, "SelectedNpcNames", warnings);
+            foreach (string warning in warnings)
+                monitor.Log(warning, LogLevel.Warn);
         }
 
         private void Save() => _store.Write(_data);

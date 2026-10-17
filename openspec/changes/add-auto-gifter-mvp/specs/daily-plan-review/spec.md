@@ -193,6 +193,17 @@ The Warnings and Settings tabs SHALL wrap their text to the menu's width, breaki
 - **WHEN** a tab's text is 20 lines, 16 lines fit, line 4 is at the top (so the last line, line 19, is visible), and the player scrolls down one step
 - **THEN** line 4 stays at the top
 
+### Requirement: Damaged saved lists reset with a warning
+If the saved blocklist or the saved NPC selection is missing its list (stored as null), the mod SHALL load it as an empty list and SHALL write a warning naming the field to the log, instead of failing later when the list is used.
+
+#### Scenario: Saved blocklist list is null
+- **WHEN** the saved blocklist's item list is null
+- **THEN** the blocklist is loaded empty, and one warning naming "BlockedItemIds" is written to the log
+
+#### Scenario: Saved list is present
+- **WHEN** the saved blocklist's item list is present
+- **THEN** it is loaded as it is, and no warning is written
+
 ### Requirement: Blocklist editor lists the giftable item catalog
 The same menu SHALL open a blocklist editor that lists the game's full catalog of giftable items - the game's object items, which are the items that can be given to villagers (not just items currently in the chest) - each shown with a checkbox reflecting whether it is currently on the blocklist.
 
@@ -227,7 +238,7 @@ The player SHALL be able to check or uncheck an item's checkbox in the blocklist
 - **THEN** that item is removed from the blocklist and becomes eligible for selection again starting with the next plan computation
 
 ### Requirement: Edited plan carried into the next day
-Once the player closes the menu (or ends the day), the plan as edited (including any rows toggled off) SHALL be the plan executed during the next day; the mod SHALL NOT recompute or discard the player's edits when the new day starts. The next day's plan SHALL be stored with the save when the day ends, so that it is still the plan executed after the game is closed and the save is loaded again. When a new day starts, the stored plan SHALL become that day's plan only if its target day is the new day; otherwise the new day has no plan. If a stored row is damaged (marked as planned but without an item), the mod SHALL load it as having no eligible item, and SHALL write a warning naming that NPC to the log instead of hiding the damage.
+Once the player closes the menu (or ends the day), the plan as edited (including any rows toggled off) SHALL be the plan executed during the next day; the mod SHALL NOT recompute or discard the player's edits when the new day starts. The next day's plan SHALL be stored with the save when the day ends, so that it is still the plan executed after the game is closed and the save is loaded again. When a new day starts, the stored plan SHALL become that day's plan only if its target day is the new day; otherwise the new day has no plan. If a stored row is damaged (marked as planned but without an item), the mod SHALL load it as having no eligible item, and SHALL write a warning naming that NPC to the log instead of hiding the damage. The same SHALL apply to other damage: a stored plan whose target day is missing or below 1 SHALL be logged with a warning (it is then not used for any day), a stored row without a villager name SHALL be skipped with a warning, and a stored plan whose row list is missing (null) SHALL be loaded with no rows and a warning.
 
 #### Scenario: Toggled-off NPC stays excluded the next day
 - **WHEN** the player toggled off an NPC's row before ending the day
@@ -240,6 +251,18 @@ Once the player closes the menu (or ends the day), the plan as edited (including
 #### Scenario: Damaged stored plan row
 - **WHEN** the stored plan has a row for Haley that is marked as planned but has no item
 - **THEN** Haley's row is loaded as having no eligible item, and one warning naming Haley is written to the log
+
+#### Scenario: Stored plan without a valid target day
+- **WHEN** the stored plan's target day is 0
+- **THEN** one warning about the missing target day is written to the log, and the plan is not used for any day
+
+#### Scenario: Stored row without a villager name
+- **WHEN** the stored plan has a row with an empty villager name next to a complete row for Haley
+- **THEN** the nameless row is skipped, Haley's row is loaded, and one warning about the nameless row is written to the log
+
+#### Scenario: Stored plan without a row list
+- **WHEN** the stored plan's row list is missing (null)
+- **THEN** the plan is loaded with no rows, and one warning is written to the log
 
 #### Scenario: Undamaged stored plan
 - **WHEN** every stored plan row is complete

@@ -117,3 +117,30 @@ A5 (the same key twice):
 10. In the game, K opens the menu. With a chest open, K does not mark it.
 
 Afterwards, set the keys back to `"F8"` and `"G"`, and check that no key warning is logged.
+
+## What we changed (step 08c: B1, B4, B6)
+
+Spec, written before the code:
+- `daily-plan-review`, "Edited plan carried into the next day". A target day below 1 is logged, and the plan is then never used. A row without a villager name is skipped, with a warning. A missing (null) row list loads with no rows, with a warning. Three new scenarios.
+- New requirement `daily-plan-review`, "Damaged saved lists reset with a warning". A null blocklist or NPC-selection list loads empty, with a warning naming the field. Two scenarios.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/SaveDataRepairTests.cs`, 5 tests:
+- target day 0 → one target-day warning;
+- a nameless row next to Haley → only Haley is loaded, with one warning;
+- a null row list → no rows, with one warning;
+- a null saved set → empty, with one warning naming `BlockedItemIds`;
+- a present set → the same object, with no warning.
+
+Code:
+- `Core/StoredPlanData.cs`, `ToPlan(warnings)`: warns for `TargetDay < 1`. If `Gifts` is null, it returns no rows with a warning. It skips a null row, or a row with an empty name, with a warning (1-based row number). The existing E4 check (planned without an item) is unchanged.
+- `Core/SaveDataRepair.cs` (new, pure): `SetOrEmpty(saved, fieldName, warnings)`.
+- `Blocklist/BlocklistStore.cs` and `Npcs/ConfiguredNpcStore.cs`: `Load(IMonitor)` passes `BlockedItemIds` and `SelectedNpcNames` through `SetOrEmpty` and logs each warning at Warn.
+  - `OnboardingData` and `ModSettingsData` have no collections.
+  - The plan's list is handled in `ToPlan`, whose warnings `PlanStore.Load` already logs (05e).
+- `ModEntry.cs` passes `Monitor` to both `Load` calls.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build --no-incremental`: 0 errors, 0 warnings.
+- `dotnet test`: 90/90 green (85 + 5).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.

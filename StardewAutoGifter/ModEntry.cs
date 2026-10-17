@@ -98,8 +98,8 @@ namespace StardewAutoGifter
 
         private void OnSaveLoaded(object? sender, SaveLoadedEventArgs e)
         {
-            _blocklistStore.Load();
-            _configuredNpcStore.Load();
+            _blocklistStore.Load(Monitor);
+            _configuredNpcStore.Load(Monitor);
             _onboardingStore.Load();
             _settingsStore.Load();
             _todaysPlan = null;

@@ -30,15 +30,34 @@ namespace StardewAutoGifter.Core
         }
 
         /// <summary>
-        /// Rebuilds the plan. A damaged row (planned, but without an item) is loaded as having no
-        /// eligible item, and a warning naming the NPC is added to <paramref name="warnings"/> so the
-        /// caller can log it (specs/daily-plan-review - "Edited plan carried into the next day").
+        /// Rebuilds the plan, adding a warning to <paramref name="warnings"/> for every kind of damage
+        /// so the caller can log it (specs/daily-plan-review - "Edited plan carried into the next
+        /// day"): a target day below 1 (the plan is then never used), a missing row list (loaded with
+        /// no rows), a row without a villager name (skipped), and a planned row without an item
+        /// (loaded as having no eligible item).
         /// </summary>
         public DailyPlan ToPlan(List<string>? warnings = null)
         {
             var plan = new DailyPlan { TargetDay = TargetDay, IsActive = IsActive };
-            foreach (StoredGiftData gift in Gifts)
+
+            if (TargetDay < 1)
+                warnings?.Add($"Stored plan has no valid target day ({TargetDay}); it will not be used for any day.");
+
+            if (Gifts == null)
             {
+                warnings?.Add("Stored plan had no row list (null); it was loaded with no rows.");
+                return plan;
+            }
+
+            for (int i = 0; i < Gifts.Count; i++)
+            {
+                StoredGiftData gift = Gifts[i];
+                if (gift == null || string.IsNullOrEmpty(gift.NpcName))
+                {
+                    warnings?.Add($"Stored plan row {i + 1} has no villager name; it was skipped.");
+                    continue;
+                }
+
                 if (gift.Status == GiftPlanStatus.Planned && gift.QualifiedItemId == null)
                     warnings?.Add($"Stored plan row for '{gift.NpcName}' was marked as planned but had no item; it was loaded as 'nothing to give'.");
 
