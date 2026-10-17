@@ -11,21 +11,17 @@ namespace StardewAutoGifter.GiftSelection
     /// </summary>
     public static class FriendshipGiftTracker
     {
-        public static bool HasReachedWeeklyCap(string npcName)
-        {
-            if (!Game1.player.friendshipData.TryGetValue(npcName, out Friendship? friendship) || friendship == null)
-                return false;
-
-            return !GiftLimitPolicy.CanGiveGift(friendship.GiftsToday, friendship.GiftsThisWeek);
-        }
-
-        /// <summary>Planning-time check (evening, for the next day); see <see cref="GiftLimitPolicy.CanPlanGiftForNextDay"/>.</summary>
-        public static bool CanPlanGiftForNextDay(string npcName)
+        /// <summary>
+        /// Whether the NPC could receive a gift on <paramref name="targetDay"/>, judged from today's
+        /// counts. Planning asks it for tomorrow; delivery asks it for today (targetDay == today).
+        /// See <see cref="TargetDayGiftLimit.CanGiveGiftOn"/> (HW6 reviews 03c and 04b).
+        /// </summary>
+        public static bool CanGiveGiftOn(string npcName, int targetDay, int today)
         {
             if (!Game1.player.friendshipData.TryGetValue(npcName, out Friendship? friendship) || friendship == null)
                 return true;
 
-            return GiftLimitPolicy.CanPlanGiftForNextDay(friendship.GiftsToday, friendship.GiftsThisWeek);
+            return TargetDayGiftLimit.CanGiveGiftOn(targetDay, today, friendship.GiftsToday, friendship.GiftsThisWeek);
         }
     }
 }

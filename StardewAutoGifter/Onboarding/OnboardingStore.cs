@@ -8,27 +8,25 @@ namespace StardewAutoGifter.Onboarding
     /// </summary>
     public class OnboardingStore
     {
-        private const string SaveDataKey = "onboarding";
-
-        private readonly IModHelper _helper;
+        private readonly SaveDataStore<OnboardingData> _store;
         private OnboardingData _data = new();
 
         public OnboardingStore(IModHelper helper)
         {
-            _helper = helper;
+            _store = new SaveDataStore<OnboardingData>(helper, "onboarding");
         }
 
         public bool HasShownWelcome => _data.HasShownWelcome;
 
         public void Load()
         {
-            _data = _helper.Data.ReadSaveData<OnboardingData>(SaveDataKey) ?? new OnboardingData();
+            _data = _store.Read() ?? new OnboardingData();
         }
 
         public void MarkWelcomeShown()
         {
             _data.HasShownWelcome = true;
-            _helper.Data.WriteSaveData(SaveDataKey, _data);
+            _store.Write(_data);
         }
     }
 }

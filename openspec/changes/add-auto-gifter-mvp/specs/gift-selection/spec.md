@@ -46,7 +46,7 @@ When the mod marks a chest as the anchor, it SHALL set that chest's display name
 - **THEN** that chest's display name reverts to the game's plain default chest name
 
 ### Requirement: Anchor chest sparkles periodically for visibility
-While the mod is active and the player is in the same location as the anchor chest, the mod SHALL periodically emit a brief sparkle effect at the anchor chest, reusing the game's own sparkle animation, to make it easier to spot at a glance. It SHALL NOT emit this effect while inactive or while the player is elsewhere.
+While the mod is active and the player is in the same location as the anchor chest, the mod SHALL periodically emit a brief sparkle effect at the anchor chest, reusing the game's own sparkle animation, to make it easier to spot at a glance. The sparkle SHALL be emitted every 4 seconds; each sparkle SHALL last 1000 ms, with a new sparkle particle every 100 ms, in white. It SHALL NOT emit this effect while inactive or while the player is elsewhere.
 
 #### Scenario: Sparkle shown while active and in view
 - **WHEN** the mod is active and the player is in the same location as the anchor chest
@@ -143,19 +143,51 @@ When an NPC has no loved or liked item in the farm-wide pool that is not blockli
 - **THEN** the NPC is not assigned any item for that day
 
 ### Requirement: Starter chest and welcome message on first farm exit
-The first time the player exits the farmhouse onto the farm in a save, the mod SHALL add one unplaced chest to the player's inventory and show a one-time welcome message, in English, explaining how to place and mark a chest and how to open the mod menu. This message SHALL clearly call out, as important information (not buried in passing), that selecting an NPC or editing the plan does not affect the current day - automatic gifting only begins the following day. The mod SHALL NOT repeat this for that save once shown.
+The first time the player exits the farmhouse onto the farm in a save, the mod SHALL add one unplaced chest to the player's inventory (or, if the inventory is full, drop it on the ground at the player's feet) and show a one-time welcome message, in English, explaining how to place and mark a chest and how to open the mod menu. Wherever the message names a key, it SHALL use the names of the keys currently set in the mod's configuration file (the chest-marking key, G by default, and the menu key, F8 by default), never a fixed key name. Every other part of the message that depends on a setting SHALL follow that setting's current value: the pages about the fallback to other farm chests SHALL match the save's current "anchor chest only" setting. This message SHALL clearly call out, as important information (not buried in passing), that selecting an NPC or editing the plan does not affect the current day - automatic gifting only begins the following day. The mod SHALL NOT repeat this for that save once shown.
 
 #### Scenario: First exit from the farmhouse
 - **WHEN** the player warps from the farmhouse onto the farm for the first time in a save
 - **THEN** the mod adds a chest item to the player's inventory and displays a one-time English welcome message that clearly explains gifting only starts the next day
+
+#### Scenario: Welcome pages with the default settings
+- **WHEN** the welcome message is shown with the menu key F8, the chest-marking key G, and the "anchor chest only" setting off
+- **THEN** it shows exactly these 8 pages, in this order: (1) "Welcome to Auto-Gifter!"; (2) "A chest has been added to your inventory. Place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar."; (3) "Open the chest and press G to mark it as your gift chest - it will be renamed and sparkle occasionally so you can spot it."; (4) "That chest is checked FIRST for gifts. If it doesn't have what's needed, the mod falls back to every other chest on your farm."; (5) "You can turn that fallback off in the mod menu's Settings tab, to only ever use the marked chest."; (6) "Press F8 anytime to open the mod menu: choose which villagers to gift, preview and edit tomorrow's plan, manage your blocklist, and adjust settings."; (7) "IMPORTANT: automatic gifting always starts the NEXT day, never the same day."; (8) "Selecting a villager or editing the plan today has no effect on today - check the "Tomorrow's Plan" label in the Plan tab to see what's actually queued up."
+
+#### Scenario: Welcome pages when "anchor chest only" is already on
+- **WHEN** the welcome message is shown while the save's "anchor chest only" setting is already on (for example because the player turned it on from the mod menu before first leaving the farmhouse)
+- **THEN** page 4 is "That chest is your ONLY source of gifts: the fallback to every other chest on your farm is turned off.", page 5 is "You can turn that fallback back on in the mod menu's Settings tab, to also use every other chest on your farm.", and the other pages are unchanged
+
+#### Scenario: Inventory full at the first farm exit
+- **WHEN** the player warps from the farmhouse onto the farm for the first time in a save with a full inventory
+- **THEN** the chest is dropped on the ground at the player's feet instead, and page 2 of the welcome message is "Your inventory was full, so a chest has been dropped at your feet. Pick it up and place it anywhere on your farm (or inside the barn, coop, shed, or greenhouse) - not in the farmhouse or cellar." while the other pages are unchanged
+
+#### Scenario: Welcome message names the default keys
+- **WHEN** the welcome message is shown, and the configuration uses the default keys
+- **THEN** the page about marking says "Open the chest and press G to mark it as your gift chest - it will be renamed and sparkle occasionally so you can spot it.", and the page about the menu says "Press F8 anytime to open the mod menu: choose which villagers to gift, preview and edit tomorrow's plan, manage your blocklist, and adjust settings."
+
+#### Scenario: Welcome message names remapped keys
+- **WHEN** the welcome message is shown, and the configuration sets the chest-marking key to K and the menu key to F9
+- **THEN** the page about marking says "press K" instead of "press G", the page about the menu says "Press F9" instead of "Press F8", and no page names G or F8
 
 #### Scenario: Welcome message and chest given only once per save
 - **WHEN** the player exits the farmhouse onto the farm again later in the same save
 - **THEN** the mod does not show the welcome message or add another chest
 
 ### Requirement: Gift-limit state respected during selection
-The mod SHALL exclude an NPC from receiving a selection for a given day if the game's own per-NPC gift tracking shows that NPC has already reached the weekly limit of friendship-point-counting gifts, even if an otherwise-eligible item exists in the pool.
+The mod SHALL exclude an NPC from receiving a selection for a given day if the game's own per-NPC gift tracking shows that NPC has already reached the weekly limit of friendship-point-counting gifts, even if an otherwise-eligible item exists in the pool. Because the plan is computed for the next day, which is a new day for the daily limit, plan computation SHALL NOT exclude an NPC just because they already received a gift today; the daily limit is checked only at delivery time (see specs/proximity-delivery - "Gift-limit re-checked at delivery time"). The weekly limit SHALL be judged for the plan's target day, not for today: the week begins on Sunday, so when the target day starts a new week compared with today (planning on Saturday evening for Sunday), the mod SHALL treat the NPC's weekly count as 0. This rule SHALL apply both when the plan is computed from the menu and when it is computed automatically at the end of the day. See `reviews/03-week-rollover-source.md` for the source and the day-of-week formula.
+
+#### Scenario: Saturday evening planning for Sunday
+- **WHEN** the plan is computed on Saturday evening for Sunday, and the game's own tracking shows the NPC already reached the weekly limit this week (two gifts) but received none today
+- **THEN** the mod can still select an item for that NPC for Sunday, because Sunday starts a new week
+
+#### Scenario: Weekday planning for the next day in the same week
+- **WHEN** the plan is computed on a weekday evening for the next day in the same week, and the NPC already reached the weekly limit this week (two gifts) but received none today
+- **THEN** the mod does not select any item for that NPC
 
 #### Scenario: NPC already reached the weekly friendship-gift cap
 - **WHEN** the game's own tracking shows the NPC has already received the maximum number of friendship-point-counting gifts for the current week
 - **THEN** the mod does not select any item for that NPC for that day, even if an eligible loved or liked item is present in the pool
+
+#### Scenario: NPC gifted today but under the weekly cap
+- **WHEN** the plan is computed for the next day, and the game's own tracking shows the NPC already received a gift today but has not reached the weekly limit
+- **THEN** the mod still selects an item for that NPC for the next day, subject to the other selection rules

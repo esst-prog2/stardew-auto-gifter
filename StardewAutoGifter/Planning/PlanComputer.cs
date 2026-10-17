@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using StardewModdingAPI;
+using StardewValley;
 using StardewAutoGifter.Core;
 using StardewAutoGifter.GiftSelection;
 
@@ -6,7 +8,8 @@ namespace StardewAutoGifter.Planning
 {
     /// <summary>
     /// Computes a <see cref="DailyPlan"/> from the current anchor-only and farm-wide pools, the
-    /// blocklist, and settings. Called when the player opens the mod menu. See
+    /// blocklist, and settings. Called when the player opens the mod menu, or as the day ends if no
+    /// next-day plan exists yet. See
     /// specs/daily-plan-review - "Plan computed for the next day when the menu is opened" and
     /// "Reason shown for configured NPCs with no gift"; specs/gift-selection - "Anchor chest
     /// prioritized before the wider farm pool".
@@ -20,13 +23,27 @@ namespace StardewAutoGifter.Planning
             ISet<string> blocklist,
             bool includeLikedItems,
             bool anchorChestOnly,
-            IGiftTasteProvider tasteProvider)
+            IGiftTasteProvider tasteProvider,
+            int targetDay,
+            int today,
+            IMonitor monitor)
         {
-            var plan = new DailyPlan { IsActive = true };
+            var plan = new DailyPlan { IsActive = true, TargetDay = targetDay };
 
             foreach (string npcName in configuredNpcNames)
             {
-                if (!FriendshipGiftTracker.CanPlanGiftForNextDay(npcName))
+                // specs/daily-plan-review - "Reason shown for configured NPCs with no gift": an NPC
+                // the game does not know gets its own reason, not a false "nothing to give".
+                if (Game1.getCharacterFromName(npcName) == null)
+                {
+                    monitor.LogOnce($"Configured villager '{npcName}' was not found in the game; the plan shows them as 'not found in the game'.", LogLevel.Warn);
+                    plan.Gifts.Add(new PlannedGift(npcName, GiftPlanStatus.NpcNotFound));
+                    continue;
+                }
+
+                // specs/gift-selection - "Gift-limit state respected during selection": judged for
+                // the target day, so Saturday evening's weekly count does not block Sunday.
+                if (!FriendshipGiftTracker.CanGiveGiftOn(npcName, targetDay, today))
                 {
                     plan.Gifts.Add(new PlannedGift(npcName, GiftPlanStatus.WeeklyCapReached));
                     continue;

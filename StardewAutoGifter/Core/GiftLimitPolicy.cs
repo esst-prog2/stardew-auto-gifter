@@ -11,19 +11,19 @@ namespace StardewAutoGifter.Core
         public const int WeeklyFriendshipGiftCap = 2;
 
         /// <summary>
-        /// Whether a gift can currently be given to an NPC, given their gift counts.
-        /// NOTE: as of this commit, <paramref name="giftsToday"/> is accepted but intentionally not
-        /// used - this mirrors the mod's current (incomplete) behavior, which only enforces the
-        /// weekly cap and does not yet check the daily one. See hw5/expected-value-source.md and
-        /// PLANNING_LOG.md for the daily-limit gap this deliberately does not yet close.
+        /// Whether a gift can be given to an NPC right now, given their gift counts. Enforces both
+        /// the daily limit (one gift per day: <paramref name="giftsToday"/> must be 0) and the
+        /// weekly cap (<see cref="WeeklyFriendshipGiftCap"/>). Delivery (for today) and planning (for
+        /// the target day) both reach it through <see cref="TargetDayGiftLimit.CanGiveGiftOn"/>, which
+        /// first adjusts the counts for the day asked about. See hw5/expected-value-source.md.
         /// </summary>
         public static bool CanGiveGift(int giftsToday, int giftsThisWeek)
             => giftsToday < 1 && giftsThisWeek < WeeklyFriendshipGiftCap;
 
         /// <summary>
-        /// Whether a villager can be put in the plan for the next day, given their gift counts as
-        /// read at evening planning time. Used by the planning path only; delivery uses
-        /// <see cref="CanGiveGift"/>.
+        /// Kept only for the HW5 tests (GiftLimitPolicyTests); nothing in the mod calls it any more.
+        /// Planning uses <see cref="TargetDayGiftLimit.CanGiveGiftOn"/> instead (HW6 review 03c),
+        /// which also handles the Sunday week rollover. Do not use it in new code.
         /// </summary>
         public static bool CanPlanGiftForNextDay(int giftsToday, int giftsThisWeek)
             => giftsThisWeek < WeeklyFriendshipGiftCap;

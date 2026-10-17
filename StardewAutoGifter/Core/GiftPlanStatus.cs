@@ -1,4 +1,4 @@
-namespace StardewAutoGifter.Planning
+namespace StardewAutoGifter.Core
 {
     /// <summary>
     /// Why a configured NPC does or doesn't have a planned gift. See specs/daily-plan-review -
@@ -14,5 +14,8 @@ namespace StardewAutoGifter.Planning
 
         /// <summary>The NPC already reached the weekly friendship-point-counting gift limit.</summary>
         WeeklyCapReached,
+
+        /// <summary>The configured NPC was not found in the game (for example a villager from a mod that is no longer installed).</summary>
+        NpcNotFound,
     }
 }

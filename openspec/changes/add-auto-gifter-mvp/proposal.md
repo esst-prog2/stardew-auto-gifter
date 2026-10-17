@@ -1,3 +1,5 @@
+> This is the frozen text of the original proposal. The current behavior is described by the specs in `specs/`.
+
 ## Why
 
 Giving daily gifts to villagers in Stardew Valley requires remembering every NPC's favorite items and making a detour to hand them over in person, which is tedious and easy to forget. This change adds a SMAPI mod that automates the daily gift-giving loop by drawing from the player's farm storage, so the player only has to keep their farm chests stocked and review/edit a short daily plan.
