@@ -11,13 +11,6 @@ namespace StardewAutoGifter.Core
     public static class GiftSelector
     {
         /// <summary>
-        /// An item needs at least this many units in the farm-wide pool to be selectable, so that
-        /// giving one away always leaves at least one behind. See specs/gift-selection - "Minimum
-        /// one unit reserved per item".
-        /// </summary>
-        private const int MinimumUnitsToBeEligible = 2;
-
-        /// <summary>
         /// Picks the best item to gift an NPC, or null if none is eligible.
         /// </summary>
         /// <param name="npcName">The NPC being considered.</param>
@@ -56,7 +49,7 @@ namespace StardewAutoGifter.Core
                 string itemId = entry.Key;
                 int quantity = entry.Value;
 
-                if (quantity < MinimumUnitsToBeEligible || blocklist.Contains(itemId))
+                if (quantity < StockRule.MinimumUnitsForGift || blocklist.Contains(itemId))
                     continue;
 
                 if (tasteProvider.GetTaste(npcName, itemId) != taste)

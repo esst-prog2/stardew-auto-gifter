@@ -91,3 +91,18 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 45/45 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 02b: C6, one shared constant)
+
+- `Core/StockRule.cs` (new): `StockRule.MinimumUnitsForGift = 2`.
+- `Core/GiftSelector.cs`: the private `MinimumUnitsToBeEligible` is removed, and selection uses `StockRule.MinimumUnitsForGift`.
+- `GiftSelection/FarmItemPool.cs`: the private `MinimumUnitsBeforeRemoval` is removed, and the removal check uses `StockRule.MinimumUnitsForGift`.
+- `Delivery/ProximityDeliveryService.cs`: the Trace log text reads the number from `StockRule.MinimumUnitsForGift` instead of a written "2". The text it logs is the same.
+- No behavior change: the value is still 2 in all three places. The existing selection tests (`GiftSelectorTests`) still pass unchanged.
+- `PLANNING_LOG.md`: a line recording that the 02a entry is an exception to the one-line rule, as the user decided (option 1). From now on it is one line per decision again.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 45/45 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.

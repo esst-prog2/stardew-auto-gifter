@@ -110,7 +110,7 @@ namespace StardewAutoGifter.Delivery
             if (!FarmItemPool.TryRemoveOneUnit(farmChests, qualifiedItemId))
             {
                 gift.Delivered = true;
-                monitor.Log($"Skipped delivery to {gift.NpcName}: fewer than 2 units of {qualifiedItemId} remain in the farm's chests.", LogLevel.Trace);
+                monitor.Log($"Skipped delivery to {gift.NpcName}: fewer than {StockRule.MinimumUnitsForGift} units of {qualifiedItemId} remain in the farm's chests.", LogLevel.Trace);
                 return;
             }
 

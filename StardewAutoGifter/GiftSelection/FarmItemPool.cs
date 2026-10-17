@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StardewValley;
 using StardewValley.Objects;
+using StardewAutoGifter.Core;
 
 namespace StardewAutoGifter.GiftSelection
 {
@@ -29,9 +30,6 @@ namespace StardewAutoGifter.GiftSelection
             return pool;
         }
 
-        /// <summary>An item needs at least this many units present before one can be removed, so at least one is always left behind.</summary>
-        private const int MinimumUnitsBeforeRemoval = 2;
-
         /// <summary>
         /// Removes one unit of the given item from whichever chest holds it first, but only if doing
         /// so leaves at least one unit behind. Returns false if no chest currently holds any of it
@@ -43,7 +41,7 @@ namespace StardewAutoGifter.GiftSelection
         {
             List<Chest> chestList = chests as List<Chest> ?? chests.ToList();
 
-            if (GetTotalQuantity(chestList, qualifiedItemId) < MinimumUnitsBeforeRemoval)
+            if (GetTotalQuantity(chestList, qualifiedItemId) < StockRule.MinimumUnitsForGift)
                 return false;
 
             foreach (Chest chest in chestList)
