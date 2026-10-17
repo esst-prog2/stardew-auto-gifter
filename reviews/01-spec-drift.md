@@ -118,3 +118,23 @@ Checks:
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
 
 To check in-game: see the checklist at the end of this file.
+
+## What we changed (step 01c: A3, delivery paused while inactive)
+
+Spec, written before the code: new requirement `proximity-delivery`, "Delivery paused while the mod is inactive".
+- Right before a hand-off or an in-person notice, the mod re-checks that exactly one chest is marked.
+- If not, nothing is given or shown, and the gift stays pending for later that day.
+- Three scenarios: the anchor is unmarked after planning, two chests are marked, the marking is restored later the same day.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/AnchorRuleTests.cs`, 3 tests. Expected values come from the "exactly one chest" rule in `gift-selection` and the new scenarios: 0 marked → inactive, 1 → active, 2 → inactive.
+
+Code:
+- `Core/AnchorRule.cs` (new, pure): `IsActive(markedChestCount)`.
+- `GiftSelection/FarmChestScanner.cs`: `FindAnchorChest` uses the same rule, so planning and the sparkle follow it too. No behavior change there.
+- `Delivery/ProximityDeliveryService.cs`: `CheckAndDeliver` checks the rule once an NPC is in range, at most once per call. If the mod is inactive, it returns without giving anything, showing anything, or setting `Delivered`. `TryDeliver` no longer handles the ambiguous case itself, because it can no longer happen there.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 31/31 green (28 + 3).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.

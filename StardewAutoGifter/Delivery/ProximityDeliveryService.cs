@@ -21,6 +21,13 @@ namespace StardewAutoGifter.Delivery
 
         public static void CheckAndDeliver(DailyPlan plan, IMonitor monitor)
         {
+            // specs/proximity-delivery - "Delivery paused while the mod is inactive": checked only
+            // once an NPC is in range (scanning the farm's chests every second would be wasted
+            // work), and at most once per call. While inactive, nothing is resolved, so the gift
+            // stays pending and can still be delivered later today once exactly one chest is marked.
+            bool? isActive = null;
+            bool ModIsActive() => isActive ??= AnchorRule.IsActive(FarmChestScanner.GetMarkedChests().Count);
+
             foreach (PlannedGift gift in plan.PendingDeliveries().ToList())
             {
                 NPC? npc = Game1.getCharacterFromName(gift.NpcName);
@@ -30,6 +37,9 @@ namespace StardewAutoGifter.Delivery
                 float distance = Vector2.Distance(Game1.player.Tile, npc.Tile);
                 if (distance > ProximityThresholdTiles)
                     continue;
+
+                if (!ModIsActive())
+                    return;
 
                 TryDeliver(gift, npc, monitor);
             }
@@ -44,6 +54,9 @@ namespace StardewAutoGifter.Delivery
                 float distance = Vector2.Distance(Game1.player.Tile, npc.Tile);
                 if (distance > ProximityThresholdTiles)
                     continue;
+
+                if (!ModIsActive())
+                    return;
 
                 ShowNoGiftNotice(gift, npc);
             }
@@ -83,8 +96,9 @@ namespace StardewAutoGifter.Delivery
 
             // specs/proximity-delivery - "Delivery prefers the anchor chest": TryRemoveOneUnit takes
             // the first chest in this list that holds the item, so put the anchor chest first.
-            StardewValley.Objects.Chest? anchor = FarmChestScanner.FindAnchorChest(out bool isAmbiguous);
-            if (!isAmbiguous && anchor != null)
+            // (CheckAndDeliver already confirmed exactly one anchor exists.)
+            StardewValley.Objects.Chest? anchor = FarmChestScanner.FindAnchorChest(out _);
+            if (anchor != null)
             {
                 farmChests.Remove(anchor);
                 farmChests.Insert(0, anchor);

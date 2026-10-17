@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Objects;
+using StardewAutoGifter.Core;
 
 namespace StardewAutoGifter.GiftSelection
 {
@@ -68,7 +69,7 @@ namespace StardewAutoGifter.GiftSelection
         {
             List<Chest> marked = GetMarkedChests();
             isAmbiguous = marked.Count > 1;
-            return marked.Count == 1 ? marked[0] : null;
+            return AnchorRule.IsActive(marked.Count) ? marked[0] : null;
         }
 
         /// <summary>The farm-scope location that currently contains the given chest, or null if it isn't placed in one.</summary>

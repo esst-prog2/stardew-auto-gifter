@@ -19,6 +19,21 @@ The mod SHALL deliver gifts, and show the in-person notices below, only from the
 - **WHEN** it is day 12 and the only existing plan's target day is day 11
 - **THEN** the mod does not deliver anything from that plan
 
+### Requirement: Delivery paused while the mod is inactive
+Immediately before handing over a planned item or showing an in-person notice, the mod SHALL re-check that exactly one chest on the farm carries the reserved sentinel color (see specs/gift-selection - "Marked chest acts as the mod's on/off anchor"). If no chest, or more than one chest, carries it at that moment, the mod SHALL NOT hand over any item and SHALL NOT show any notice, and SHALL leave that NPC's planned gift pending, so that it can still be delivered later the same day once exactly one chest is marked again.
+
+#### Scenario: Anchor chest unmarked after the plan was made
+- **WHEN** the player unmarks the anchor chest during the plan's target day, and then walks near a planned NPC
+- **THEN** the mod does not hand over the planned item and shows no message for that NPC
+
+#### Scenario: Two chests marked at delivery time
+- **WHEN** more than one farm chest carries the sentinel color, and the player walks near a planned NPC
+- **THEN** the mod does not hand over the planned item and shows no message for that NPC
+
+#### Scenario: Marking restored later the same day
+- **WHEN** a delivery was paused because the mod was inactive, and later the same day exactly one chest is marked again and the player walks near that NPC
+- **THEN** the mod hands over the planned item normally
+
 ### Requirement: Throttled proximity detection
 The mod SHALL check the player's distance to each planned NPC on a throttled schedule (no more often than roughly once per second), rather than on every game tick, to avoid unnecessary performance cost.
 
