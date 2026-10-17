@@ -11,6 +11,34 @@ The mod SHALL let the player open its menu at any time during gameplay by pressi
 - **WHEN** the player presses the configured keybind while playing
 - **THEN** the mod's menu opens, showing the daily plan preview and blocklist editor
 
+### Requirement: Key settings checked when the mod starts
+When the mod starts, it SHALL check the two configured keys (`MenuKey` and `ChestMarkKey` in the configuration file) and write a warning to the log, instead of failing silently, in these cases:
+- a key value that is not a real key (for example a number that names no key): the mod SHALL use that key's default instead (F8 for `MenuKey`, G for `ChestMarkKey`), with the warning "config.json: <field> is set to <value>, which is not a key; using the default <default> instead.";
+- a key set to None: the key stays None, which turns that feature off, with the warning "config.json: <field> is set to None, so <feature> is turned off.", where <feature> is "the mod menu" for `MenuKey` and "chest marking" for `ChestMarkKey`;
+- both keys set to the same key (other than None), after any default was applied: the warning "config.json: MenuKey and ChestMarkKey are both <key>; that key opens the mod menu, so chest marking will not work."
+
+Valid, different keys SHALL produce no warning.
+
+#### Scenario: Menu key is not a real key
+- **WHEN** `MenuKey` is the number 9999, which names no key, and `ChestMarkKey` is G
+- **THEN** the mod uses F8 as the menu key and logs "config.json: MenuKey is set to 9999, which is not a key; using the default F8 instead."
+
+#### Scenario: Chest-marking key set to None
+- **WHEN** `MenuKey` is F8 and `ChestMarkKey` is None
+- **THEN** chest marking stays turned off and the mod logs "config.json: ChestMarkKey is set to None, so chest marking is turned off."
+
+#### Scenario: Both keys are the same
+- **WHEN** `MenuKey` and `ChestMarkKey` are both K
+- **THEN** the mod logs "config.json: MenuKey and ChestMarkKey are both K; that key opens the mod menu, so chest marking will not work."
+
+#### Scenario: Invalid key whose default collides with the other key
+- **WHEN** `MenuKey` is the number 9999 and `ChestMarkKey` is F8
+- **THEN** the mod uses F8 as the menu key, and logs both the "not a key" warning and the "both F8" warning
+
+#### Scenario: Valid, different keys
+- **WHEN** `MenuKey` is F8 and `ChestMarkKey` is G
+- **THEN** the mod logs no key warning and uses both keys as set
+
 ### Requirement: Plan computed for the next day when the menu is opened
 The mod SHALL compute the gift plan for the next in-game day at the moment the player opens the menu, using the farm-wide item pool's contents and the blocklist as they are at that moment. This plan SHALL be what is shown in the preview. The Plan tab SHALL always display a persistent label identifying it as tomorrow's plan (not today's), so the player is not left to infer the timing from memory or from a message they may have already dismissed. Each plan SHALL record its target day (the in-game day it is for), which is always the day after the day it was computed on. Computing or recomputing the next day's plan SHALL NOT change or replace the plan being executed today. When the menu is opened again on the same day, the next day's plan SHALL be recomputed from the current contents, but every NPC whose row the player had toggled off SHALL stay toggled off, as long as that NPC still has a planned item in the recomputed plan.
 

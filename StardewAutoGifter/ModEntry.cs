@@ -44,6 +44,7 @@ namespace StardewAutoGifter
         public override void Entry(IModHelper helper)
         {
             _config = Helper.ReadConfig<ModConfig>();
+            CheckConfiguredKeys();
             _blocklistStore = new BlocklistStore(Helper);
             _configuredNpcStore = new ConfiguredNpcStore(Helper);
             _onboardingStore = new OnboardingStore(Helper);
@@ -58,6 +59,29 @@ namespace StardewAutoGifter
             helper.Events.GameLoop.OneSecondUpdateTicked += OnOneSecondUpdateTicked;
             helper.Events.Player.Warped += OnWarped;
             helper.Events.Display.MenuChanged += OnMenuChanged; // hw4-spike diagnostic, kept on purpose - see OnMenuChanged
+        }
+
+        /// <summary>
+        /// specs/daily-plan-review - "Key settings checked when the mod starts": a key that is not a
+        /// real key falls back to its default, and None or two equal keys are kept but warned about,
+        /// so a config.json typo never makes a key silently do nothing (HW6 review 08b).
+        /// </summary>
+        private void CheckConfiguredKeys()
+        {
+            var defaults = new ModConfig();
+            KeyCheckResult result = KeyConfigCheck.Validate(
+                (int)_config.MenuKey,
+                (int)_config.ChestMarkKey,
+                key => System.Enum.IsDefined(typeof(SButton), key),
+                (int)SButton.None,
+                (int)defaults.MenuKey,
+                (int)defaults.ChestMarkKey,
+                key => ((SButton)key).ToString());
+
+            _config.MenuKey = (SButton)result.MenuKey;
+            _config.ChestMarkKey = (SButton)result.ChestMarkKey;
+            foreach (string warning in result.Warnings)
+                Monitor.Log(warning, LogLevel.Warn);
         }
 
         /// <summary>

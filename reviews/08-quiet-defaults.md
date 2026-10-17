@@ -73,3 +73,47 @@ Checks:
 - `dotnet build`: 0 errors, 0 warnings.
 - `dotnet test`: 80/80 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 08b: A3, A4, A5)
+
+Spec, written before the code: new requirement `daily-plan-review`, "Key settings checked when the mod starts".
+- The exact warning texts for a key that is not a real key (it falls back to the default), for a key set to None (it stays None and is reported as turned off), and for both keys being the same key other than None, judged after any default.
+- Five scenarios: menu key 9999, chest key None, both K, 9999 whose default F8 collides with chest key F8, and valid keys.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/KeyConfigCheckTests.cs`, 5 tests, with the scenarios' exact texts. They use a fake key table with SButton's own numbers: None 0, G 71, K 75, F8 119.
+
+Code:
+- `Core/KeyConfigCheck.cs` (new, pure): `Validate(menuKey, chestMarkKey, isRealKey, noneKey, defaultMenuKey, defaultChestMarkKey, keyName)` returns `KeyCheckResult(MenuKey, ChestMarkKey, Warnings)`.
+  - Keys are numbers, because the test project compiles only `Core/` and cannot see SMAPI's `SButton`.
+- `ModEntry.cs`: `CheckConfiguredKeys()` runs right after `ReadConfig`. It passes `Enum.IsDefined(typeof(SButton), …)`, `SButton.None`, the `ModConfig` defaults and `SButton.ToString()`, applies the checked keys, and logs each warning at Warn.
+- The fallback to the default is in memory only. `config.json` is not rewritten, so the bad value stays visible in the file until the player fixes it.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build --no-incremental`: 0 errors, 0 warnings.
+- `dotnet test`: 85/85 green (80 + 5).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## In-game checklist additions (A3, A4, A5)
+
+These come on top of the joint checklist in reviews 03, 04 and 05. Not run yet: the user runs it in-game.
+
+Edit `D:\SteamLibrary\steamapps\common\Stardew Valley\Mods\StardewAutoGifter\config.json` with the game closed. Start the game each time, and read the SMAPI console (or `SMAPI-latest.txt`) right after the mod loads.
+
+A3 (a number that names no key):
+1. Set `"MenuKey": 9999`, without quotes, and keep `"ChestMarkKey": "G"`.
+2. Expect the Warn line `config.json: MenuKey is set to 9999, which is not a key; using the default F8 instead.`
+3. In the game, F8 opens the menu.
+4. If SMAPI instead reports "Can't parse JSON file at …", the number is not accepted at all. That is A2's loud error, and the A3 assumption ("Newtonsoft accepts numbers") was wrong. Note which one happened.
+
+A4 (None):
+5. Set `"MenuKey": "F8"` and `"ChestMarkKey": "None"`.
+6. Expect `config.json: ChestMarkKey is set to None, so chest marking is turned off.`
+7. In the game, pressing G in a chest does nothing.
+
+A5 (the same key twice):
+8. Set `"MenuKey": "K"` and `"ChestMarkKey": "K"`.
+9. Expect `config.json: MenuKey and ChestMarkKey are both K; that key opens the mod menu, so chest marking will not work.`
+10. In the game, K opens the menu. With a chest open, K does not mark it.
+
+Afterwards, set the keys back to `"F8"` and `"G"`, and check that no key warning is logged.
