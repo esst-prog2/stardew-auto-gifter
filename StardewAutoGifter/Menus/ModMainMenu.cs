@@ -57,6 +57,10 @@ namespace StardewAutoGifter.Menus
         private List<NPC> _filteredVillagers;
         private int _blocklistScrollIndex;
         private int _npcsScrollIndex;
+        private int _planScrollIndex;
+
+        /// <summary>How many list rows fit below the tab bar / letter bar; the same on every tab.</summary>
+        private int VisibleRows => Math.Max(1, (height - ListStartOffset - 40) / RowHeight);
 
         public ModMainMenu(
             DailyPlan plan,
@@ -242,7 +246,7 @@ namespace StardewAutoGifter.Menus
             DrawLetterBar(b, yPositionOnScreen + 96, _npcsLetters);
 
             int rowY = yPositionOnScreen + ListStartOffset;
-            int visibleRows = Math.Max(1, (height - ListStartOffset - 40) / RowHeight);
+            int visibleRows = VisibleRows;
 
             foreach (NPC npc in _filteredVillagers.Skip(_npcsScrollIndex).Take(visibleRows))
             {
@@ -278,8 +282,15 @@ namespace StardewAutoGifter.Menus
                 return;
             }
 
-            foreach (PlannedGift gift in _plan.Gifts)
+            // specs/daily-plan-review - "Per-NPC preview with on/off toggle": only the rows that fit
+            // are drawn, from the current scroll position, so none spill outside the menu.
+            for (int row = 0; row < VisibleRows; row++)
             {
+                int index = ListScroll.ItemIndexAtRow(_planScrollIndex, row, _plan.Gifts.Count);
+                if (index < 0)
+                    break;
+
+                PlannedGift gift = _plan.Gifts[index];
                 NPC? npc = Game1.getCharacterFromName(gift.NpcName);
                 string npcName = npc?.displayName ?? gift.NpcName;
                 string line;
@@ -318,7 +329,7 @@ namespace StardewAutoGifter.Menus
             DrawLetterBar(b, yPositionOnScreen + 96, _blocklistLetters);
 
             int rowY = yPositionOnScreen + ListStartOffset;
-            int visibleRows = Math.Max(1, (height - ListStartOffset - 40) / RowHeight);
+            int visibleRows = VisibleRows;
 
             foreach (Item item in _filteredCatalog.Skip(_blocklistScrollIndex).Take(visibleRows))
             {
@@ -411,7 +422,7 @@ namespace StardewAutoGifter.Menus
             }
 
             int rowY = yPositionOnScreen + ListStartOffset;
-            int visibleRows = Math.Max(1, (height - ListStartOffset - 40) / RowHeight);
+            int visibleRows = VisibleRows;
 
             foreach (NPC npc in _filteredVillagers.Skip(_npcsScrollIndex).Take(visibleRows))
             {
@@ -431,9 +442,15 @@ namespace StardewAutoGifter.Menus
             if (!_plan.IsActive)
                 return;
 
+            // Uses the same scroll position as DrawPlanTab, so a click acts on the row shown there.
             int rowY = yPositionOnScreen + ListStartOffset;
-            foreach (PlannedGift gift in _plan.Gifts)
+            for (int row = 0; row < VisibleRows; row++)
             {
+                int index = ListScroll.ItemIndexAtRow(_planScrollIndex, row, _plan.Gifts.Count);
+                if (index < 0)
+                    return;
+
+                PlannedGift gift = _plan.Gifts[index];
                 var rowBounds = new Rectangle(xPositionOnScreen + 32, rowY, width - 64, RowHeight - 8);
                 if (rowBounds.Contains(x, y) && gift.Status == GiftPlanStatus.Planned)
                 {
@@ -454,7 +471,7 @@ namespace StardewAutoGifter.Menus
             }
 
             int rowY = yPositionOnScreen + ListStartOffset;
-            int visibleRows = Math.Max(1, (height - ListStartOffset - 40) / RowHeight);
+            int visibleRows = VisibleRows;
 
             foreach (Item item in _filteredCatalog.Skip(_blocklistScrollIndex).Take(visibleRows))
             {
@@ -471,18 +488,15 @@ namespace StardewAutoGifter.Menus
 
         public override void receiveScrollWheelAction(int direction)
         {
+            // The game reports wheel-up as a positive direction, so one step down is -Sign(direction).
+            int rowsDown = -Math.Sign(direction);
+
             if (_activeTab == Tab.Blocklist)
-            {
-                int visibleRows = Math.Max(1, (height - ListStartOffset - 40) / RowHeight);
-                int maxScroll = Math.Max(0, _filteredCatalog.Count - visibleRows);
-                _blocklistScrollIndex = Math.Clamp(_blocklistScrollIndex - Math.Sign(direction), 0, maxScroll);
-            }
+                _blocklistScrollIndex = ListScroll.Scroll(_blocklistScrollIndex, rowsDown, _filteredCatalog.Count, VisibleRows);
             else if (_activeTab == Tab.Npcs)
-            {
-                int visibleRows = Math.Max(1, (height - ListStartOffset - 40) / RowHeight);
-                int maxScroll = Math.Max(0, _filteredVillagers.Count - visibleRows);
-                _npcsScrollIndex = Math.Clamp(_npcsScrollIndex - Math.Sign(direction), 0, maxScroll);
-            }
+                _npcsScrollIndex = ListScroll.Scroll(_npcsScrollIndex, rowsDown, _filteredVillagers.Count, VisibleRows);
+            else if (_activeTab == Tab.Plan && _plan.IsActive)
+                _planScrollIndex = ListScroll.Scroll(_planScrollIndex, rowsDown, _plan.Gifts.Count, VisibleRows);
         }
     }
 }

@@ -166,3 +166,65 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 39/39 green (31 + 8).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 01e: A7, scrollable Plan tab)
+
+Spec, written before the code: `daily-plan-review`, "Per-NPC preview with on/off toggle".
+- With more rows than fit, the Plan tab scrolls one row per wheel step.
+- It never goes above the first row, never past the point where the last row is visible, and does not scroll when every row fits.
+- Rows are never drawn outside the menu, and a click acts on the row shown.
+- Six new scenarios with concrete numbers: 20 rows, of which 7 fit.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/ListScrollTests.cs`, 6 tests, with the expected values from those scenarios:
+- scrolling: one step down, the top limit, the bottom limit, and every row fitting;
+- clicking: the 7th visible row with row 13 at the top → row 19, and below the last row → no row.
+
+Code:
+- `Core/ListScroll.cs` (new, pure): `Scroll(topRow, rowsDown, itemCount, visibleRows)` and `ItemIndexAtRow(topRow, visibleRowIndex, itemCount)`.
+- `Menus/ModMainMenu.cs`:
+  - new `_planScrollIndex`;
+  - the Plan tab draws and handles clicks only on the visible rows, both from the same scroll position;
+  - the mouse wheel scrolls the Plan tab;
+  - the NPCs and Blocklist tabs now use the same `ListScroll.Scroll` and `VisibleRows` (same results as before, no behavior change there).
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 45/45 green (39 + 6).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## In-game checklist (one session)
+
+Not run yet: the user runs it in-game.
+
+Setup:
+- Start on a Monday, so that days 1-4 below stay in the same week.
+- Haley and a second villager ("NPC2", who has a planned item, not "nothing to give") both have empty gift boxes this week on the Social tab, and it is not either one's birthday.
+- The marked chest holds at least 10 Coconuts and NPC2's item (at least 2 units).
+- "Only use the marked chest" is off.
+
+A1 + A2 (target day, edits kept, save/load, automatic plan):
+1. Day 1 (Mon), first day with the new build: select Haley and NPC2 on the NPCs tab, then open the Plan tab. Expect `[x] Haley -> Coconut` and `[x] NPC2 -> ...`.
+2. Still day 1: walk past Haley within 1.5 tiles. Expect no gift and no "Gave … to Haley." message, and the Coconut count is unchanged, because the plan is for tomorrow.
+3. Toggle NPC2 off, close F8, open it again. Expect NPC2 still `[ ]` and Haley still `[x]`. Sleep.
+4. Day 2 (Tue): walk past Haley. Expect "Gave Coconut to Haley." and one fewer Coconut. Walk past NPC2. Expect no gift and no dialogue.
+5. Day 2 evening: open F8, toggle NPC2 off again (tomorrow's plan is a new plan), sleep, then quit the game after it saves. Restart and load the save.
+6. Day 3 (Wed), without opening F8: walk past Haley. Expect "Gave Coconut to Haley.". Walk past NPC2. Expect no gift. Do not open F8 at all on day 3, then sleep.
+7. In `SMAPI-latest.txt` for the end of day 3, expect: `No active plan for tomorrow; computed one automatically as the day ended (target day …)`.
+
+A3 + A4 (day 4, Thu, before going near NPC2):
+8. Open the marked chest and press G to unmark it. Walk past NPC2 and Haley. Expect no gift and no dialogue.
+9. Open F8, Plan tab. Expect "Mod inactive: open a chest on your farm and press G to mark it.".
+10. Mark the chest again with G. Then open another farm chest and press G. Expect the HUD message "Auto-Gifter paused: more than one chest is marked. Unmark all but one with G." once. Wait 10+ seconds and open F8. Expect no repeated HUD message, the Plan tab showing "Mod paused: more than one chest is marked. …", and the red line on the Warnings tab.
+11. Walk past NPC2. Expect no gift.
+12. Unmark the second chest (no HUD message), mark it again (the HUD message appears again), then unmark it again.
+13. Walk past NPC2. Expect "Gave … to NPC2.": the paused delivery resumes the same day, and the automatic plan has no toggled-off rows. Walk past Haley. Expect the dialogue "I've already gotten plenty from you this week. Thank you!".
+
+A7 (any day):
+14. Select at least 10 villagers and open the Plan tab. Expect at most 7 rows, none outside the menu border.
+15. Scroll down to the end. Expect the last villager to be reachable, and scrolling further to do nothing. Scroll up to the top. Expect scrolling further up to do nothing.
+16. Scroll down 3 steps and click the top visible `[x]` row. Expect that exact villager (check the name) to become `[ ]`. Close F8 and open it again. Expect it is still `[ ]`. Afterwards, deselect the extra villagers.
+
+A5 (greenhouse; the greenhouse must be repaired):
+17. Put a chest in the greenhouse, open it and press G. In the SMAPI console or log, find `Chest-mark key pressed on a Chest at … in Greenhouse; in farm scope: …`. `True` means the greenhouse is in the pool. `False` means it is not. If it was `True`, press G again on that chest to unmark it.
+18. Confirmation: move every Coconut out of the other farm chests and put at least 3 into the greenhouse chest. Haley must still be under the weekly cap, which takes a new week after the steps above. Open F8. `[x] Haley -> Coconut` means the greenhouse is in the pool. Any other item, or "nothing to give", means it is not.

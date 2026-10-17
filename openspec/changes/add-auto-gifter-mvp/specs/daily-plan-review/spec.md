@@ -39,11 +39,35 @@ The mod SHALL compute the gift plan for the next in-game day at the moment the p
 - **THEN** the tab displays a persistent label identifying the shown plan as tomorrow's, not today's
 
 ### Requirement: Per-NPC preview with on/off toggle
-The menu SHALL show one row per configured NPC that has an item selected for the next day, naming the NPC and the item they are planned to receive. Each row SHALL have a toggle the player can use to exclude that NPC from the next day's automatic gifting.
+The menu SHALL show one row per configured NPC that has an item selected for the next day, naming the NPC and the item they are planned to receive. Each row SHALL have a toggle the player can use to exclude that NPC from the next day's automatic gifting. When there are more rows than fit in the menu, the Plan tab SHALL be scrollable with the mouse wheel, one row per wheel step, so that every row can be reached; it SHALL NOT scroll above the first row, or further down than the point where the last row is visible, and it SHALL NOT scroll at all when every row fits. Rows SHALL never be drawn outside the menu. Clicking a row SHALL act on the NPC shown in that row at the current scroll position.
 
 #### Scenario: Player excludes an NPC from tomorrow's plan
 - **WHEN** the player toggles off a row for an NPC in the preview
 - **THEN** that NPC receives no automatic gift the next day, even though the mod had selected an eligible item for them
+
+#### Scenario: Scrolling down one step
+- **WHEN** the plan has 20 rows, 7 of them fit, the first row is at the top, and the player scrolls down one step
+- **THEN** the second row (row 1, counting from 0) is at the top
+
+#### Scenario: Cannot scroll above the first row
+- **WHEN** the plan has 20 rows, 7 of them fit, the first row is at the top, and the player scrolls up one step
+- **THEN** the first row (row 0) stays at the top
+
+#### Scenario: Cannot scroll past the last row
+- **WHEN** the plan has 20 rows, 7 of them fit, row 13 is at the top (so the last row, row 19, is visible), and the player scrolls down one step
+- **THEN** row 13 stays at the top
+
+#### Scenario: No scrolling when every row fits
+- **WHEN** the plan has 5 rows, 7 rows fit, and the player scrolls down one step
+- **THEN** the first row (row 0) stays at the top
+
+#### Scenario: Clicking a row after scrolling
+- **WHEN** the plan has 20 rows, row 13 is at the top, and the player clicks the 7th visible row (visible row 6, counting from 0)
+- **THEN** the click acts on row 19, the NPC shown there
+
+#### Scenario: Clicking below the last row
+- **WHEN** the plan has 20 rows, row 13 is at the top, and the player clicks where an 8th visible row would be (visible row 7)
+- **THEN** the click acts on no row
 
 ### Requirement: Reason shown for configured NPCs with no gift
 For each configured NPC who does not have a planned item for the next day — either because no eligible loved or liked item is available in the farm-wide pool, or because they have already reached the weekly friendship-point-counting gift limit — the preview SHALL show a row explaining why, instead of silently omitting them. If the mod is inactive (no single valid anchor chest currently marked), the preview SHALL show one explanatory message instead of per-NPC rows, and that message SHALL tell the player how to fix the specific cause: when no chest is marked, "Mod inactive: open a chest on your farm and press G to mark it."; when more than one chest is marked, "Mod paused: more than one chest is marked. Open each extra chest and press G to unmark it until only one remains."
