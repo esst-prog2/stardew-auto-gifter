@@ -42,7 +42,7 @@ The mod SHALL check the player's distance to each planned NPC on a throttled sch
 - **THEN** the mod evaluates player-to-NPC distance on its throttled schedule rather than on every tick
 
 ### Requirement: Automatic hand-off within a short distance
-When the player comes within a short, fixed distance of an NPC who has a pending, non-excluded item in that day's plan, the mod SHALL automatically remove one unit of that item — preferring the anchor chest if it holds one, otherwise any other farm chest that holds it (see specs/gift-selection - "Anchor chest prioritized before the wider farm pool") — and give it to the NPC, without requiring the player to press a button.
+When the player comes within a short, fixed distance (1.5 tiles, measured between the player's tile and the NPC's tile) of an NPC who has a pending, non-excluded item in that day's plan, the mod SHALL automatically remove one unit of that item — preferring the anchor chest if it holds one, otherwise any other farm chest that holds it (see specs/gift-selection - "Anchor chest prioritized before the wider farm pool") — and give it to the NPC, without requiring the player to press a button.
 
 #### Scenario: Player walks near a planned NPC
 - **WHEN** the player comes within the fixed proximity threshold of an NPC who has a pending planned item and has not been toggled off

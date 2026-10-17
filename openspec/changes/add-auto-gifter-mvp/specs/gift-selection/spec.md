@@ -46,7 +46,7 @@ When the mod marks a chest as the anchor, it SHALL set that chest's display name
 - **THEN** that chest's display name reverts to the game's plain default chest name
 
 ### Requirement: Anchor chest sparkles periodically for visibility
-While the mod is active and the player is in the same location as the anchor chest, the mod SHALL periodically emit a brief sparkle effect at the anchor chest, reusing the game's own sparkle animation, to make it easier to spot at a glance. It SHALL NOT emit this effect while inactive or while the player is elsewhere.
+While the mod is active and the player is in the same location as the anchor chest, the mod SHALL periodically emit a brief sparkle effect at the anchor chest, reusing the game's own sparkle animation, to make it easier to spot at a glance. The sparkle SHALL be emitted every 4 seconds; each sparkle SHALL last 1000 ms, with a new sparkle particle every 100 ms, in white. It SHALL NOT emit this effect while inactive or while the player is elsewhere.
 
 #### Scenario: Sparkle shown while active and in view
 - **WHEN** the mod is active and the player is in the same location as the anchor chest
