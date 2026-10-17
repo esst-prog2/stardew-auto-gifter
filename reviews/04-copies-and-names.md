@@ -127,3 +127,19 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 67/67 green.
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 04f: D4)
+
+- `StardewAutoGifter/SaveDataStore.cs` (new): `SaveDataStore<T>` with `Read()` and `Write(T?)` under one fixed key, through SMAPI's `ReadSaveData`/`WriteSaveData`. Writing null removes the entry.
+- The five stores keep their own public API (`Load`, `Toggle`, `Contains`, `MarkWelcomeShown`, `ToggleAnchorChestOnly`, `Save`, and so on). Each now holds one `SaveDataStore<T>` instead of its own copy of the helper calls and key constant.
+- `BlocklistStore`, `ConfiguredNpcStore`, `OnboardingStore`, `ModSettingsStore`, `PlanStore`: the keys are character for character the same: `"blocklist"`, `"configured-npcs"`, `"onboarding"`, `"settings"`, `"next-plan"`. A search shows `ReadSaveData`/`WriteSaveData` only inside `SaveDataStore`.
+- The "mirrors BlocklistStore" doc notes now point to `SaveDataStore{T}`.
+- No behavior change, same keys and the same data types. Tests unchanged.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 67/67 green.
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+To check in-game: load an existing save that was made before this change. The blocklist, the selected NPCs, the Settings checkbox and tomorrow's plan must all still be there. See the checklist at the end of this file.

@@ -8,24 +8,22 @@ namespace StardewAutoGifter.Blocklist
     /// </summary>
     public class BlocklistStore
     {
-        private const string SaveDataKey = "blocklist";
-
-        private readonly IModHelper _helper;
+        private readonly SaveDataStore<BlocklistData> _store;
         private BlocklistData _data = new();
 
         public BlocklistStore(IModHelper helper)
         {
-            _helper = helper;
+            _store = new SaveDataStore<BlocklistData>(helper, "blocklist");
         }
 
         public System.Collections.Generic.IReadOnlyCollection<string> BlockedItemIds => _data.BlockedItemIds;
 
         public void Load()
         {
-            _data = _helper.Data.ReadSaveData<BlocklistData>(SaveDataKey) ?? new BlocklistData();
+            _data = _store.Read() ?? new BlocklistData();
         }
 
-        private void Save() => _helper.Data.WriteSaveData(SaveDataKey, _data);
+        private void Save() => _store.Write(_data);
 
         public bool Contains(string qualifiedItemId) => _data.BlockedItemIds.Contains(qualifiedItemId);
 

@@ -5,29 +5,27 @@ namespace StardewAutoGifter.Npcs
 {
     /// <summary>
     /// Persists which villagers the mod should consider gifting, chosen from the mod menu's NPCs
-    /// tab (mirrors <see cref="StardewAutoGifter.Blocklist.BlocklistStore"/>). See
+    /// tab (through <see cref="SaveDataStore{T}"/>). See
     /// specs/daily-plan-review - "Configured NPCs selected from the mod menu".
     /// </summary>
     public class ConfiguredNpcStore
     {
-        private const string SaveDataKey = "configured-npcs";
-
-        private readonly IModHelper _helper;
+        private readonly SaveDataStore<ConfiguredNpcData> _store;
         private ConfiguredNpcData _data = new();
 
         public ConfiguredNpcStore(IModHelper helper)
         {
-            _helper = helper;
+            _store = new SaveDataStore<ConfiguredNpcData>(helper, "configured-npcs");
         }
 
         public IReadOnlyCollection<string> SelectedNames => _data.SelectedNpcNames;
 
         public void Load()
         {
-            _data = _helper.Data.ReadSaveData<ConfiguredNpcData>(SaveDataKey) ?? new ConfiguredNpcData();
+            _data = _store.Read() ?? new ConfiguredNpcData();
         }
 
-        private void Save() => _helper.Data.WriteSaveData(SaveDataKey, _data);
+        private void Save() => _store.Write(_data);
 
         public bool Contains(string npcName) => _data.SelectedNpcNames.Contains(npcName);
 
