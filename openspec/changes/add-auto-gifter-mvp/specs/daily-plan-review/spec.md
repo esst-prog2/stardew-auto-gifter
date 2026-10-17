@@ -116,7 +116,11 @@ The mod menu SHALL include a tab listing every villager in the game, each with a
 - **THEN** that villager no longer receives a planned gift starting with the next plan computation
 
 ### Requirement: Anchor-chest-only setting in the mod menu
-The mod menu SHALL include a way to enable or disable restricting selection to the anchor chest alone (disabling the farm-wide fallback described in specs/gift-selection - "Anchor chest prioritized before the wider farm pool"). This setting SHALL take effect starting with the next plan computation.
+The mod menu SHALL include a way to enable or disable restricting selection to the anchor chest alone (disabling the farm-wide fallback described in specs/gift-selection - "Anchor chest prioritized before the wider farm pool"). This setting SHALL take effect starting with the next plan computation. The "include liked items" setting stays in the mod's configuration file and is not editable in the menu; the Settings tab SHALL say so in one sentence, below the anchor-chest-only setting: "Whether villagers get a liked item when no loved one is available is set in config.json (IncludeLikedItems), not in this menu."
+
+#### Scenario: Settings tab names where the liked-items fallback is set
+- **WHEN** the player opens the Settings tab
+- **THEN** below the anchor-chest-only setting it shows "Whether villagers get a liked item when no loved one is available is set in config.json (IncludeLikedItems), not in this menu."
 
 #### Scenario: Player enables anchor-chest-only mode
 - **WHEN** the player enables the anchor-chest-only setting

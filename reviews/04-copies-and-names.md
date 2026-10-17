@@ -143,3 +143,37 @@ Checks:
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
 
 To check in-game: load an existing save that was made before this change. The blocklist, the selected NPCs, the Settings checkbox and tomorrow's plan must all still be there. See the checklist at the end of this file.
+
+## What we changed (step 04g: D5)
+
+Spec, written before the code: `daily-plan-review`, "Anchor-chest-only setting in the mod menu".
+- "Include liked items" stays in `config.json` and is not editable in the menu.
+- Below the anchor-only setting, the Settings tab says so in one sentence: "Whether villagers get a liked item when no loved one is available is set in config.json (IncludeLikedItems), not in this menu."
+- One new scenario. The wording of the sentence is the assistant's and still needs the user's approval.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/SettingsTabTextTests.cs`, 1 test. It checks the exact sentence from the scenario.
+
+Code:
+- `Core/SettingsTabText.cs` (new): the constant `LikedItemsNote`.
+- `Menus/ModMainMenu.cs`: `BuildSettingsLines` adds an empty line and the note, in gray, after the explanation. It wraps and scrolls like the rest of the tab (03d) and is not clickable.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 68/68 green (67 + 1).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## In-game checklist additions (D4, D5)
+
+These come on top of the joint checklist in `reviews/03-patched-where-it-broke.md` (C4, R1, R3). Not run yet: the user runs it in-game.
+
+D4 (save data after the store refactor):
+1. Load a save made before this change, in which the blocklist, the NPC selection and the Settings checkbox were already set, and the previous day ended with a plan for today.
+2. F8 → Blocklist tab. Expect the items you blocked earlier to still show `[x]`.
+3. F8 → NPCs tab. Expect the villagers you selected earlier to still show `[x]`.
+4. F8 → Settings tab. Expect "Only use the marked chest" to show the same state as before.
+5. Today's plan, stored at the end of the previous day: walk past a villager who was planned for today. Expect "Gave … to …".
+6. Change something (for example, block one more item), sleep, quit, and reload. Expect the change to still be there.
+
+D5 (Settings text):
+7. F8 → Settings tab. Below the explanation, after an empty line, expect in gray: "Whether villagers get a liked item when no loved one is available is set in config.json (IncludeLikedItems), not in this menu.". Clicking it does nothing, and clicking the setting's own line still toggles it.

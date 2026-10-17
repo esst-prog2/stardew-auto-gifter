@@ -327,7 +327,7 @@ namespace StardewAutoGifter.Menus
             }
         }
 
-        /// <summary>The Settings tab as wrapped lines: the setting's own lines first (clickable), then an empty line and its explanation.</summary>
+        /// <summary>The Settings tab as wrapped lines: the setting's own lines first (clickable), then an empty line and its explanation, then an empty line and the liked-items note.</summary>
         private List<(string Text, Color Color)> BuildSettingsLines(out int settingLineCount)
         {
             string checkbox = _settingsStore.AnchorChestOnly ? "[x]" : "[ ]";
@@ -339,6 +339,12 @@ namespace StardewAutoGifter.Menus
                 lines.Add((line, Game1.textColor));
             lines.Add(("", Game1.textColor));
             foreach (string line in WrapText(Game1.smallFont, "When unchecked (default), the mod tries the marked chest first and falls back to every chest on your farm if it doesn't have what's needed.", ContentWidth))
+                lines.Add((line, Color.Gray));
+
+            // specs/daily-plan-review - "Anchor-chest-only setting in the mod menu": the liked-items
+            // fallback stays in config.json, and the tab says so.
+            lines.Add(("", Game1.textColor));
+            foreach (string line in WrapText(Game1.smallFont, SettingsTabText.LikedItemsNote, ContentWidth))
                 lines.Add((line, Color.Gray));
             return lines;
         }
