@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using StardewModdingAPI;
 using StardewAutoGifter.Core;
 
@@ -18,7 +19,15 @@ namespace StardewAutoGifter.Planning
             _store = new SaveDataStore<StoredPlanData>(helper, "next-plan");
         }
 
-        public DailyPlan? Load() => _store.Read()?.ToPlan();
+        /// <summary>Loads the stored plan, logging a warning for every damaged row (HW6 review 05e).</summary>
+        public DailyPlan? Load(IMonitor monitor)
+        {
+            var warnings = new List<string>();
+            DailyPlan? plan = _store.Read()?.ToPlan(warnings);
+            foreach (string warning in warnings)
+                monitor.Log(warning, LogLevel.Warn);
+            return plan;
+        }
 
         public void Save(DailyPlan? plan) => _store.Write(plan == null ? null : StoredPlanData.FromPlan(plan));
     }

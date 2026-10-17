@@ -29,11 +29,19 @@ namespace StardewAutoGifter.Core
             return data;
         }
 
-        public DailyPlan ToPlan()
+        /// <summary>
+        /// Rebuilds the plan. A damaged row (planned, but without an item) is loaded as having no
+        /// eligible item, and a warning naming the NPC is added to <paramref name="warnings"/> so the
+        /// caller can log it (specs/daily-plan-review - "Edited plan carried into the next day").
+        /// </summary>
+        public DailyPlan ToPlan(List<string>? warnings = null)
         {
             var plan = new DailyPlan { TargetDay = TargetDay, IsActive = IsActive };
             foreach (StoredGiftData gift in Gifts)
             {
+                if (gift.Status == GiftPlanStatus.Planned && gift.QualifiedItemId == null)
+                    warnings?.Add($"Stored plan row for '{gift.NpcName}' was marked as planned but had no item; it was loaded as 'nothing to give'.");
+
                 plan.Gifts.Add(gift.Status == GiftPlanStatus.Planned && gift.QualifiedItemId != null
                     ? new PlannedGift(gift.NpcName, gift.QualifiedItemId) { Excluded = gift.Excluded }
                     : new PlannedGift(gift.NpcName, gift.Status == GiftPlanStatus.Planned ? GiftPlanStatus.NoEligibleItem : gift.Status));

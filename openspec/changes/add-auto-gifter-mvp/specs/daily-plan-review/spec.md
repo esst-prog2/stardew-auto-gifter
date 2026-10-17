@@ -187,7 +187,7 @@ The player SHALL be able to check or uncheck an item's checkbox in the blocklist
 - **THEN** that item is removed from the blocklist and becomes eligible for selection again starting with the next plan computation
 
 ### Requirement: Edited plan carried into the next day
-Once the player closes the menu (or ends the day), the plan as edited (including any rows toggled off) SHALL be the plan executed during the next day; the mod SHALL NOT recompute or discard the player's edits when the new day starts. The next day's plan SHALL be stored with the save when the day ends, so that it is still the plan executed after the game is closed and the save is loaded again. When a new day starts, the stored plan SHALL become that day's plan only if its target day is the new day; otherwise the new day has no plan.
+Once the player closes the menu (or ends the day), the plan as edited (including any rows toggled off) SHALL be the plan executed during the next day; the mod SHALL NOT recompute or discard the player's edits when the new day starts. The next day's plan SHALL be stored with the save when the day ends, so that it is still the plan executed after the game is closed and the save is loaded again. When a new day starts, the stored plan SHALL become that day's plan only if its target day is the new day; otherwise the new day has no plan. If a stored row is damaged (marked as planned but without an item), the mod SHALL load it as having no eligible item, and SHALL write a warning naming that NPC to the log instead of hiding the damage.
 
 #### Scenario: Toggled-off NPC stays excluded the next day
 - **WHEN** the player toggled off an NPC's row before ending the day
@@ -196,6 +196,14 @@ Once the player closes the menu (or ends the day), the plan as edited (including
 #### Scenario: Plan survives saving and loading
 - **WHEN** the player ends day 10 with a plan for day 11, quits the game, and later loads the save on day 11
 - **THEN** the plan executed on day 11 is the plan from day 10, including the rows toggled off
+
+#### Scenario: Damaged stored plan row
+- **WHEN** the stored plan has a row for Haley that is marked as planned but has no item
+- **THEN** Haley's row is loaded as having no eligible item, and one warning naming Haley is written to the log
+
+#### Scenario: Undamaged stored plan
+- **WHEN** every stored plan row is complete
+- **THEN** loading it writes no warning
 
 #### Scenario: Plan becomes today's plan on its target day
 - **WHEN** day 11 starts and the stored plan's target day is day 11

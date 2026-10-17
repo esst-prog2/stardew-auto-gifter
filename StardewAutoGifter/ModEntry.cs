@@ -80,7 +80,7 @@ namespace StardewAutoGifter
             _settingsStore.Load();
             _todaysPlan = null;
             _wasMarkingConflict = false;
-            _nextPlan = _planStore.Load(); // the plan stored as the previous day ended
+            _nextPlan = _planStore.Load(Monitor); // the plan stored as the previous day ended
             PromotePlanForToday();
         }
 

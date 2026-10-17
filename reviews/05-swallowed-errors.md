@@ -131,3 +131,25 @@ Checks:
 - `dotnet build`: 0 errors, the known CS9057 warning.
 - `dotnet test`: 76/76 green (74 + 2).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (step 05e: E4)
+
+Spec, written before the code: `daily-plan-review`, "Edited plan carried into the next day".
+- A damaged stored row (planned, without an item) is loaded as having no eligible item.
+- A warning naming the NPC is logged instead of hiding the damage.
+- Two scenarios: a damaged row for Haley, and an undamaged plan.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/StoredPlanWarningsTests.cs`, 2 tests:
+- the damaged row becomes `NoEligibleItem`, with exactly one warning that names Haley;
+- complete rows give no warnings.
+
+Code:
+- `Core/StoredPlanData.cs`: `ToPlan(List<string>? warnings = null)` adds a warning for each damaged row. The default `null` keeps the existing round-trip tests unchanged.
+- `Planning/PlanStore.cs`: `Load(IMonitor)` logs each warning at Warn.
+- `ModEntry.cs` passes `Monitor` on save load.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build`: 0 errors, the known CS9057 warning.
+- `dotnet test`: 78/78 green (76 + 2).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
