@@ -228,3 +228,38 @@ A7 (any day):
 A5 (greenhouse; the greenhouse must be repaired):
 17. Put a chest in the greenhouse, open it and press G. In the SMAPI console or log, find `Chest-mark key pressed on a Chest at … in Greenhouse; in farm scope: …`. `True` means the greenhouse is in the pool. `False` means it is not. If it was `True`, press G again on that chest to unmark it.
 18. Confirmation: move every Coconut out of the other farm chests and put at least 3 into the greenhouse chest. Haley must still be under the weekly cap, which takes a new week after the steps above. Open F8. `[x] Haley -> Coconut` means the greenhouse is in the pool. Any other item, or "nothing to give", means it is not.
+
+## Decisions after step 01e
+
+The user approved the three choices the assistant had made on its own during 01b-01e:
+- the automatic day-end plan is also computed when the only plan for tomorrow is inactive;
+- `DailyPlan`, `PlannedGift` and `GiftPlanStatus` moved to `Core/`;
+- the "Plan computation timing" note was added to `design.md`.
+
+## In-game verification (step 01f)
+
+Run by the user on the build from commit `003b59d`. NPC2 was Emily, with Amethyst. The user's numbering split checklist step 4 into two items and folded step 5 (re-toggle Emily off, save, quit, reload) into the next item. The results below use the checklist's numbering.
+
+| Step | Expected | Seen | Result |
+|---|---|---|---|
+| 1 | Plan tab shows `[x] Haley -> Coconut` and `[x] NPC2 -> …` | `[x] Haley -> Coconut` and `[x] Emily -> Amethyst` | OK |
+| 2 | Day 1: no gift for Haley, no message, Coconut count unchanged | as expected | OK |
+| 3 | After reopening F8: NPC2 `[ ]`, Haley `[x]` | Emily `[ ]`, Haley `[x]` | OK |
+| 4 | Day 2: "Gave Coconut to Haley.", one Coconut fewer; nothing for NPC2 | as expected; no gift and no dialogue for Emily | OK |
+| 5-6 | Day 2 evening: Emily toggled off, save, quit, reload. Day 3, without F8: "Gave Coconut to Haley.", nothing for NPC2 | as expected | OK |
+| 7 | End-of-day-3 log line `No active plan for tomorrow; computed one automatically…` | `[14:02:05 DEBUG Auto-Gifter] No active plan for tomorrow; computed one automatically as the day ended (target day 6).` | OK (see note) |
+| 8 | Anchor unmarked: no gift and no dialogue for NPC2 or Haley | as expected | OK |
+| 9 | Plan tab: "Mod inactive: open a chest…" | as expected | OK |
+| 10 | Two chests marked: the HUD message appears once | appeared 1 time | OK |
+| 11 | After 10+ s no repeat; Plan tab "Mod paused…"; red line on Warnings; no gift for NPC2 | as expected | OK |
+| 12 | Second chest unmarked, then marked again: the HUD message appears again | appeared 1 time | OK |
+| 13 | After unmarking the second chest: "Gave … to NPC2."; Haley shows the "this week" dialogue | "Gave Amethyst to Emily."; the "this week" dialogue for Haley | OK |
+| 14 | 10 NPCs: at most 7 rows, none outside the menu | as expected | OK |
+| 15 | Scrolling down and up stops at both ends | as expected | OK |
+| 16 | After scrolling, a click toggles the NPC whose name is shown, and it stays toggled after reopening | as expected | OK |
+| 17 | Greenhouse chest log line: `in farm scope: True/False` | - | not tested |
+| 18 | Confirmation with Coconuts only in the greenhouse | - | not tested |
+
+Note on step 7: "target day 6" uses SMAPI's days-since-start count (spring 1 of year 1 is day 1). The line was logged as the checklist's day 3 ended, so it is consistent if that day was the 5th in-game day (spring 5), meaning checklist day 1 was spring 3. If checklist day 3 was spring 3 instead, the expected value would be 4, and this would be a deviation. The user's note says this was the 3rd play day. The exact in-game date was not recorded, so this is left open for the user to confirm. Nothing was changed.
+
+Result: 16 of 18 steps run, all 16 OK, no deviation found. A5 (greenhouse, steps 17-18) was not tested and stays open. Nothing was changed in the code or the spec.
