@@ -158,3 +158,5 @@ Checks:
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
 
 **In-game status (2026-10-17):** not run, in-game verification pending: A3, A4 and A5 (key checks at startup). The homework does not require running it.
+
+**In-game results (2026-11-06, see `reviews/10-in-game-results.md`):** A3 OK (Newtonsoft accepted `9999` and the mod fell back to F8 with the Warn line), A4 OK, A5 OK.

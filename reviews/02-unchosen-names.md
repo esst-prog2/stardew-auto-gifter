@@ -155,3 +155,5 @@ To check in-game:
 6. Afterwards, set both keys back to `"G"` and `"F8"`.
 
 **In-game status (2026-10-17):** not run, in-game verification pending: the 02c load check (MinimumApiVersion) and C4 (remapped keys in texts, 02d). The homework does not require running it.
+
+**In-game results (2026-11-06, see `reviews/10-in-game-results.md`):** the 02c load check is OK (the mod loaded in all four launches); C4 (remapped keys in texts) deviates, because the remapped keys were not in effect in launch 1 and the results contradict each other, so it needs a re-run.

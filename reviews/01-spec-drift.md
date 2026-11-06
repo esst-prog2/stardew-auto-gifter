@@ -276,3 +276,5 @@ How to check later:
 3. Example: sleeping on spring 10 of year 1 should log `target day 11`. Sleeping on summer 3 of year 1 should log `target day 32`.
 
 **In-game status (2026-10-17):** not run, in-game verification pending: A5 (greenhouse, checklist steps 17-18) and the step-7 target-day check (01g). The homework does not require running it.
+
+**In-game results (2026-11-06, see `reviews/10-in-game-results.md`):** A5 (greenhouse) deviates: the chest-mark log line said `in farm scope: False`, and Coconuts kept only in the greenhouse gave "nothing to give", which confirms that greenhouse chests are not in the pool. The step-7 target-day question is still open.

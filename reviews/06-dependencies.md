@@ -101,3 +101,5 @@ Checks:
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
 
 **In-game status (2026-10-17):** not run, in-game verification pending: the 06a load check (MinimumGameVersion). The homework does not require running it.
+
+**In-game results (2026-11-06, see `reviews/10-in-game-results.md`):** the 06a load check is OK (the mod loaded in all four launches, with no version error).

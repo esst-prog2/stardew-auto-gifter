@@ -178,3 +178,5 @@ R3 (Warnings and Settings tabs, worst case):
 14. If the Settings or Warnings text does not need scrolling, expect the wheel to do nothing there.
 
 **In-game status (2026-10-17):** not run, in-game verification pending: C4, R1 (Saturday-evening plan for Sunday), R3 (Warnings and Settings tabs) and the R4 welcome-page variants. The homework does not require running it.
+
+**In-game results (2026-11-06, see `reviews/10-in-game-results.md`):** R1 OK (Friday "already reached", Saturday `[x] Haley -> Coconut` for Sunday, Sunday delivery); R3 OK (Warnings and Settings tabs); C4 deviates and needs a re-run; the R4 "anchor chest only" welcome variant was not run.
