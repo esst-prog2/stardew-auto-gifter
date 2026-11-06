@@ -225,3 +225,5 @@ To check in-game: this needs the same setup as E3 (step 4 of the checklist above
 3. Close and reopen F8. Expect the row to be gone, and the Plan tab to no longer show "<name>: not found in the game".
 
 **In-game status (2026-10-17):** not run, in-game verification pending: E2 (full backpack), E3 and 05g (villager not found; needs a removed villager mod), E5 (villager not met yet; its decision waits for this) and E6 (daily-limit log line); E1 is marked not reproducible in game. The homework does not require running it.
+
+**In-game results (2026-11-06, see `reviews/10-in-game-results.md`):** E2 OK (chest dropped at the feet, welcome page 2); E3 and 05g OK as reported; **E5 deviates**: delivering to a villager not met yet throws `KeyNotFoundException` in `NPC.receiveGift` after one unit was already removed, and it repeats every second; E6 has no reported result; E1 is not reproducible in game.

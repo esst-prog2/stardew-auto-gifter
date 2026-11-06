@@ -179,3 +179,5 @@ D5 (Settings text):
 7. F8 → Settings tab. Below the explanation, after an empty line, expect in gray: "Whether villagers get a liked item when no loved one is available is set in config.json (IncludeLikedItems), not in this menu.". Clicking it does nothing, and clicking the setting's own line still toggles it.
 
 **In-game status (2026-10-17):** not run, in-game verification pending: D4 (save data after the SaveDataStore refactor) and D5 (Settings-tab sentence). The homework does not require running it.
+
+**In-game results (2026-11-06, see `reviews/10-in-game-results.md`):** D4 OK (blocklist, NPC selection, Settings and the stored plan survived the store refactor, and reloading kept a new block); D5 OK (Settings sentence).

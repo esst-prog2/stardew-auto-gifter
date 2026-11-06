@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Buildings;
+using StardewValley.Locations;
 using StardewValley.Objects;
 using StardewAutoGifter.Core;
 
@@ -23,9 +24,12 @@ namespace StardewAutoGifter.GiftSelection
 
             foreach (Building building in farm.buildings)
             {
-                GameLocation? indoors = building.indoors.Value;
-                if (indoors != null)
-                    yield return indoors;
+                // HW7b: GetIndoors() also returns shared interiors such as the greenhouse, which
+                // building.indoors.Value (own-instance interiors only: barn, coop, shed) left out.
+                // The farmhouse is a building too, and stays out (Core/FarmScope).
+                GameLocation? indoors = building.GetIndoors();
+                if (FarmScope.IncludesBuildingInterior(hasInterior: indoors != null, isFarmHouse: indoors is FarmHouse))
+                    yield return indoors!;
             }
         }
 

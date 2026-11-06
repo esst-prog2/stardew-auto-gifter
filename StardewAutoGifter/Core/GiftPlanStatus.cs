@@ -17,5 +17,8 @@ namespace StardewAutoGifter.Core
 
         /// <summary>The configured NPC was not found in the game (for example a villager from a mod that is no longer installed).</summary>
         NpcNotFound,
+
+        /// <summary>The villager exists, but the player has not met them yet, so the game cannot accept a gift from the player (HW7a).</summary>
+        NotMetYet,
     }
 }

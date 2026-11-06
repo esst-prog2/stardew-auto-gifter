@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -110,10 +111,15 @@ namespace StardewAutoGifter.Delivery
             DeliveryStep step = DeliveryRule.Decide(
                 withinGiftLimit: FriendshipGiftTracker.CanGiveGiftOn(gift.NpcName, targetDay: today, today: today),
                 itemCanBeHandedOver: giftObject != null,
-                unitsOnFarm: FarmItemPool.GetTotalQuantity(farmChests, qualifiedItemId));
+                unitsOnFarm: FarmItemPool.GetTotalQuantity(farmChests, qualifiedItemId),
+                hasMet: FriendshipGiftTracker.HasMet(gift.NpcName));
 
             switch (step)
             {
+                case DeliveryStep.SkipNotMet:
+                    // Not resolved: once the player has talked to them, a later pass still delivers.
+                    break;
+
                 case DeliveryStep.SkipGiftLimit:
                     // Silent for the player (no confirmation), but visible in the log (HW6 review 05f).
                     monitor.Log($"Skipped delivery to {gift.NpcName}: the gift limit (one per day, two per week) is already reached.", LogLevel.Debug);
@@ -130,18 +136,29 @@ namespace StardewAutoGifter.Delivery
                     break;
 
                 case DeliveryStep.Deliver:
-                    if (!FarmItemPool.TryRemoveOneUnit(farmChests, qualifiedItemId))
+                    // HW7a: hand the gift over first. giftObject is a new item, not a chest's stack,
+                    // so nothing leaves a chest unless the game accepted the gift.
+                    try
                     {
-                        // Cannot happen after the stock check above (same chests, same moment), but
-                        // never give an item that was not actually removed.
-                        monitor.Log($"Skipped delivery to {gift.NpcName}: {qualifiedItemId} could not be removed from the farm's chests.", LogLevel.Warn);
-                        step = DeliveryStep.SkipLowStock;
+                        // receiveGift applies friendship-point changes and updates the game's own
+                        // GiftsToday/GiftsThisWeek tracking, so the mod never duplicates that state.
+                        npc.receiveGift(giftObject!, Game1.player, updateGiftLimitInfo: true);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Logged once, and resolved for the day, so a game error is never retried
+                        // every second (which used to remove one unit per retry).
+                        monitor.LogOnce($"Could not give {qualifiedItemId} to {gift.NpcName}: the game rejected the gift ({ex.GetType().Name}: {ex.Message}). Nothing was removed from the farm's chests; no new attempt today.", LogLevel.Warn);
+                        step = DeliveryStep.SkipGameRejected;
                         break;
                     }
 
-                    // receiveGift applies friendship-point changes and updates the game's own
-                    // GiftsToday/GiftsThisWeek tracking, so the mod never duplicates that state.
-                    npc.receiveGift(giftObject!, Game1.player, updateGiftLimitInfo: true);
+                    if (!FarmItemPool.TryRemoveOneUnit(farmChests, qualifiedItemId))
+                    {
+                        // Cannot happen after the stock check above (same chests, same moment).
+                        monitor.Log($"Gave {qualifiedItemId} to {gift.NpcName}, but no unit could be removed from the farm's chests.", LogLevel.Warn);
+                    }
+
                     Game1.addHUDMessage(new HUDMessage($"Gave {giftObject!.DisplayName} to {npc.displayName}."));
                     break;
             }

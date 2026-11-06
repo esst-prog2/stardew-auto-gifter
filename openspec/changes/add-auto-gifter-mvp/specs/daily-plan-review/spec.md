@@ -104,6 +104,10 @@ For each configured NPC who does not have a planned item for the next day — ei
 - **WHEN** a configured NPC has no eligible loved or liked item anywhere in the farm-wide pool
 - **THEN** the preview shows a row for that NPC stating no item is available, instead of omitting them from the preview
 
+#### Scenario: Configured villager not met yet
+- **WHEN** a configured villager named "Caroline" exists in the game but the player has not met her yet
+- **THEN** the preview shows the row "Caroline: not met yet - talk to them first"
+
 #### Scenario: Configured NPC not found in the game
 - **WHEN** a configured NPC named "Sophia" is not found in the game when the plan is computed
 - **THEN** the preview shows the row "Sophia: not found in the game" instead of a "nothing to give" row, and a warning naming Sophia is written to the log

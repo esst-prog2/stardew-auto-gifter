@@ -70,6 +70,14 @@ While the mod is active, the pool of items available for gift selection SHALL be
 - **WHEN** the player's farm has several chests, each containing some of an NPC's loved items
 - **THEN** the mod treats each item as available in the sum of its quantity across all of those farm chests
 
+#### Scenario: Greenhouse chests are counted
+- **WHEN** a chest inside the greenhouse contains an item an NPC loves
+- **THEN** the mod counts that chest's contents toward the item pool, and marking a chest in the greenhouse is allowed, the same as for the barn, coop, or shed
+
+#### Scenario: A farm building without an interior adds nothing
+- **WHEN** a farm building has no interior (for example the shipping bin)
+- **THEN** it adds no location to the farm scope
+
 #### Scenario: Chests outside the farm are ignored
 - **WHEN** a chest located outside the player's farm (for example, in the mines or another location) contains an item an NPC loves
 - **THEN** the mod does not count that chest's contents toward the item pool
@@ -172,6 +180,25 @@ The first time the player exits the farmhouse onto the farm in a save, the mod S
 #### Scenario: Welcome message and chest given only once per save
 - **WHEN** the player exits the farmhouse onto the farm again later in the same save
 - **THEN** the mod does not show the welcome message or add another chest
+
+### Requirement: Villagers not met yet are not gifted
+The mod SHALL NOT select an item for a configured villager whom the player has not met yet (the game has no friendship entry for them), because the game cannot accept a gift from a player the villager has not met. Such a villager SHALL get the plan status "not met yet" instead. This check SHALL come after the "not found in the game" check and before the gift-limit check.
+
+#### Scenario: Configured villager not met yet
+- **WHEN** the plan is computed and a configured villager exists in the game but the player has not met them yet
+- **THEN** the mod selects no item for that villager and gives them the status "not met yet"
+
+#### Scenario: Villager not found in the game
+- **WHEN** the plan is computed and a configured villager is not found in the game at all
+- **THEN** the status is "not found in the game", whether or not the player could have met them
+
+#### Scenario: Villager met, gift limit reached
+- **WHEN** the plan is computed for a villager the player has met, and the gift limit for the plan's target day is already reached
+- **THEN** the status is "already reached this week's gift limit"
+
+#### Scenario: Villager met, gift limit not reached
+- **WHEN** the plan is computed for a villager the player has met, and the gift limit for the plan's target day is not reached
+- **THEN** the mod goes on to select an item for them
 
 ### Requirement: Gift-limit state respected during selection
 The mod SHALL exclude an NPC from receiving a selection for a given day if the game's own per-NPC gift tracking shows that NPC has already reached the weekly limit of friendship-point-counting gifts, even if an otherwise-eligible item exists in the pool. Because the plan is computed for the next day, which is a new day for the daily limit, plan computation SHALL NOT exclude an NPC just because they already received a gift today; the daily limit is checked only at delivery time (see specs/proximity-delivery - "Gift-limit re-checked at delivery time"). The weekly limit SHALL be judged for the plan's target day, not for today: the week begins on Sunday, so when the target day starts a new week compared with today (planning on Saturday evening for Sunday), the mod SHALL treat the NPC's weekly count as 0. This rule SHALL apply both when the plan is computed from the menu and when it is computed automatically at the end of the day. See `reviews/03-week-rollover-source.md` for the source and the day-of-week formula.
