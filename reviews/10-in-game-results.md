@@ -152,3 +152,35 @@ Checks:
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
 
 To check in-game: repeat points 22-23. Expect `in farm scope: True`, then `[x] Haley -> Coconut` with Coconuts only in the greenhouse. The farmhouse must still be out: a chest in the farmhouse logs `in farm scope: False`.
+
+## Re-run after the D2 and D3 fixes (2026-11-06)
+
+Run by the user on the build from `afa1ab8` (HW7b), in two launches.
+- Launch A: config `"MenuKey": "F9"`, `"ChestMarkKey": "K"`, saved before the game started, on a new save.
+- Launch B: config `F8`/`G`, on an existing save.
+
+| # | Point | Expected | Reported result |
+|---|---|---|---|
+| 1 | D1 / C4 | Config F9/K saved before starting; no `config.json` Warn line | OK |
+| 2 | D1 / C4 | Welcome page 3 "press K", page 6 "Press F9" | OK |
+| 3 | D1 / C4 | F8 does nothing, F9 opens the menu, Plan "press K to mark it" | OK |
+| 4 | D1 / C4 | G does nothing; K marks the chest, renames it, and it sparkles | OK |
+| 5 | D1 / C4 | Conflict HUD "… Unmark all but one with K." once; Plan "… press K to unmark it…" | OK (the exact texts and count were not written out, only reported as OK) |
+| 6 | — | Unmark the second chest, set the config back to F8/G | not reported (a setup step; launch B ran with F8/G) |
+| 7 | D2 | Plan row "<name>: not met yet - talk to them first" | OK |
+| 8 | D2 | Walking past before meeting: no gift, no `KeyNotFoundException`, item count unchanged | OK |
+| 9 | D2 | After talking: planned that evening, "Gave … to …" the next day, exactly one item used | OK |
+| 10 | D3 | Greenhouse chest: `in farm scope: True` | OK |
+| 11 | D3 | Farmhouse chest: `in farm scope: False` | OK |
+| 12 | D3 | Coconuts only in the greenhouse → `[x] Haley -> Coconut` | OK |
+| 13 | E6 (point 17) | No gift, and the `Skipped delivery to Haley: the gift limit …` Debug line once | OK |
+
+Result: every reported point is OK, with no deviation.
+- D1 is closed: C4 works with a correctly saved config, so the first run's failure was a config-editing problem, not a code problem.
+- D2 and D3 are fixed and confirmed in-game.
+- E6 (point 17) is confirmed.
+
+Still open:
+- the review 01 step-7 target-day question;
+- the R4 "anchor chest only" welcome variant (not run);
+- the point-15 amethyst count from the first run (not reported).
