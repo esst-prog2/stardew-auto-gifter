@@ -123,3 +123,32 @@ Checks:
 - `dotnet build --no-incremental`: 0 errors, 0 warnings.
 - `dotnet test`: 98/98 green (90 + 8).
 - `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+## What we changed (HW7b: D3)
+
+Spec, written before the code: `gift-selection`, "Farm-wide item pool". Two new scenarios:
+- "Greenhouse chests are counted": greenhouse chests count toward the pool, and marking a chest there is allowed.
+- "A farm building without an interior adds nothing".
+
+The requirement text already named the greenhouse, so it did not change.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/FarmScopeTests.cs`, 3 tests:
+- greenhouse interior → in scope;
+- farmhouse interior → out of scope;
+- no interior → nothing added.
+
+Code:
+- `Core/FarmScope.cs` (new, pure): `IncludesBuildingInterior(hasInterior, isFarmHouse)`.
+- `GiftSelection/FarmChestScanner.cs`, `GetFarmScopeLocations`:
+  - it uses `building.GetIndoors()` instead of `building.indoors.Value`. `GetIndoors()` also returns shared interiors such as the greenhouse; `indoors.Value` returns only own-instance interiors like the barn, coop and shed;
+  - it skips any `FarmHouse` location through `FarmScope`, so the farmhouse, which is also a farm building in 1.6, and cabins stay out. The cellar is not a farm building, so it stays out too;
+  - the build against the game DLL confirmed that `Building.GetIndoors()` exists, so the fallback (`Game1.getLocationFromName("Greenhouse")`) was not needed;
+  - `IsInFarmScope`, and with it the chest-mark key, use the same list, so marking a greenhouse chest now works too.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build --no-incremental`: 0 errors, 0 warnings.
+- `dotnet test`: 101/101 green (98 + 3).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
+
+To check in-game: repeat points 22-23. Expect `in farm scope: True`, then `[x] Haley -> Coconut` with Coconuts only in the greenhouse. The farmhouse must still be out: a chest in the farmhouse logs `in farm scope: False`.

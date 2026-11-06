@@ -70,6 +70,14 @@ While the mod is active, the pool of items available for gift selection SHALL be
 - **WHEN** the player's farm has several chests, each containing some of an NPC's loved items
 - **THEN** the mod treats each item as available in the sum of its quantity across all of those farm chests
 
+#### Scenario: Greenhouse chests are counted
+- **WHEN** a chest inside the greenhouse contains an item an NPC loves
+- **THEN** the mod counts that chest's contents toward the item pool, and marking a chest in the greenhouse is allowed, the same as for the barn, coop, or shed
+
+#### Scenario: A farm building without an interior adds nothing
+- **WHEN** a farm building has no interior (for example the shipping bin)
+- **THEN** it adds no location to the farm scope
+
 #### Scenario: Chests outside the farm are ignored
 - **WHEN** a chest located outside the player's farm (for example, in the mines or another location) contains an item an NPC loves
 - **THEN** the mod does not count that chest's contents toward the item pool
