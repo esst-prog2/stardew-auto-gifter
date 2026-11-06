@@ -67,7 +67,7 @@ Immediately before removing a unit of the planned item from a farm chest, the mo
 - **THEN** the mod removes one unit and delivers it normally, leaving at least one unit behind
 
 ### Requirement: Delivery never removes an item it cannot hand over
-Before removing anything from a chest, the mod SHALL first create the gift object for the planned item and check that it can be handed to the NPC as a gift. If it cannot (for example because the item no longer exists in the game, or it is not an object item), the mod SHALL NOT remove anything from any chest, SHALL NOT show a confirmation message, SHALL leave that NPC's planned gift pending (not resolved) so that it can be tried again later, and SHALL write a warning to the log naming the NPC and the item. The checks SHALL happen in this order: the gift limit first, then whether the item can be handed over, then the stock (at least two units). Only when all three pass is one unit removed and given.
+Before removing anything from a chest, the mod SHALL first create the gift object for the planned item and check that it can be handed to the NPC as a gift. The gift object is a new item, not part of a chest's stack: the mod SHALL hand it to the NPC first, and remove one unit from a chest only after the game has accepted the gift. If the game rejects the hand-off with an error, the mod SHALL NOT remove anything, SHALL write one warning to the log, and SHALL treat that planned gift as resolved for the day, so that it is not tried again every second. A villager the player has not met yet SHALL be skipped without removing anything, without a notice, and without resolving the gift, so that it can still be delivered later the same day after the player meets them. If it cannot (for example because the item no longer exists in the game, or it is not an object item), the mod SHALL NOT remove anything from any chest, SHALL NOT show a confirmation message, SHALL leave that NPC's planned gift pending (not resolved) so that it can be tried again later, and SHALL write a warning to the log naming the NPC and the item. The checks SHALL happen in this order: whether the player has met the villager, then the gift limit, then whether the item can be handed over, then the stock (at least two units). Only when all four pass is the gift handed over, and then one unit removed.
 
 #### Scenario: Planned item cannot be created as a gift
 - **WHEN** the player comes within the proximity threshold of a planned NPC, the gift limit allows a gift, the farm holds 10 units, but the planned item cannot be created as a giftable object
@@ -80,6 +80,14 @@ Before removing anything from a chest, the mod SHALL first create the gift objec
 #### Scenario: Not enough stock
 - **WHEN** the gift limit allows a gift, the item can be handed over, and only 1 unit remains across the farm's chests
 - **THEN** the delivery is skipped for low stock and the planned gift is resolved for the day
+
+#### Scenario: Villager not met yet at delivery time
+- **WHEN** the player comes within the proximity threshold of a planned villager they have not met yet
+- **THEN** nothing is removed, no message or notice is shown, and the planned gift stays pending
+
+#### Scenario: The game rejects the gift
+- **WHEN** every check passes but the game throws an error while handing the gift to the villager
+- **THEN** nothing is removed from any chest, one warning is written to the log, and the planned gift is resolved for the day
 
 #### Scenario: Everything allows the hand-off
 - **WHEN** the gift limit allows a gift, the item can be handed over, and 5 units remain across the farm's chests
@@ -104,7 +112,7 @@ Immediately before handing over a planned item, the mod SHALL re-check the game'
 - **THEN** the mod does not hand over the planned item to that NPC, shows no confirmation message for that NPC, and writes a Debug log line naming that NPC
 
 ### Requirement: In-person notice when nothing is available for a configured NPC
-When the player comes within the proximity threshold of a configured NPC who currently has no planned gift — because no eligible loved or liked item is available, or because the weekly friendship-point-counting gift limit is already reached — the mod SHALL show a one-time dialogue box, styled like a normal NPC conversation (the game's own NPC dialogue box, with that NPC as the speaker), explaining that nothing is being given to them right now. This SHALL happen at most once per configured NPC per day, and SHALL NOT happen for an NPC who does have a pending planned item.
+When the player comes within the proximity threshold of a configured NPC who currently has no planned gift — because no eligible loved or liked item is available, or because the weekly friendship-point-counting gift limit is already reached — the mod SHALL show a one-time dialogue box, styled like a normal NPC conversation (the game's own NPC dialogue box, with that NPC as the speaker), explaining that nothing is being given to them right now. This SHALL happen at most once per configured NPC per day, and SHALL NOT happen for an NPC who does have a pending planned item, or for a villager the player has not met yet.
 
 #### Scenario: Approaching an NPC with no eligible item
 - **WHEN** the player comes within the proximity threshold of a configured NPC who has no eligible loved or liked item available

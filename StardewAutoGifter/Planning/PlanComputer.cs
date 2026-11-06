@@ -32,20 +32,25 @@ namespace StardewAutoGifter.Planning
 
             foreach (string npcName in configuredNpcNames)
             {
-                // specs/daily-plan-review - "Reason shown for configured NPCs with no gift": an NPC
-                // the game does not know gets its own reason, not a false "nothing to give".
-                if (Game1.getCharacterFromName(npcName) == null)
-                {
-                    monitor.LogOnce($"Configured villager '{npcName}' was not found in the game; the plan shows them as 'not found in the game'.", LogLevel.Warn);
-                    plan.Gifts.Add(new PlannedGift(npcName, GiftPlanStatus.NpcNotFound));
-                    continue;
-                }
+                // specs/gift-selection - "Villagers not met yet are not gifted" and "Gift-limit state
+                // respected during selection", in the order of Core/PlanPrecheck: found in the game,
+                // then met by the player, then the limit judged for the target day (so Saturday
+                // evening's weekly count does not block Sunday).
+                bool npcFound = Game1.getCharacterFromName(npcName) != null;
+                bool hasMet = npcFound && FriendshipGiftTracker.HasMet(npcName);
+                GiftPlanStatus? stopStatus = PlanPrecheck.StatusBeforeSelection(
+                    npcFound,
+                    hasMet,
+                    withinGiftLimit: hasMet && FriendshipGiftTracker.CanGiveGiftOn(npcName, targetDay, today));
 
-                // specs/gift-selection - "Gift-limit state respected during selection": judged for
-                // the target day, so Saturday evening's weekly count does not block Sunday.
-                if (!FriendshipGiftTracker.CanGiveGiftOn(npcName, targetDay, today))
+                if (stopStatus != null)
                 {
-                    plan.Gifts.Add(new PlannedGift(npcName, GiftPlanStatus.WeeklyCapReached));
+                    // specs/daily-plan-review - "Reason shown for configured NPCs with no gift": an
+                    // NPC the game does not know gets its own reason, not a false "nothing to give".
+                    if (stopStatus == GiftPlanStatus.NpcNotFound)
+                        monitor.LogOnce($"Configured villager '{npcName}' was not found in the game; the plan shows them as 'not found in the game'.", LogLevel.Warn);
+
+                    plan.Gifts.Add(new PlannedGift(npcName, stopStatus.Value));
                     continue;
                 }
 

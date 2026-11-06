@@ -11,6 +11,7 @@ namespace StardewAutoGifter.Core
             GiftPlanStatus.NoEligibleItem => $"{npcName}: nothing to give (no loved/liked item available)",
             GiftPlanStatus.WeeklyCapReached => $"{npcName}: already reached this week's gift limit",
             GiftPlanStatus.NpcNotFound => $"{npcName}: not found in the game",
+            GiftPlanStatus.NotMetYet => $"{npcName}: not met yet - talk to them first",
             _ => npcName,
         };
     }

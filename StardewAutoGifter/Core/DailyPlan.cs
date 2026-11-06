@@ -25,10 +25,11 @@ namespace StardewAutoGifter.Core
 
         /// <summary>
         /// Configured NPCs with no planned gift (no eligible item, or the weekly cap is reached)
-        /// who haven't yet been given the in-person "nothing to give" notice today. See
-        /// specs/proximity-delivery - "In-person notice when nothing is available for a configured NPC".
+        /// who haven't yet been given the in-person "nothing to give" notice today. A villager not
+        /// met yet gets no notice (HW7a). See specs/proximity-delivery - "In-person notice when
+        /// nothing is available for a configured NPC".
         /// </summary>
         public IEnumerable<PlannedGift> PendingNoGiftNotifications() =>
-            Gifts.Where(g => g.Status != GiftPlanStatus.Planned && !g.Resolved);
+            Gifts.Where(g => g.Status != GiftPlanStatus.Planned && g.Status != GiftPlanStatus.NotMetYet && !g.Resolved);
     }
 }

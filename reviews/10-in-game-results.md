@@ -75,3 +75,51 @@ Not covered by this run:
 | 17 | The user re-runs it. |
 
 Point 15 (E5), how many amethysts were lost: **not reported**. The user's message left this as a placeholder, so no number is recorded.
+
+## What we changed (HW7a: D2)
+
+Spec, written before the code:
+- New requirement `gift-selection`, "Villagers not met yet are not gifted":
+  - a configured villager with no friendship entry gets the status "not met yet" and no item;
+  - the checks run in this order: not found, then not met, then the gift limit;
+  - four scenarios.
+- `daily-plan-review`: a new scenario "Configured villager not met yet", with the exact row "Caroline: not met yet - talk to them first".
+- `proximity-delivery`, "Delivery never removes an item it cannot hand over":
+  - the gift object, a new item, is handed over first, and one unit is removed only after the game accepted it;
+  - if the game rejects the gift with an error, nothing is removed, one warning is logged, and the gift is resolved for the day;
+  - a villager not met yet is skipped, and the gift stays pending;
+  - the check order is now met → limit → can be handed over → stock;
+  - two new scenarios.
+- `proximity-delivery`, "In-person notice…": no notice for a villager not met yet.
+
+Tests, written before the implementation: `StardewAutoGifter.Tests/NotMetYetTests.cs`, 8 tests:
+- `PlanPrecheck`, four cases: not met → `NotMetYet`; not found → `NpcNotFound`; met but limit reached → `WeeklyCapReached`; met and within the limit → no status;
+- the Plan-row text;
+- delivery to a villager not met → `SkipNotMet`, which does not resolve the gift;
+- `SkipGameRejected` resolves the gift;
+- no in-person notice for `NotMetYet`.
+
+The existing tests are unchanged. `DeliveryRule.Decide`'s new `hasMet` parameter defaults to `true`.
+
+Code:
+- `Core/GiftPlanStatus.cs`: new `NotMetYet`.
+- `Core/PlanRowText.cs`: its row text.
+- `Core/PlanPrecheck.cs` (new, pure): `StatusBeforeSelection(npcFound, hasMet, withinGiftLimit)`.
+- `Core/DailyPlan.cs`: `PendingNoGiftNotifications` leaves out `NotMetYet`.
+- `Core/DeliveryRule.cs`:
+  - new steps `SkipNotMet` (first check, does not resolve) and `SkipGameRejected` (set by the caller, resolves);
+  - `Decide(…, hasMet = true)`.
+- `GiftSelection/FriendshipGiftTracker.cs`: new `HasMet(npcName)`, true when there is a friendship entry. `CanGiveGiftOn` is unchanged, and planning and delivery now ask `HasMet` first.
+- `Planning/PlanComputer.cs`: uses `PlanPrecheck`. The not-found Warn line is unchanged.
+- `Delivery/ProximityDeliveryService.cs`, `TryDeliver`:
+  - passes `hasMet`, and `SkipNotMet` does nothing and leaves the gift pending;
+  - `Deliver` now calls `npc.receiveGift` **before** `TryRemoveOneUnit`;
+  - an exception from `receiveGift` is caught, logged once at Warn through `LogOnce`, nothing is removed, and the gift is resolved for the day;
+  - the HUD message is shown only after a successful hand-off.
+  - This `catch (Exception)` is deliberate: unlike the review 05 cases, it logs the error and stops the retry loop that drained the chest.
+
+Checks:
+- `openspec validate --strict`: valid.
+- `dotnet build --no-incremental`: 0 errors, 0 warnings.
+- `dotnet test`: 98/98 green (90 + 8).
+- `GiftLimitPolicy.cs` lines 21 and 29 unchanged.
