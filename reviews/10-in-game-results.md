@@ -64,3 +64,14 @@ Not covered by this run:
 - In-game check after the fix: repeat points 22-23. Expect `in farm scope: True`, then `[x] Haley -> Coconut`.
 
 **Point 17 (E6) has no result.** It needs a re-run: re-mark the chest, walk past Haley, and check `SMAPI-latest.txt` for the Debug line.
+
+## Decisions (2026-11-06)
+
+| Id | Decision |
+|---|---|
+| D1 | No code change. The user re-runs points 2-5 with a correctly saved config. |
+| D2 | Both a) and b). **a)** A villager not met yet is not gifted: a new status and Plan row "<name>: not met yet - talk to them first", and delivery and the in-person notice skip them. Spec and tests first, with the pure rule in `Core/`. **b)** `receiveGift` comes first, and `TryRemoveOneUnit` only after a successful hand-off. If `receiveGift` throws, write one Warn line and resolve the gift for the day, with no retry. |
+| D3 | Fix `GetFarmScopeLocations` as proposed: include shared interiors, exclude `FarmHouse`, and use `Game1.getLocationFromName("Greenhouse")` as the fallback if `GetIndoors()` does not exist. Tested where possible. |
+| 17 | The user re-runs it. |
+
+Point 15 (E5), how many amethysts were lost: **not reported**. The user's message left this as a placeholder, so no number is recorded.
