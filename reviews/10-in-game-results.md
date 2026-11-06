@@ -184,3 +184,5 @@ Still open:
 - the review 01 step-7 target-day question;
 - the R4 "anchor chest only" welcome variant (not run);
 - the point-15 amethyst count from the first run (not reported).
+
+**Point 15 amethyst count (2026-11-06):** not noted by the user. The user confirmed that the number of amethysts lost in the first run was not written down, so the loss is known to have happened (at least two failed attempts in the log), but its size is unknown. This closes the open point above; earlier lines are left as they were.
