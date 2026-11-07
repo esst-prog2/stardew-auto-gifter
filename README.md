@@ -7,7 +7,7 @@ A SMAPI mod for the game Stardew Valley that automates daily gift-giving to vill
 
 ## 1. The demo
 
-In the evening, before ending the day, I open the mod's menu and see tomorrow's plan: "Abigail → Grape (12 in chest), Sebastian → Beer (3 in chest), Penny → Strawberry (8 in chest)". I uncheck the Sebastian row because I don't want to give him anything tomorrow. I go to sleep, and a new day starts. The next day I play normally, mining, farming, and as I walk past Abigail in town, the mod automatically pulls a grape from the chest and hands it to her, a message confirms "Gave Grape to Abigail". The prismatic shard sitting in my chest is never touched, because I added it to the blocklist.
+On my farm I open my marked “Auto-Gifter Chest”, which holds 10 Coconuts, 5 Amethysts and 12 Prismatic Shards, close it again, and press F8. On the NPCs tab I have ticked Haley, Abigail and Emily, and the Plan tab shows tomorrow’s plan: “[x] Haley -> Coconut”, “[x] Abigail -> Amethyst” and “Emily: not met yet - talk to them first”, because I have never talked to Emily. Without the Blocklist, Abigail would get a Prismatic Shard, because there are more of them than Amethysts; the Shards are ticked on the Blocklist tab, so she gets an Amethyst instead. I click Abigail’s row to “[ ]”, because I want to give her something myself tomorrow, and go to sleep. The next morning I walk past Haley in town without pressing anything, a message says “Gave Coconut to Haley.”, and the chest now holds 9 Coconuts. When I walk past Abigail and Emily, nothing happens, and the chest still holds 5 Amethysts.
 
 ## 2. The shape
 
