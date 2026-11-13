@@ -7,6 +7,9 @@
     <RootNamespace>StardewAutoGifter</RootNamespace>
     <AssemblyName>StardewAutoGifter</AssemblyName>
     <EnableHarmony>false</EnableHarmony>
+    <!-- The build package embeds the PDB in the DLL. In Release builds, map local source paths to /_/ so the
+         published DLL contains no local path or user name; line numbers in stack traces are kept. -->
+    <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>
