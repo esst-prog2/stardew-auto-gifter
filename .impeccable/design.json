@@ -1,0 +1,549 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T00:00:00Z",
+  "title": "Design System: Auto-Gifter",
+  "extensions": {
+    "colorMeta": {
+      "night": {
+        "role": "neutral",
+        "displayName": "Night Indigo",
+        "canonical": "#1c1f4a",
+        "tonalRamp": [
+          "#08091a",
+          "#1e2240",
+          "#383e67",
+          "#565d8d",
+          "#767eb1",
+          "#99a2d2",
+          "#bfc7ee",
+          "#eaeeff"
+        ]
+      },
+      "night-2": {
+        "role": "neutral",
+        "displayName": "Late Night",
+        "canonical": "#232760",
+        "tonalRamp": [
+          "#07081d",
+          "#1c2047",
+          "#353c71",
+          "#525b99",
+          "#727dbd",
+          "#95a1dd",
+          "#bcc6f8",
+          "#eaeefe"
+        ]
+      },
+      "dusk": {
+        "role": "neutral",
+        "displayName": "Dusk",
+        "canonical": "#2e3478",
+        "tonalRamp": [
+          "#060820",
+          "#1b1f4c",
+          "#333b78",
+          "#505aa1",
+          "#6f7cc6",
+          "#92a0e6",
+          "#bbc6fb",
+          "#eaeefe"
+        ]
+      },
+      "first-light": {
+        "role": "neutral",
+        "displayName": "First Light",
+        "canonical": "#4f62b2",
+        "tonalRamp": [
+          "#050723",
+          "#161f51",
+          "#2d3b7e",
+          "#485aa8",
+          "#677cce",
+          "#8ba0ed",
+          "#b6c7fd",
+          "#e9eefe"
+        ]
+      },
+      "pre-dawn": {
+        "role": "neutral",
+        "displayName": "Pre-Dawn",
+        "canonical": "#5b6fbc",
+        "tonalRamp": [
+          "#050822",
+          "#161f4f",
+          "#2d3b7b",
+          "#495ba5",
+          "#687dca",
+          "#8ca1ea",
+          "#b6c7fe",
+          "#e8eeff"
+        ]
+      },
+      "morning": {
+        "role": "secondary",
+        "displayName": "Morning Sky",
+        "canonical": "#8fd3ff",
+        "tonalRamp": [
+          "#000d1a",
+          "#00283f",
+          "#014768",
+          "#23688f",
+          "#488ab3",
+          "#72add3",
+          "#a1d0f0",
+          "#def2ff"
+        ]
+      },
+      "morning-2": {
+        "role": "secondary",
+        "displayName": "Pale Morning",
+        "canonical": "#c9ecff",
+        "tonalRamp": [
+          "#040d12",
+          "#142832",
+          "#2b4654",
+          "#476676",
+          "#688899",
+          "#8caaba",
+          "#b5cddb",
+          "#e2f1fa"
+        ]
+      },
+      "day": {
+        "role": "neutral",
+        "displayName": "Day White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "lamp": {
+        "role": "primary",
+        "displayName": "Lamp Amber",
+        "canonical": "#ffb627",
+        "tonalRamp": [
+          "#150800",
+          "#342100",
+          "#583c06",
+          "#7f590d",
+          "#ab7704",
+          "#d79714",
+          "#f3bf6c",
+          "#feecd1"
+        ]
+      },
+      "lamp-ink": {
+        "role": "primary",
+        "displayName": "Lamp Ink",
+        "canonical": "#1c1f4a",
+        "tonalRamp": [
+          "#08091a",
+          "#1e2240",
+          "#383e67",
+          "#565d8d",
+          "#767eb1",
+          "#99a2d2",
+          "#bfc7ee",
+          "#eaeeff"
+        ]
+      },
+      "pane-dark": {
+        "role": "neutral",
+        "displayName": "Dark Pane",
+        "canonical": "#2b2f6b",
+        "tonalRamp": [
+          "#07081e",
+          "#1d2048",
+          "#363c72",
+          "#535b9a",
+          "#727cbf",
+          "#96a0df",
+          "#bcc6fa",
+          "#eaeeff"
+        ]
+      },
+      "pane-dark-ink": {
+        "role": "neutral",
+        "displayName": "Unlit Lavender",
+        "canonical": "#b9bdf0",
+        "tonalRamp": [
+          "#090918",
+          "#21223d",
+          "#3c3e64",
+          "#5a5c89",
+          "#7b7eac",
+          "#9da1cd",
+          "#c3c6eb",
+          "#ebedfe"
+        ]
+      },
+      "frame": {
+        "role": "neutral",
+        "displayName": "Window Frame",
+        "canonical": "#13153a",
+        "tonalRamp": [
+          "#080a18",
+          "#1f223d",
+          "#393f63",
+          "#575e89",
+          "#777fac",
+          "#9aa2cd",
+          "#c0c7eb",
+          "#eaeefe"
+        ]
+      },
+      "sash": {
+        "role": "neutral",
+        "displayName": "Sash Blue",
+        "canonical": "#3d4291",
+        "tonalRamp": [
+          "#070722",
+          "#1b1d50",
+          "#34387e",
+          "#5058a8",
+          "#6f7acd",
+          "#929eed",
+          "#bbc5fc",
+          "#eaeefe"
+        ]
+      },
+      "sash-edge": {
+        "role": "neutral",
+        "displayName": "Sash Edge",
+        "canonical": "#4c52a6",
+        "tonalRamp": [
+          "#070623",
+          "#1c1c52",
+          "#343880",
+          "#5057aa",
+          "#6f79d0",
+          "#929def",
+          "#bbc5fe",
+          "#eaedff"
+        ]
+      },
+      "sill": {
+        "role": "neutral",
+        "displayName": "Sill",
+        "canonical": "#565cb4",
+        "tonalRamp": [
+          "#070624",
+          "#1c1c53",
+          "#353781",
+          "#5056ac",
+          "#7078d2",
+          "#929df1",
+          "#bcc5fb",
+          "#eaedfe"
+        ]
+      },
+      "outline": {
+        "role": "neutral",
+        "displayName": "Dusk Outline",
+        "canonical": "#7d83cc",
+        "tonalRamp": [
+          "#08081f",
+          "#1e1f4a",
+          "#383a75",
+          "#55599d",
+          "#757bc2",
+          "#989fe2",
+          "#bec4fc",
+          "#ebedfe"
+        ]
+      },
+      "ink-night": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "ink-night-soft": {
+        "role": "neutral",
+        "displayName": "Soft Night Ink",
+        "canonical": "#d6d9ff",
+        "tonalRamp": [
+          "#0a0a15",
+          "#222337",
+          "#3e3f5b",
+          "#5c5e7e",
+          "#7d7fa1",
+          "#a0a2c2",
+          "#c5c7e2",
+          "#ebedfe"
+        ]
+      },
+      "ink-day": {
+        "role": "neutral",
+        "displayName": "Day Ink",
+        "canonical": "#1c1f4a",
+        "tonalRamp": [
+          "#08091a",
+          "#1e2240",
+          "#383e67",
+          "#565d8d",
+          "#767eb1",
+          "#99a2d2",
+          "#bfc7ee",
+          "#eaeeff"
+        ]
+      },
+      "ink-day-soft": {
+        "role": "neutral",
+        "displayName": "Soft Day Ink",
+        "canonical": "#313670",
+        "tonalRamp": [
+          "#07081d",
+          "#1d2047",
+          "#363c70",
+          "#535b98",
+          "#737dbc",
+          "#96a0dd",
+          "#bdc6f8",
+          "#eaeefe"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The hero headline only, balanced, about 16ch."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings, balanced, about 18ch."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Step headings inside a section."
+      },
+      "action": {
+        "displayName": "Action",
+        "purpose": "The label of the primary action pane."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, paragraphs capped at 66ch."
+      },
+      "pane": {
+        "displayName": "Pane",
+        "purpose": "The content line inside a pane."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Pane state lines, action meta line, requirements line. Sentence case."
+      }
+    },
+    "shadows": [
+      {
+        "name": "frame-cast",
+        "value": "inset 0 0 0 3px #4c52a6, 0 30px 60px -20px rgba(5, 6, 25, 0.7)",
+        "purpose": "The window frame: sash bevel plus a long soft cast onto the night."
+      },
+      {
+        "name": "sill-cast",
+        "value": "0 10px 18px -8px rgba(5, 6, 25, 0.6)",
+        "purpose": "The ledge under every window."
+      },
+      {
+        "name": "lamp-glow",
+        "value": "0 14px 34px -10px rgba(255, 182, 39, 0.45)",
+        "purpose": "Lit panes only: light spilling out of the glass."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-pane",
+        "value": "180ms cubic-bezier(.2,.8,.2,1)",
+        "purpose": "Primary action pane hover: background to lamp amber and a 2px rise."
+      },
+      {
+        "name": "dawn",
+        "value": "animation: dawn linear both; animation-timeline: view(); animation-range: entry 20% cover 45%",
+        "purpose": "Scroll-driven: the answer pane goes from the dark pane state to the lit state as the day section enters. Only with animation-timeline support and no reduced-motion preference; otherwise the pane is shown lit."
+      },
+      {
+        "name": "scroll-smooth",
+        "value": "scroll-behavior: smooth",
+        "purpose": "Anchor navigation; set to auto under prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "narrow",
+        "value": "860px",
+        "purpose": "Section nav hides, hero window becomes two columns, two-column sections stack."
+      },
+      {
+        "name": "phone",
+        "value": "420px",
+        "purpose": "Hero window becomes a single column."
+      }
+    ],
+    "focus": {
+      "value": "outline: 3px solid #ffb627; outline-offset: 4px; border-radius: 4px",
+      "onLightGround": "outline-color: #1c1f4a (morning and day bands)"
+    },
+    "selection": {
+      "background": "#ffb627",
+      "color": "#1c1f4a"
+    },
+    "skyGradient": [
+      {
+        "band": 1,
+        "value": "linear-gradient(to bottom, #1c1f4a 0%, #232760 18%, #2e3478 34%, #4f62b2 55%, #4f62b2 100%)"
+      },
+      {
+        "band": 2,
+        "value": "linear-gradient(to bottom, #4f62b2 0%, #5b6fbc 100%)"
+      },
+      {
+        "band": 3,
+        "value": "linear-gradient(to bottom, #5b6fbc 0%, #8fd3ff 55%, #8fd3ff 100%)"
+      },
+      {
+        "band": 4,
+        "value": "#c9ecff"
+      },
+      {
+        "band": 5,
+        "value": "#ffffff"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Window",
+      "kind": "custom",
+      "refersTo": "window",
+      "description": "Painted sash frame with mullion gaps and a sill; the only container for structured content.",
+      "html": "<div style=\"background:#1c1f4a;padding:24px 24px 40px\"><div class=\"ds-window\"><div class=\"ds-pane ds-pane-lit\"><span class=\"ds-state\">Tonight · planned</span>[x] Haley -&gt; Coconut</div><div class=\"ds-pane ds-pane-dark\"><span class=\"ds-state\">Tonight · skipped</span>[ ] Abigail -&gt; Amethyst</div></div></div>",
+      "css": ".ds-window { position: relative; background: var(--sash, #3d4291); padding: clamp(12px, 1.4vw, 18px); border-radius: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 0.9vw, 12px); box-shadow: inset 0 0 0 3px var(--sash-edge, #4c52a6), 0 30px 60px -20px rgba(5, 6, 25, 0.7); margin-bottom: 22px; font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; } .ds-window::after { content: \"\"; position: absolute; left: -14px; right: -14px; bottom: -18px; height: 14px; border-radius: 3px; background: var(--sill, #565cb4); box-shadow: 0 10px 18px -8px rgba(5, 6, 25, 0.6); } .ds-pane { min-height: 110px; border-radius: 3px; padding: clamp(14px, 1.6vw, 22px); display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; font-weight: 700; font-size: clamp(1rem, 1.3vw, 1.2rem); } .ds-pane .ds-state { font-weight: 400; font-size: 0.85rem; letter-spacing: 0.02em; } .ds-pane-lit { background: var(--lamp, #ffb627); color: var(--lamp-ink, #1c1f4a); box-shadow: 0 14px 34px -10px rgba(255, 182, 39, 0.45); } .ds-pane-dark { background: var(--pane-dark, #2b2f6b); color: #b9bdf0; }"
+    },
+    {
+      "name": "Lit Pane",
+      "kind": "card",
+      "refersTo": "pane-lit",
+      "description": "Planned, or a gift handed over: amber lamp light with a warm glow.",
+      "html": "<div style=\"background:#1c1f4a;padding:24px\"><div class=\"ds-pane ds-pane-lit\"><span class=\"ds-state\">Next morning</span>Gave Coconut to Haley.</div></div>",
+      "css": ".ds-pane { min-height: 110px; border-radius: 3px; padding: clamp(14px, 1.6vw, 22px); display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; font-weight: 700; font-size: clamp(1rem, 1.3vw, 1.2rem); } .ds-pane .ds-state { font-weight: 400; font-size: 0.85rem; letter-spacing: 0.02em; } .ds-pane-lit { background: var(--lamp, #ffb627); color: var(--lamp-ink, #1c1f4a); box-shadow: 0 14px 34px -10px rgba(255, 182, 39, 0.45); }"
+    },
+    {
+      "name": "Dark Pane",
+      "kind": "card",
+      "refersTo": "pane-dark",
+      "description": "Skipped or switched off: an unlit pane.",
+      "html": "<div style=\"background:#3d4291;padding:16px\"><div class=\"ds-pane ds-pane-dark\"><span class=\"ds-state\">Row switched off</span>[ ] Abigail -&gt; Amethyst</div></div>",
+      "css": ".ds-pane { min-height: 110px; border-radius: 3px; padding: clamp(14px, 1.6vw, 22px); display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; font-weight: 700; font-size: clamp(1rem, 1.3vw, 1.2rem); } .ds-pane .ds-state { font-weight: 400; font-size: 0.85rem; letter-spacing: 0.02em; } .ds-pane-dark { background: var(--pane-dark, #2b2f6b); color: #b9bdf0; }"
+    },
+    {
+      "name": "Outlined Pane",
+      "kind": "card",
+      "refersTo": "pane-out",
+      "description": "Not available yet: an empty pane drawn with a dashed outline.",
+      "html": "<div style=\"background:#3d4291;padding:16px\"><div class=\"ds-pane ds-pane-out\"><span class=\"ds-state\">Not met yet</span>Emily: not met yet - talk to them first</div></div>",
+      "css": ".ds-pane { min-height: 110px; border-radius: 3px; padding: clamp(14px, 1.6vw, 22px); display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; font-weight: 700; font-size: clamp(1rem, 1.3vw, 1.2rem); } .ds-pane .ds-state { font-weight: 400; font-size: 0.85rem; letter-spacing: 0.02em; } .ds-pane-out { background: transparent; border: 2px dashed var(--outline, #7d83cc); color: var(--ink-night-soft, #d6d9ff); }"
+    },
+    {
+      "name": "Primary Action Pane",
+      "kind": "button",
+      "refersTo": "pane-action",
+      "description": "The download link as the brightest pane; turns lamp amber and rises on hover.",
+      "html": "<div style=\"background:#1c1f4a;padding:24px\"><a class=\"ds-pane-action\" href=\"#\">Download v0.1.0 <small>Pre-release · zip</small></a></div>",
+      "css": ".ds-pane-action { display: flex; justify-content: space-between; align-items: center; gap: 28px; background: var(--day, #ffffff); color: var(--ink-day, #1c1f4a); text-decoration: none; border-radius: 3px; padding: clamp(18px, 2vw, 28px) clamp(18px, 2.2vw, 30px); font-family: \"Bricolage Grotesque\", \"Atkinson Hyperlegible\", sans-serif; font-weight: 800; font-size: clamp(1.5rem, 2.6vw, 2.4rem); letter-spacing: -0.02em; transition: background-color 180ms cubic-bezier(.2,.8,.2,1), transform 180ms cubic-bezier(.2,.8,.2,1); } .ds-pane-action small { font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; font-weight: 400; font-size: 0.9rem; letter-spacing: 0.02em; color: var(--ink-day-soft, #313670); } .ds-pane-action:hover { background: var(--lamp, #ffb627); transform: translateY(-2px); } .ds-pane-action:focus-visible { outline: 3px solid var(--lamp, #ffb627); outline-offset: 4px; border-radius: 4px; }"
+    },
+    {
+      "name": "Top Bar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Display-face wordmark with soft-ink section links that underline on hover.",
+      "html": "<header class=\"ds-bar\"><a class=\"ds-brand\" href=\"#\">Auto-Gifter</a><nav><ul><li><a href=\"#\">How it works</a></li><li><a href=\"#\">Safe items</a></li><li><a href=\"#\">Install</a></li></ul></nav></header>",
+      "css": ".ds-bar { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 22px 24px; background: var(--night, #1c1f4a); color: var(--ink-night, #ffffff); font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; } .ds-brand { font-family: \"Bricolage Grotesque\", \"Atkinson Hyperlegible\", sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.01em; text-decoration: none; color: inherit; } .ds-bar ul { display: flex; gap: clamp(14px, 2vw, 28px); list-style: none; margin: 0; padding: 0; } .ds-bar nav a { text-decoration: none; color: var(--ink-night-soft, #d6d9ff); text-underline-offset: 0.22em; text-decoration-thickness: 2px; } .ds-bar nav a:hover { color: var(--ink-night, #ffffff); text-decoration: underline; } .ds-bar a:focus-visible { outline: 3px solid var(--lamp, #ffb627); outline-offset: 4px; border-radius: 4px; }"
+    },
+    {
+      "name": "State List",
+      "kind": "custom",
+      "refersTo": "state-list",
+      "description": "List items led by a 22px state mark: lit, dark with an inset ring, or dashed.",
+      "html": "<div style=\"background:#4f62b2;padding:24px\"><ul class=\"ds-safe\"><li><i class=\"ds-mark ds-mark-lit\"></i><p><strong>One always stays.</strong> <span>An item is only given if you have at least two of it.</span></p></li><li><i class=\"ds-mark ds-mark-dark\"></i><p><strong>Only farm chests.</strong> <span>Chests in the farmhouse are never touched.</span></p></li><li><i class=\"ds-mark ds-mark-out\"></i><p><strong>Villagers you have not met are skipped.</strong></p></li></ul></div>",
+      "css": ".ds-safe { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1em; max-width: 72ch; font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; color: #ffffff; } .ds-safe li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 16px; align-items: start; } .ds-safe p { margin: 0; } .ds-mark { width: 22px; height: 22px; border-radius: 3px; margin-top: 0.2em; } .ds-mark-lit { background: var(--lamp, #ffb627); } .ds-mark-dark { background: var(--pane-dark, #2b2f6b); box-shadow: inset 0 0 0 2px var(--outline, #7d83cc); } .ds-mark-out { border: 2px dashed #ffffff; }"
+    },
+    {
+      "name": "Placeholder",
+      "kind": "custom",
+      "refersTo": "placeholder",
+      "description": "An honest dashed frame for media that does not exist yet.",
+      "html": "<div style=\"background:#2e3478;padding:24px\"><p class=\"ds-placeholder\"><strong>Clip coming in December.</strong> A short recording will go here.</p></div>",
+      "css": ".ds-placeholder { border: 2px dashed var(--outline, #7d83cc); border-radius: 4px; padding: clamp(18px, 2vw, 28px); color: var(--ink-night-soft, #d6d9ff); max-width: 66ch; margin: 0; font-family: \"Atkinson Hyperlegible\", system-ui, sans-serif; } .ds-placeholder strong { color: var(--ink-night, #ffffff); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Farmhouse Window at Night",
+    "overview": "The whole page is one night seen through a window. It opens in deep indigo dark, where tomorrow is planned, and the sky brightens section by section until the last band is full daylight. Every piece of structured content sits inside a window: a painted sash frame with mullion gaps between panes and a sill underneath. A pane's state is its light. Lit amber means planned, dark indigo means skipped or off, and a dashed outline means not available yet. The same three states recur as small square marks beside list items.\n\nDensity is low and type is large. A heavy warm grotesk carries the headlines and the primary action. A hyperlegible body face carries everything else at a generous 17 to 19px. There is no game art, no pixel look, and no imagery. The light itself is the illustration.",
+    "keyCharacteristics": [
+      "A single sky gradient running from night at the top to white day at the bottom, with no seams between sections.",
+      "Window panes as the only containers. There are no cards and no boxes outside a window frame, apart from the dashed placeholder for missing media.",
+      "Pane state shown by brightness: lit, dark, outlined.",
+      "Amber lamp light as the one warm accent, also used for text selection and the focus ring on dark ground.",
+      "One scroll-driven moment: a dark pane lights up as it comes into view."
+    ],
+    "rules": [
+      {
+        "name": "The One Sky Rule",
+        "section": "colors",
+        "body": "Section backgrounds are consecutive stops of one gradient. Each band starts on the exact color the previous one ended on (night, night-2, dusk, first-light, then first-light to pre-dawn, then pre-dawn to morning, morning-2, day). A new section never introduces an unrelated ground."
+      },
+      {
+        "name": "The Ink Follows the Sky Rule",
+        "section": "colors",
+        "body": "Night ink on the dark bands, day ink from the morning band onward. Where a gradient brightens under soft ink, the text steps up to full night ink (white) to keep contrast."
+      },
+      {
+        "name": "The One Lamp Rule",
+        "section": "colors",
+        "body": "Amber is the only warm color. It marks planned or actionable things and nothing decorative."
+      },
+      {
+        "name": "The Two Faces Rule",
+        "section": "typography",
+        "body": "The display face is used for the brand, headings, the action label and list numerals. Everything else is set in the body face."
+      },
+      {
+        "name": "The Only the Window Casts Rule",
+        "section": "elevation",
+        "body": "Shadows exist only on the window, its sill and its lit panes. Content outside a window has no shadow."
+      }
+    ],
+    "dos": [
+      "Do put structured content in panes inside a window frame, with state shown by brightness: lit for planned, dark for skipped, dashed for not yet.",
+      "Do continue the sky: start each new band on the color the previous one ended on.",
+      "Do switch to day ink and night-colored focus rings once the ground is morning or lighter.",
+      "Do keep amber for planned or actionable things, selection and focus on dark ground.",
+      "Do keep motion tied to the night-to-morning story and give it a static, fully legible reduced-motion state.",
+      "Do self-host both faces and set the display face at 700 to 800 with negative tracking."
+    ],
+    "donts": [
+      "Don't use cards, tiles or boxed sections outside the window grid.",
+      "Don't use game art, logos, pixel fonts or a pixel look.",
+      "Don't add a second warm accent or a decorative gradient that is not a stop of the sky.",
+      "Don't put shadows on anything but the window, its sill and its lit panes.",
+      "Don't set state labels in uppercase or use them as decorative kickers above headings. They belong inside panes."
+    ]
+  }
+}
