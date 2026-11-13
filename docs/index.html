@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auto-Gifter: walk past, they get their gift</title>
+  <meta name="description" content="Auto-Gifter is a SMAPI mod for Stardew Valley. Plan tomorrow's gifts tonight; tomorrow, walk past a villager and the gift is handed over. No button to press.">
+  <meta name="theme-color" content="#1c1f4a">
+  <link rel="preload" href="fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <a class="brand" href="#top">Auto-Gifter</a>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#day">How it works</a></li>
+        <li><a href="#safe">Safe items</a></li>
+        <li><a href="#install">Install</a></li>
+        <li><a href="#limits">Limits</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <h1 id="hero-title">Walk past. They get their gift.</h1>
+      <div class="window" role="group" aria-label="Tomorrow's plan, from tonight to the next morning">
+        <div class="pane pane-lit"><span class="state">Tonight · planned</span>[x] Haley -&gt; Coconut</div>
+        <div class="pane pane-dark"><span class="state">Tonight · skipped</span>[ ] Abigail -&gt; Amethyst</div>
+        <div class="pane pane-out"><span class="state">Not met yet</span>Emily: not met yet - talk to them first</div>
+        <div class="pane pane-lit"><span class="state">Next morning</span>Gave Coconut to Haley.</div>
+        <a class="pane pane-action" href="https://github.com/esst-prog2/stardew-auto-gifter/releases/tag/v0.1.0"><small>Pre-release · zip</small>Download v0.1.0</a>
+      </div>
+      <div class="under">
+        <p class="lede">Auto-Gifter is a SMAPI mod for Stardew Valley. In the evening you see tomorrow's gift plan; the next day, when you walk past a villager on the plan, the mod gives them their gift from your chests. No button to press.</p>
+        <div class="meta">
+          <p class="req"><span>Stardew Valley 1.6.14+</span><span>SMAPI 4.5+</span><span>Single player</span></p>
+          <a class="source" href="https://github.com/esst-prog2/stardew-auto-gifter">Source on GitHub</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="band band-1" id="day" aria-labelledby="day-title">
+      <h2 id="day-title">Plan tonight. Sleep. Just walk tomorrow.</h2>
+      <div class="day">
+        <ol class="day-steps">
+          <li>
+            <h3>Evening: press F8</h3>
+            <p>On the NPCs tab, tick the villagers you want to gift. The Plan tab shows tomorrow's gift for each of them.</p>
+          </li>
+          <li>
+            <h3>Change your mind</h3>
+            <p>Click a row to "[ ]" to leave that villager out tomorrow, for example when you want to give them something yourself.</p>
+          </li>
+          <li>
+            <h3>Next day: just walk</h3>
+            <p>Come within 1.5 tiles of a villager on the plan. One item leaves your chests, and a message tells you.</p>
+          </li>
+        </ol>
+        <div class="window window-day" role="group" aria-label="The three steps, seen through the window">
+          <div class="pane pane-lit"><span class="state">Plan tab</span>[x] Haley -&gt; Coconut</div>
+          <div class="pane pane-dark"><span class="state">Row switched off</span>[ ] Abigail -&gt; Amethyst</div>
+          <div class="pane answer"><span class="state">Message, next morning</span>Gave Coconut to Haley.</div>
+        </div>
+      </div>
+      <p class="note">Plans always start the next day. Ticking a villager does not change today.</p>
+      <p class="picks">For each villager, Auto-Gifter first looks only in your marked chest: it picks the loved item you have the most of there (at least two), or, if there is none, a liked item (you can turn liked items off). Only if the marked chest has nothing for that villager does it look the same way through all the chests on your farm and in its buildings: barn, coop, shed, greenhouse. You can also tell it to use the marked chest only.</p>
+      <p class="placeholder"><strong>Clip coming in December.</strong> A short recording of a walk through town without pressing anything, with "Gave Coconut to Haley." appearing on the way, will go here.</p>
+    </section>
+
+    <section class="band band-2" id="safe" aria-labelledby="safe-title">
+      <h2 id="safe-title">It never takes what you want to keep.</h2>
+      <ul class="safe">
+        <li><i class="mark mark-lit" aria-hidden="true"></i><p><strong>Blocklist.</strong> <span>Tick an item on the Blocklist tab, such as a Prismatic Shard, and it is left out of every plan worked out after that. Tomorrow's plan is worked out when you open F8, so after changing the Blocklist, close F8 and open it again. A gift already planned for today is not affected.</span></p></li>
+        <li><i class="mark mark-lit" aria-hidden="true"></i><p><strong>One always stays.</strong> <span>An item is only given if you have at least two of it, so you never lose your last one.</span></p></li>
+        <li><i class="mark mark-lit" aria-hidden="true"></i><p><strong>The game's limits, respected.</strong> <span>At most one gift per villager per day and two per week, checked again right before the hand-off.</span></p></li>
+        <li><i class="mark mark-dark" aria-hidden="true"></i><p><strong>An off switch.</strong> <span>The mod only works while exactly one chest is marked. Open a chest on your farm and press G to mark it; it is renamed "Auto-Gifter Chest". Press G again to unmark it, and gifting stops.</span></p></li>
+        <li><i class="mark mark-out" aria-hidden="true"></i><p><strong>Villagers you have not met are skipped.</strong> <span>Their row says "Emily: not met yet - talk to them first".</span></p></li>
+        <li><i class="mark mark-dark" aria-hidden="true"></i><p><strong>It tells you when it can't.</strong> <span>If the mod has nothing it can give a villager today, or they already got two gifts this week, they tell you so when you walk up, once a day.</span></p></li>
+        <li><i class="mark mark-dark" aria-hidden="true"></i><p><strong>Only farm chests.</strong> <span>Chests in the farmhouse and its cellar are never touched.</span></p></li>
+      </ul>
+    </section>
+
+    <section class="band band-3" id="compare" aria-labelledby="compare-title">
+      <h2 id="compare-title">How it compares</h2>
+      <p>Other gifting mods exist. Some send gifts from a chest when you press a key; others remind you who to gift. Auto-Gifter does not need a key press, and it picks the item for you: the one you have the most of.</p>
+    </section>
+
+    <section class="band band-4" id="install" aria-labelledby="install-title">
+      <h2 id="install-title">Install and first day</h2>
+      <ol class="steps">
+        <li>Install <a href="https://smapi.io">SMAPI</a>.</li>
+        <li>Download the zip from the <a href="https://github.com/esst-prog2/stardew-auto-gifter/releases/tag/v0.1.0">v0.1.0 Release</a> and unzip it into your game's <code>Mods</code> folder.</li>
+        <li>Start the game and load your save. The first time you step out onto your farm, you get a chest and a short welcome message.</li>
+        <li>Place the chest outside on your farm, or in a barn, coop, shed or greenhouse (not in the farmhouse). Open it and press G. The chest is renamed "Auto-Gifter Chest": that means it is marked.</li>
+        <li>Press F8 and tick the villagers you want to gift. Gifting starts the next day.</li>
+      </ol>
+      <p>The keys and the liked-item fallback are in <code>config.json</code> (<code>MenuKey</code>, <code>ChestMarkKey</code>, <code>IncludeLikedItems</code>). The Settings tab of the F8 menu has "Only use the marked chest (ignore other farm chests)".</p>
+      <div class="window window-cta">
+        <a class="pane pane-action" href="https://github.com/esst-prog2/stardew-auto-gifter/releases/tag/v0.1.0">Try it: download v0.1.0 <small>Pre-release · zip</small></a>
+      </div>
+    </section>
+
+    <section class="band band-5" id="limits" aria-labelledby="limits-title">
+      <h2 id="limits-title">Known limits</h2>
+      <ul class="limits">
+        <li>Single player only; not tested in multiplayer.</li>
+        <li>F8 does nothing while a chest or another menu is open. Close it first.</li>
+        <li>Changes always apply from the next day. After changing the Blocklist, reopen F8 so tomorrow's plan is worked out again.</li>
+        <li>This is version 0.1.0, an early release.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="band band-5 built">
+    <p>Built as a programming course project: a C# SMAPI mod, developed spec-first with OpenSpec, with unit tests for the selection and delivery rules. The specs, the planning log and the reviews are in the <a href="https://github.com/esst-prog2/stardew-auto-gifter">repository</a>. Stardew Valley is a game by ConcernedApe; this mod is a fan project and is not affiliated with it.</p>
+  </footer>
+</body>
+</html>
