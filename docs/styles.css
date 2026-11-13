@@ -109,16 +109,18 @@ code {
   font-size: clamp(3rem, 7.6vw, 6rem);
   line-height: 0.92;
   letter-spacing: -0.04em;
-  margin: 0 0 clamp(28px, 4vw, 56px);
+  margin: 0 0 0.3em;
   max-width: 16ch;
   text-wrap: balance;
 }
-.hero .window { grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.25fr); align-items: stretch; }
+.hero-row { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1.2fr); gap: clamp(20px, 3vw, 44px); align-items: stretch; }
+.hero .window { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+.hero .hero-cta { grid-template-columns: 1fr; }
 .hero .pane { min-height: clamp(120px, 11vw, 170px); }
 .hero .pane-action { grid-column: auto; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 6px; font-size: clamp(1.3rem, 2vw, 2rem); }
 .hero .under { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px 40px; margin-top: clamp(22px, 3vw, 40px); }
-.hero .lede { margin: 0; max-width: 46ch; color: var(--ink-night-soft); font-size: clamp(1.05rem, 1.35vw, 1.25rem); }
-.hero .meta { display: grid; gap: 8px; justify-items: end; align-content: start; }
+.hero .lede { margin: 0 0 clamp(28px, 4vw, 48px); max-width: 46ch; color: var(--ink-night-soft); font-size: clamp(1.05rem, 1.35vw, 1.25rem); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: baseline; }
 .hero .source { margin-top: 0; }
 .req { font-size: 0.95rem; color: var(--morning); letter-spacing: 0.02em; margin: 0; }
 .req span + span::before { content: "·"; margin: 0 0.6em; color: var(--outline); }
@@ -188,8 +190,7 @@ code {
 /* one sky from night to morning: each band starts where the previous one ended, so there are no seams;
    first light arrives during the day section, as the gift is handed over */
 .band-1 { background: linear-gradient(to bottom, var(--night) 0%, var(--night-2) 18%, var(--dusk) 34%, var(--first-light) 55%, var(--first-light) 100%); }
-.band-1 .day p, .band-1 .picks, .band-1 .note { color: var(--ink-night); }
-.band-1 .placeholder { color: var(--ink-night); border-color: #c9ceff; }
+.band-1 .day p, .band-1 .note { color: var(--ink-night); }
 .band-2 { background: linear-gradient(to bottom, var(--first-light) 0%, var(--pre-dawn) 100%); }
 .band-2 .mark-out { border-color: var(--ink-night); }
 .band-2 .safe span { color: var(--ink-night); }
@@ -215,12 +216,10 @@ code {
 .window-cta { display: inline-grid; grid-template-columns: auto; margin-top: 1.8em; }
 .window-cta .pane-action { gap: 28px; }
 .note { font-weight: 700; color: var(--lamp); }
-.picks { color: var(--ink-night-soft); }
-.placeholder {
-  border: 2px dashed var(--outline); border-radius: 4px; padding: clamp(18px, 2vw, 28px);
-  color: var(--ink-night-soft); max-width: 66ch; margin: 2.4em 0 0;
-}
-.placeholder strong { color: var(--ink-night); }
+.picks-title { font-family: var(--display); font-weight: 700; font-size: clamp(1.3rem, 2vw, 1.7rem); letter-spacing: -0.015em; margin: 2.2em 0 0.8em; }
+.window-picks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.window-picks .pane { min-height: auto; justify-content: flex-start; font-weight: 400; line-height: 1.45; }
+.window-picks .state { font-weight: 700; font-size: 0.95rem; }
 
 /* safe items: state is brightness, each line marked by its pane */
 .safe { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1em; max-width: 72ch; }
@@ -262,14 +261,14 @@ code {
 @media (max-width: 860px) {
   .bar nav { display: none; }
   .hero { min-height: auto; }
-  .hero .window { grid-template-columns: 1fr 1fr; }
-  .hero .pane-action { grid-column: 1 / -1; }
-  .hero .meta { justify-items: start; }
+  .hero-row { grid-template-columns: 1fr; }
+  .window-picks { grid-template-columns: 1fr; }
   .day { grid-template-columns: 1fr; }
   .day-steps { grid-template-rows: none; }
 }
 @media (max-width: 420px) {
   .hero .window { grid-template-columns: 1fr; }
+  .hero .pane { min-height: 84px; }
 }
 
 /* on the morning ground the amber focus ring would vanish; use night ink there */

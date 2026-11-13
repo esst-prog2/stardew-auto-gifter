@@ -17,7 +17,7 @@ OWN-WORLD: Deep indigo night (#1c1f4a) that brightens down the page into morning
 
 STORY: A player sees that gifts are planned tonight and handed over tomorrow with no button press, trusts that rare items stay safe and the limits are stated, and downloads v0.1.0.
 
-FIRST VIEWPORT: Left: the name, the headline "Walk past. They get their gift." at display scale, one subline, the requirements line. Right: the window grid, three panes with tomorrow's rows (lit, dark, outlined), one pane "Gave Coconut to Haley.", and a full-width bright pane "Download v0.1.0" as the primary action, visible without scrolling.
+FIRST VIEWPORT: The name and the headline "Walk past. They get their gift." at display scale across the top, the one-sentence lede directly under it. Below: a framed window of three panes in one row (tonight planned, tonight skipped, next morning "Gave Coconut to Haley.") on a sill, and beside it, in its own framed window, the bright white Download v0.1.0 pane as the primary action, visible without scrolling on desktop and phone. Requirements line and Source on GitHub underneath.
 
 FORM: assigned direction of the re-rolled hand, candidate 7 of 7; seed:e01f58c13c3de347
 

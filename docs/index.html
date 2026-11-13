@@ -27,15 +27,18 @@
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
       <h1 id="hero-title">Walk past. They get their gift.</h1>
-      <div class="window" role="group" aria-label="Tomorrow's plan, from tonight to the next morning">
-        <div class="pane pane-lit"><span class="state">Tonight · planned</span>[x] Haley -&gt; Coconut</div>
-        <div class="pane pane-dark"><span class="state">Tonight · skipped</span>[ ] Abigail -&gt; Amethyst</div>
-        <div class="pane pane-out"><span class="state">Not met yet</span>Emily: not met yet - talk to them first</div>
-        <div class="pane pane-lit"><span class="state">Next morning</span>Gave Coconut to Haley.</div>
-        <a class="pane pane-action" href="https://github.com/esst-prog2/stardew-auto-gifter/releases/tag/v0.1.0"><small>Pre-release · zip</small>Download v0.1.0</a>
+      <p class="lede">Auto-Gifter is a SMAPI mod for Stardew Valley. In the evening you see tomorrow's gift plan; the next day, when you walk past a villager on the plan, the mod gives them their gift from your chests. No button to press.</p>
+      <div class="hero-row">
+        <div class="window" role="group" aria-label="Tomorrow's plan, from tonight to the next morning">
+          <div class="pane pane-lit"><span class="state">Tonight · planned</span>[x] Haley -&gt; Coconut</div>
+          <div class="pane pane-dark"><span class="state">Tonight · skipped</span>[ ] Abigail -&gt; Amethyst</div>
+          <div class="pane pane-lit"><span class="state">Next morning</span>Gave Coconut to Haley.</div>
+        </div>
+        <div class="window hero-cta">
+          <a class="pane pane-action" href="https://github.com/esst-prog2/stardew-auto-gifter/releases/tag/v0.1.0"><small>Pre-release · zip</small>Download v0.1.0</a>
+        </div>
       </div>
       <div class="under">
-        <p class="lede">Auto-Gifter is a SMAPI mod for Stardew Valley. In the evening you see tomorrow's gift plan; the next day, when you walk past a villager on the plan, the mod gives them their gift from your chests. No button to press.</p>
         <div class="meta">
           <p class="req"><span>Stardew Valley 1.6.14+</span><span>SMAPI 4.5+</span><span>Single player</span></p>
           <a class="source" href="https://github.com/esst-prog2/stardew-auto-gifter">Source on GitHub</a>
@@ -67,8 +70,12 @@
         </div>
       </div>
       <p class="note">Plans always start the next day. Ticking a villager does not change today.</p>
-      <p class="picks">For each villager, Auto-Gifter first looks only in your marked chest: it picks the loved item you have the most of there (at least two), or, if there is none, a liked item (you can turn liked items off). Only if the marked chest has nothing for that villager does it look the same way through all the chests on your farm and in its buildings: barn, coop, shed, greenhouse. You can also tell it to use the marked chest only.</p>
-      <p class="placeholder"><strong>Clip coming in December.</strong> A short recording of a walk through town without pressing anything, with "Gave Coconut to Haley." appearing on the way, will go here.</p>
+      <h3 class="picks-title">How it picks the gift</h3>
+      <div class="window window-picks" role="group" aria-label="Where Auto-Gifter looks for each villager's gift, in order">
+        <div class="pane pane-lit"><span class="state">1 · Marked chest first</span>The loved item you have the most of there, at least two. No loved item? A liked one (you can turn liked items off).</div>
+        <div class="pane pane-dark"><span class="state">2 · Then the other farm chests</span>Only if the marked chest has nothing: the same search through every chest on the farm and in its barn, coop, shed and greenhouse.</div>
+        <div class="pane pane-out"><span class="state">3 · Or the marked chest only</span>Switch on "Only use the marked chest" in Settings and step 2 is skipped.</div>
+      </div>
     </section>
 
     <section class="band band-2" id="safe" aria-labelledby="safe-title">
@@ -111,6 +118,7 @@
         <li>F8 does nothing while a chest or another menu is open. Close it first.</li>
         <li>Changes always apply from the next day. After changing the Blocklist, reopen F8 so tomorrow's plan is worked out again.</li>
         <li>This is version 0.1.0, an early release.</li>
+        <li>No gameplay recording yet: a walk-through clip is planned for December 2026.</li>
       </ul>
     </section>
   </main>
