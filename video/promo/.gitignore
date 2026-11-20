@@ -1,0 +1,5 @@
+# Gameplay captures and fonts are copied in locally; renders are build output
+assets/
+renders/
+snapshots/
+.hyperframes/

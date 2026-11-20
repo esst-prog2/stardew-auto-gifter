@@ -274,3 +274,9 @@ code {
 /* on the morning ground the amber focus ring would vanish; use night ink there */
 .band-3 a:focus-visible, .band-4 a:focus-visible, .band-4 .pane-action:focus-visible { outline-color: var(--night); }
 .safe p { margin: 0; }
+
+/* the gameplay clip, set in the same window frame as the panes */
+.clip-figure { margin: 2.6em 0 0; max-width: 960px; }
+.window-clip { grid-template-columns: 1fr; }
+.clip-video { display: block; width: 100%; height: auto; min-height: 0; padding: 0; background: var(--night); border-radius: 3px; }
+.clip-figure figcaption { margin-top: 30px; color: var(--ink-night); max-width: 66ch; }

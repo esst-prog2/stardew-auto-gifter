@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Bricolage Grotesque"; src: url("assets/bricolage-grotesque-latin.woff2") format("woff2"); font-weight: 500 800; }
+      @font-face { font-family: "Atkinson Hyperlegible"; src: url("assets/atkinson-hyperlegible-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Atkinson Hyperlegible"; src: url("assets/atkinson-hyperlegible-700.woff2") format("woff2"); font-weight: 700; }
+      /* Palette from the promo page (DESIGN.md): night to morning, lamp amber as the only warm accent. */
+      :root {
+        --night: #1c1f4a;
+        --first-light: #4f62b2;
+        --morning: #8fd3ff;
+        --morning-2: #c9ecff;
+        --lamp: #ffb627;
+        --sash: #3d4291;
+        --sill: #565cb4;
+        --white: #ffffff;
+        --display: "Bricolage Grotesque", sans-serif;
+        --text: "Atkinson Hyperlegible", sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--night); }
+      #root { position: relative; width: 1920px; height: 1080px; font-family: var(--text); }
+
+      .scene { position: absolute; inset: 0; opacity: 0; }
+      .night { background: var(--night); color: var(--white); }
+      .dawn { background: var(--first-light); color: var(--white); }
+      .day { background: var(--morning); color: var(--night); }
+      .end { background: var(--morning-2); color: var(--night); }
+
+      .cap { position: absolute; left: 96px; top: 64px; right: 96px; }
+      .cap .when { font-family: var(--text); font-weight: 700; font-size: 34px; color: var(--lamp); }
+      .day .cap .when { color: var(--night); opacity: 0.75; }
+      .cap h2 { font-family: var(--display); font-weight: 800; font-size: 72px; line-height: 1; letter-spacing: -0.03em; margin-top: 10px; }
+
+      /* every real screen sits in the page's window frame: a painted sash and a sill */
+      .frame { position: absolute; left: 50%; background: var(--sash); padding: 16px; border-radius: 8px; box-shadow: 0 30px 60px -20px rgba(5, 6, 25, 0.6); }
+      .frame::after { content: ""; position: absolute; left: -18px; right: -18px; bottom: -22px; height: 16px; border-radius: 4px; background: var(--sill); }
+      .shot { position: relative; transform-origin: 0 0; }
+      .shot img, .shot video { display: block; image-rendering: pixelated; }
+      .ring { position: absolute; border: 8px solid var(--lamp); border-radius: 14px; box-shadow: 0 0 0 4px rgba(28, 31, 74, 0.55); opacity: 0; }
+      .tag { position: absolute; font-family: var(--display); font-weight: 800; font-size: 40px; background: var(--lamp); color: var(--night); padding: 10px 20px; border-radius: 8px; white-space: nowrap; opacity: 0; }
+
+      .title-card { display: flex; align-items: center; justify-content: center; }
+      .title-card h2 { font-family: var(--display); font-weight: 800; font-size: 150px; letter-spacing: -0.04em; }
+      .end-card { display: flex; flex-direction: column; justify-content: center; padding: 0 140px; gap: 26px; }
+      .end-card h1 { font-family: var(--display); font-weight: 800; font-size: 120px; line-height: 0.95; letter-spacing: -0.04em; }
+      .end-card p { font-size: 40px; }
+      .end-card .dl { font-family: var(--display); font-weight: 800; font-size: 48px; background: var(--white); padding: 22px 32px; border-radius: 8px; align-self: flex-start; }
+      .note { position: absolute; right: 40px; bottom: 28px; font-size: 28px; opacity: 0.85; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="30" data-width="1920" data-height="1080">
+
+      <!-- 1. In the evening: the marked chest holds 10 Coconuts (01, 1919x484, shown at 0.82) -->
+      <section id="s1" class="scene night">
+        <div class="cap"><div class="when">In the evening</div><h2>Your marked chest: 10 Coconuts.</h2></div>
+        <div class="frame" style="top: 250px; transform: translateX(-50%);">
+          <div class="shot" style="width: 1456px; height: 678px; overflow: hidden;">
+            <img src="assets/01-chest-evening.png" style="position: absolute; left: -616px; top: 0; width: 2687px; height: 678px;" alt="" />
+            <div class="ring" id="r1" style="left: 146px; top: 246px; width: 116px; height: 136px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. F8, NPCs tab (02, 803x604, shown at 1.2) -->
+      <section id="s2" class="scene night">
+        <div class="cap"><div class="when">In the evening</div><h2>Press F8. Tick Haley and Abigail.</h2></div>
+        <div class="frame" style="top: 250px; transform: translateX(-50%);">
+          <div class="shot" style="width: 964px; height: 725px;">
+            <img src="assets/02-npcs-tab.png" style="width: 964px; height: 725px;" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Plan tab (03, 807x290, shown at 1.75) -->
+      <section id="s3" class="scene night">
+        <div class="cap"><div class="when">In the evening</div><h2>The Plan tab shows tomorrow's gifts.</h2></div>
+        <div class="frame" style="top: 330px; transform: translateX(-50%);">
+          <div class="shot" style="width: 1412px; height: 508px;">
+            <img src="assets/03-plan-tab.png" style="width: 1412px; height: 508px;" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Abigail switched off (04, 798x341, shown at 1.75) -->
+      <section id="s4" class="scene night">
+        <div class="cap"><div class="when">In the evening</div><h2>One click: Abigail is left out tomorrow.</h2></div>
+        <div class="frame" style="top: 300px; transform: translateX(-50%);">
+          <div class="shot" style="width: 1397px; height: 597px;">
+            <img src="assets/04-plan-abigail-off.png" style="width: 1397px; height: 597px;" alt="" />
+            <div class="ring" id="r4" style="left: 40px; top: 332px; width: 520px; height: 78px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Sleep (05, 1910x993, shown at 0.62) -->
+      <section id="s5" class="scene night">
+        <div class="cap"><div class="when">In the evening</div><h2>Go to sleep.</h2></div>
+        <div class="frame" style="top: 250px; transform: translateX(-50%);">
+          <div class="shot" style="width: 1184px; height: 616px;">
+            <img src="assets/05-sleep.png" style="width: 1184px; height: 616px;" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Title -->
+      <section id="s6" class="scene dawn title-card">
+        <h2>The next day</h2>
+      </section>
+
+      <!-- 7. The walk: real gameplay, no button pressed (06, 1920x1012, shown at 0.78) -->
+      <section id="s7" class="scene day">
+        <div class="cap"><div class="when">The next day</div><h2>Walk past Haley. No button pressed.</h2></div>
+        <div class="frame" style="top: 236px; transform: translateX(-50%);">
+          <div class="shot" style="width: 1498px; height: 789px;">
+            <video id="walk" class="clip" src="assets/06-walk.mp4" muted data-start="15.6" data-duration="5" data-media-start="5.25" style="width: 1498px; height: 789px;"></video>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. The mod's message, a clear still from the same clip at 12.75 s (07) -->
+      <section id="s8" class="scene day">
+        <div class="cap"><div class="when">The next day</div><h2>"Gave Coconut to Haley."</h2></div>
+        <div class="frame" style="top: 236px; transform: translateX(-50%);">
+          <div class="shot" style="width: 1498px; height: 789px;">
+            <img src="assets/07-hud-message.png" style="width: 1498px; height: 789px;" alt="" />
+            <div class="ring" id="r8" style="left: 6px; top: 646px; width: 324px; height: 84px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8b. Haley's real reaction, from the same clip at 11.75 s (07b) -->
+      <section id="s8b" class="scene day">
+        <div class="cap"><div class="when">The next day</div><h2>Haley loves it.</h2></div>
+        <div class="frame" style="top: 236px; transform: translateX(-50%);">
+          <div class="shot" style="width: 1498px; height: 789px;">
+            <img src="assets/07b-haley-reaction.png" style="width: 1498px; height: 789px;" alt="" />
+            <div class="ring" id="r8b" style="left: 258px; top: 418px; width: 996px; height: 340px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. One Coconut used (08, 1142x434, shown at 1.3) -->
+      <section id="s9" class="scene day">
+        <div class="cap"><div class="when">The next day</div><h2>One Coconut used: 9 left.</h2></div>
+        <div class="frame" style="top: 330px; transform: translateX(-50%);">
+          <div class="shot" style="width: 1485px; height: 564px;">
+            <img src="assets/08-chest-morning.png" style="width: 1485px; height: 564px;" alt="" />
+            <div class="ring" id="r9" style="left: 210px; top: 226px; width: 116px; height: 118px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. End card -->
+      <section id="s10" class="scene end end-card">
+        <h1>Auto-Gifter v0.1.0</h1>
+        <p>A SMAPI mod for Stardew Valley 1.6.14+ · SMAPI 4.5+ · Single player</p>
+        <div class="dl">github.com/esst-prog2/stardew-auto-gifter</div>
+        <div class="note">Real gameplay. A fan-made mod, not affiliated with ConcernedApe.</div>
+      </section>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const cut = (id, at, dur) => {
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, at);
+        tl.to(id, { opacity: 0, duration: 0.3, ease: "power2.in" }, at + dur - 0.3);
+      };
+      // the first scene is visible from frame 0, then fades out
+      tl.set("#s1", { opacity: 1 }, 0);
+      tl.to("#s1", { opacity: 0, duration: 0.3, ease: "power2.in" }, 3.3);
+      cut("#s2", 3.6, 3.0); cut("#s3", 6.6, 3.0); cut("#s4", 9.6, 3.0);
+      cut("#s5", 12.6, 1.6); cut("#s6", 14.2, 1.4); cut("#s7", 15.6, 5.0);
+      cut("#s8", 20.6, 1.9); cut("#s8b", 22.5, 2.0); cut("#s9", 24.5, 2.0);
+      tl.fromTo("#s10", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 26.5);
+
+      const pop = (id, at) => tl.fromTo(id, { opacity: 0, scale: 1.25 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, at);
+      pop("#r1", 1.2);
+      pop("#r4", 10.6);
+      pop("#r8", 20.9);
+      pop("#r8b", 22.8);
+      pop("#r9", 25.0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
