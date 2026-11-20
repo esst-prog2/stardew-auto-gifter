@@ -20,3 +20,6 @@ TestResults/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Raw gameplay captures for the promo video (may contain personal data; never committed)
+video/captures/
