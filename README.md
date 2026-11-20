@@ -1,6 +1,14 @@
 # Stardew-auto-gifter
 Programming course Survey MA
 
+**Promo page:** https://esst-prog2.github.io/stardew-auto-gifter/ · **Download:** [v0.1.0 Release](https://github.com/esst-prog2/stardew-auto-gifter/releases/tag/v0.1.0) (pre-release)
+
+Requirements: Stardew Valley 1.6.14 or newer, SMAPI 4.5 or newer, single player.
+
+1. Install SMAPI (https://smapi.io).
+2. Download `StardewAutoGifter.0.1.0.zip` from the Release and unzip it into your game's `Mods` folder, so that you get `Mods/StardewAutoGifter/`.
+3. Start the game through SMAPI and load your save.
+
 # Stardew Valley Auto-Gifter
 
 A SMAPI mod for the game Stardew Valley that automates daily gift-giving to villagers, so you don't have to remember everyone's favorite items or walk out of your way to deliver them by hand.
@@ -10,6 +18,8 @@ A SMAPI mod for the game Stardew Valley that automates daily gift-giving to vill
 On my farm I open my marked “Auto-Gifter Chest”, which holds 10 Coconuts, 5 Amethysts and 12 Prismatic Shards, close it again, and press F8. On the NPCs tab I have ticked Haley, Abigail and Emily, and the Plan tab shows tomorrow’s plan: “[x] Haley -> Coconut”, “[x] Abigail -> Amethyst” and “Emily: not met yet - talk to them first”, because I have never talked to Emily. Without the Blocklist, Abigail would get a Prismatic Shard, because there are more of them than Amethysts; the Shards are ticked on the Blocklist tab, so she gets an Amethyst instead. I click Abigail’s row to “[ ]”, because I want to give her something myself tomorrow, and go to sleep. The next morning I walk past Haley in town without pressing anything, a message says “Gave Coconut to Haley.”, and the chest now holds 9 Coconuts. When I walk past Abigail and Emily, nothing happens, and the chest still holds 5 Amethysts.
 
 ## 2. The shape
+
+> **Note:** This is the original week-one plan, kept unchanged. The current behavior is described in section 1, on the [promo page](https://esst-prog2.github.io/stardew-auto-gifter/) and in the specs under `openspec/`.
 
 ```
 in     the contents of a designated chest (items + quantities) + a
@@ -26,6 +36,8 @@ in between   at the start of each day, picks for each NPC the item they
 ```
 
 ## 3. The size
+
+> **Note:** This is the original week-one plan, kept unchanged. The current behavior is described in section 1, on the [promo page](https://esst-prog2.github.io/stardew-auto-gifter/) and in the specs under `openspec/`.
 
 **First useful version**
 - SMAPI mod written in C#
